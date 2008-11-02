@@ -33,64 +33,7 @@ import com.borland.tm.webservices.tmexecution.ExecutionWebServiceServiceLocator;
  * @author Thomas Fuerer
  *
  */
-public class SCTMExecutor extends Builder {
-  static final class SCTMExecutorDescriptor extends Descriptor<Builder> {   
-    private String serviceURL;
-    private String user;
-    private String password;
-    
-    SCTMExecutorDescriptor() {
-      super(SCTMExecutor.class);
-    }
-
-    @Override
-    public String getDisplayName() {
-      return Messages.getString("SCTMExecutorDescriptor.plugin.title"); //$NON-NLS-1$
-    }
-
-    @Override
-    public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-      String execDefIds = req.getParameter("sctmexecutor.execDefId"); //$NON-NLS-1$
-      String str = req.getParameter("sctmexecutor.projectId"); //$NON-NLS-1$
-      int projectId = Integer.parseInt(str);
-      try {
-        return new SCTMExecutor(projectId, execDefIds);
-      } catch (Exception e) {
-        throw new FormException(e, Messages.getString("SCTMExecutorDescriptor.err.service.connectionfailed")); //$NON-NLS-1$
-      }
-    }
-    
-    @Override
-    public boolean configure(StaplerRequest req, JSONObject json) throws hudson.model.Descriptor.FormException {
-      serviceURL = req.getParameter("sctmexecutor.serviceURL"); //$NON-NLS-1$
-      user = req.getParameter("sctmexecutor.user"); //$NON-NLS-1$
-//      try {
-        password = req.getParameter("sctmexecutor.password"); //new PwdCrypt(Hudson.getInstance().getSecretKey()).encrypt(req.getParameter("sctmexecutor.password"));
-//      } catch (UnsupportedEncodingException e) {
-//        throw new RuntimeException(e);
-//      }
-      
-      save();
-      return super.configure(req, json);
-    }
-
-    public void setServiceURL(String serviceURL) {
-      this.serviceURL = serviceURL;
-    }
-
-    public String getServiceURL() {
-      return serviceURL;
-    }
-    
-    public String getUser() {
-      return user;
-    }
-
-    public String getPassword() {
-      return password;
-    }
-  }
-  
+public class SCTMExecutor extends Builder { 
   public static final SCTMExecutorDescriptor DESCRIPTOR = new SCTMExecutorDescriptor();
   
   private final int projectId;
@@ -124,8 +67,9 @@ public class SCTMExecutor extends Builder {
       systemService = new SystemServiceServiceLocator().getsccsystem(new URL(serviceURL+"/sccsystem?wsdl")); //$NON-NLS-1$
       execService = new ExecutionWebServiceServiceLocator().gettmexecution(new URL(serviceURL+"/tmexecution?wsdl")); //$NON-NLS-1$
 
-      String cryptedPwd = DESCRIPTOR.getPassword(); // new PwdCrypt(Hudson.getInstance().getSecretKey()).decrypt(DESCRIPTOR.getPassword());
-      long sessionId = systemService.logonUser(DESCRIPTOR.getUser(), cryptedPwd);
+      String deCryptedPwd = PwdCrypt.decode(DESCRIPTOR.getPassword(), Hudson.getInstance().getSecretKey());
+//      listener.getLogger().println(deCryptedPwd);
+      long sessionId = systemService.logonUser(DESCRIPTOR.getUser(), deCryptedPwd);
       execService.setCurrentProject(sessionId, projectId);
       List<ExecutionHandle> execHandles = new ArrayList<ExecutionHandle>();
       for (Integer execDefId : csvToList(execDefIds)) {
@@ -144,7 +88,10 @@ public class SCTMExecutor extends Builder {
       return true;
     } catch (ServiceException e) {
       listener.error(Messages.getString("SCTMExecutor.err.wrongServiceURL")); //$NON-NLS-1$
-      throw new InterruptedException(e.getLocalizedMessage());
+      return false;
+    } catch (Exception e) {
+      listener.error(Messages.getString("SCTMExecutor.err.pwdCryptFailed"));
+      return false;
     }
   }
 
