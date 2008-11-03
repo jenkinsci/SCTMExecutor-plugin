@@ -15,6 +15,7 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
 
   SCTMExecutorDescriptor() {
     super(SCTMExecutor.class);
+    load();
   }
 
   @Override
