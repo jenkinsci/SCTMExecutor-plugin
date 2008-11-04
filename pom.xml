@@ -4,7 +4,8 @@
   <groupId>hudson.plugins.sctmexecutor</groupId>
   <artifactId>SCTMExecutor</artifactId>
   <packaging>hpi</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.1</version>
+  <url>http://hudson.gotdns.com/wiki/display/HUDSON/SCTMExecutor</url> 
   
   <dependencies>
     <!--
