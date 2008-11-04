@@ -2,7 +2,6 @@ package hudson.plugins.sctmexecutor;
 
 import hudson.model.Descriptor;
 import hudson.model.Hudson;
-import hudson.model.Descriptor.FormException;
 import hudson.tasks.Builder;
 import net.sf.json.JSONObject;
 
@@ -28,11 +27,7 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
     String execDefIds = req.getParameter("sctmexecutor.execDefId"); //$NON-NLS-1$
     String str = req.getParameter("sctmexecutor.projectId"); //$NON-NLS-1$
     int projectId = Integer.parseInt(str);
-    try {
-      return new SCTMExecutor(projectId, execDefIds);
-    } catch (Exception e) {
-      throw new FormException(e, Messages.getString("SCTMExecutorDescriptor.err.service.connectionfailed")); //$NON-NLS-1$
-    }
+    return new SCTMExecutor(projectId, execDefIds);
   }
   
   @Override
@@ -63,5 +58,13 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
 
   public String getPassword() {
     return password;
+  }
+
+  public void setUser(String user) {
+    this.user = user;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 }

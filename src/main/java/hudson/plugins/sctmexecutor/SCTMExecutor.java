@@ -10,6 +10,8 @@ import hudson.tasks.Builder;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,16 +70,17 @@ public class SCTMExecutor extends Builder {
       execService = new ExecutionWebServiceServiceLocator().gettmexecution(new URL(serviceURL+"/tmexecution?wsdl")); //$NON-NLS-1$
 
       String deCryptedPwd = PwdCrypt.decode(DESCRIPTOR.getPassword(), Hudson.getInstance().getSecretKey());
-//      listener.getLogger().println(deCryptedPwd);
       long sessionId = systemService.logonUser(DESCRIPTOR.getUser(), deCryptedPwd);
+      listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
       execService.setCurrentProject(sessionId, projectId);
       List<ExecutionHandle> execHandles = new ArrayList<ExecutionHandle>();
       for (Integer execDefId : csvToList(execDefIds)) {
         ExecutionHandle[] execHandleArr = execService.startExecution(sessionId, execDefId);
+        listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulStartExecution", execDefId)); //$NON-NLS-1$
         if (execHandleArr.length <= 0 ||
             execHandleArr[0] == null ||
             (execHandleArr[0] != null && execHandleArr[0].getTimeStamp() <= 0)) {
-          listener.error(Messages.getString("SCTMExecutor.err.execDefNotFound", execDefId));
+          listener.error(Messages.getString("SCTMExecutor.err.execDefNotFound", execDefId)); //$NON-NLS-1$
           return false;
         } else {
           for (ExecutionHandle executionHandle : execHandleArr) {
@@ -89,16 +92,19 @@ public class SCTMExecutor extends Builder {
     } catch (ServiceException e) {
       listener.error(Messages.getString("SCTMExecutor.err.wrongServiceURL")); //$NON-NLS-1$
       return false;
+    } catch (RemoteException e) {
+      listener.error(Messages.getString("SCTMExecutor.err.sctm", e.getMessage())); //$NON-NLS-1$
+      return false;
     } catch (Exception e) {
-      listener.error(Messages.getString("SCTMExecutor.err.pwdCryptFailed"));
+      listener.error(Messages.getString("SCTMExecutor.err.pwdCryptFailed")); //$NON-NLS-1$
       return false;
     }
   }
 
   private List<Integer> csvToList(String execDefIds) {
     List<Integer> list = new LinkedList<Integer>();
-    if (execDefIds.contains(",")) {
-      String[] ids = execDefIds.split(",");
+    if (execDefIds.contains(",")) { //$NON-NLS-1$
+      String[] ids = execDefIds.split(","); //$NON-NLS-1$
       for (String str : ids) {
         list.add(Integer.valueOf(str));
       }
