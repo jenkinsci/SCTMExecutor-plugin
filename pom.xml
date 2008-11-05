@@ -4,14 +4,13 @@
   <groupId>hudson.plugins.sctmexecutor</groupId>
   <artifactId>SCTMExecutor</artifactId>
   <packaging>hpi</packaging>
-  <version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
   <url>http://hudson.gotdns.com/wiki/display/HUDSON/SCTMExecutor</url>
   
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/hudson/tags/SCTMExecutor-0.1</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/tags/SCTMExecutor-0.1</developerConnection>
-    <tag>HEAD</tag>
-    <url>https://svn.dev.java.net/svn/hudson/tags/SCTMExecutor-0.1</url>
+    <connection>scm:svn:https://svn.dev.java.net/svn/hudson/trunk/hudson/plugins/SCTMExecutor</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/trunk/hudson/plugins/SCTMExecutor</developerConnection>
+    <url>https://svn.dev.java.net/svn/hudson/trunk/hudson/plugins/SCTMExecutor</url>
   </scm>
   
   
