@@ -16,7 +16,6 @@ import sun.misc.BASE64Encoder;
 /**
  * Crypto-logic
  * 
- * @author Thomas Fuerer
  */
 final class PwdCrypt {
   private static final String CRYPTO_ALGORITHM = "DESede";

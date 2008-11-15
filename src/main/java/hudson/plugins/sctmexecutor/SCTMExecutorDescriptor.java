@@ -7,6 +7,11 @@ import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.StaplerRequest;
 
+/**
+ * 
+ * @author Thomas Fuerer
+ *
+ */
 public final class SCTMExecutorDescriptor extends Descriptor<Builder> {   
   private String serviceURL;
   private String user;

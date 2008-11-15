@@ -4,14 +4,9 @@
   <groupId>hudson.plugins.sctmexecutor</groupId>
   <artifactId>SCTMExecutor</artifactId>
   <packaging>hpi</packaging>
+  <name>SCTMExecutor</name>
   <version>0.2-SNAPSHOT</version>
   <url>http://hudson.gotdns.com/wiki/display/HUDSON/SCTMExecutor</url>
-  
-  <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/hudson/trunk/hudson/plugins/SCTMExecutor</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/trunk/hudson/plugins/SCTMExecutor</developerConnection>
-    <url>https://svn.dev.java.net/svn/hudson/trunk/hudson/plugins/SCTMExecutor</url>
-  </scm>
   
   <distributionManagement>
     <repository>
@@ -53,6 +48,14 @@
     	<version>5.5.23</version>
     </dependency>
   </dependencies>
+  <developers>
+  	<developer>
+  		<id>tofuAtjava</id>
+  		<name>Thomas Fuerer</name>
+  		<email>tfuerer.javanet@googlemail.com</email>
+  		<timezone>CEST</timezone>
+  	</developer>
+  </developers>
   
   <build>
     <!--
