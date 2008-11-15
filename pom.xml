@@ -5,7 +5,7 @@
   <artifactId>SCTMExecutor</artifactId>
   <packaging>hpi</packaging>
   <name>SCTMExecutor</name>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.2</version>
   <url>http://hudson.gotdns.com/wiki/display/HUDSON/SCTMExecutor</url>
   
   <distributionManagement>
