@@ -62,7 +62,11 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
   }
 
   public String getPassword() {
-    return password;
+    try {
+      return PwdCrypt.decode(password, Hudson.getInstance().getSecretKey());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public void setUser(String user) {
