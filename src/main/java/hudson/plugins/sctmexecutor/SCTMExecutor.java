@@ -83,6 +83,10 @@ public class SCTMExecutor extends Builder {
           }
         }
       }
+      
+      ResultCollectorThread resultCollector = new ResultCollectorThread("SCTMExecutor.resultcollector", execService, sessionId, execHandles);
+      resultCollector.start();
+      resultCollector.join(); // maybe it is better to work with a timeout here
       return true;
     } catch (ServiceException e) {
       listener.error(Messages.getString("SCTMExecutor.err.wrongServiceURL")); //$NON-NLS-1$
