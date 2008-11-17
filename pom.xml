@@ -1,20 +1,45 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   
+  <parent>
+    <groupId>org.jvnet.hudson.plugins</groupId>
+    <artifactId>plugin</artifactId>
+    <version>1.259</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  
   <groupId>hudson.plugins.sctmexecutor</groupId>
   <artifactId>SCTMExecutor</artifactId>
   <packaging>hpi</packaging>
   <name>SCTMExecutor</name>
   <version>0.3-SNAPSHOT</version>
   <url>http://hudson.gotdns.com/wiki/display/HUDSON/SCTMExecutor</url>
+  <description>This plig-in allows executions on a Borland SilkCentral Test Manager</description>
   
-  <distributionManagement>
-    <repository>
-      <id>java.net-m2-repository</id>
-    <url>java-net:/maven2-repository/trunk/www/repository/</url>
-    </repository>
-  </distributionManagement>
-  
+  <licenses>
+    <license>
+      <name>MIT license</name>
+      <comments>All source code is under the MIT license.</comments>
+    </license>
+    <license>
+      <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
+      <comments>FindBugs messages.xml file from the findbugs
+        1.3.4 release.</comments>
+    </license>
+    <license>
+      <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
+      <comments>FindBugs messages.xml file from the findbugs-contrib
+        3.6.1 release.</comments>
+    </license>
+    <license>
+      <comments>The findbugs logo is a trademark by The University of
+        Maryland. These icons are a courtesy of the FindBugs team.</comments>
+    </license>
+    <license>
+      <name>BSD license</name>
+      <comments>All YUI source code is under the BSD license.</comments>
+    </license>
+  </licenses>
   <dependencies>
     <!--
       Replace 1.153 with any version of Hudson that you'd like to develop against.
@@ -68,16 +93,16 @@
       <plugin>
         <groupId>org.jvnet.hudson.tools</groupId>
         <artifactId>maven-hpi-plugin</artifactId>
-        <version>1.20</version>
         <extensions>true</extensions>
+        <configuration>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+        </configuration>
       </plugin>
     </plugins>
   </build>
 
   <repositories>
-    <!-- We put the central repository first, as most artifacts will be
-         found there
-    -->
     <repository>
       <id>central</id>
       <url>http://repo1.maven.org/maven2</url>
@@ -91,12 +116,6 @@
       </snapshots>
     </repository>
 
-    <!-- We put the java.net2 repository second, as it's a Maven2 format
-         and therefore _should_ be faster for Maven2. Hopefully, people
-         will stop pushing their artifacts to java.net and push to java.net2
-         or somebody will put a synchronizer in place to require
-         only the java.net2 repository.
-    -->
     <repository>
       <id>java.net2</id>
       <url>http://download.java.net/maven/2</url>
