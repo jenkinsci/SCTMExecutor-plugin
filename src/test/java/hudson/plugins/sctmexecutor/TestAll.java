@@ -7,7 +7,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
   PwdCryptTest.class,
-  TestResultCollector.class
+  TestResultCollector.class,
+  TestStdResultWriter.class
 })
 public class TestAll {
 }

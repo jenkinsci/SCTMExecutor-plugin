@@ -1,10 +1,10 @@
 package hudson.plugins.sctmexecutor;
 
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
 import hudson.tasks.Builder;
 
 import java.io.IOException;
@@ -64,29 +64,40 @@ public class SCTMExecutor extends Builder {
       systemService = new SystemServiceServiceLocator().getsccsystem(new URL(serviceURL+"/sccsystem?wsdl")); //$NON-NLS-1$
       execService = new ExecutionWebServiceServiceLocator().gettmexecution(new URL(serviceURL+"/tmexecution?wsdl")); //$NON-NLS-1$
 
-      String deCryptedPwd = PwdCrypt.decode(DESCRIPTOR.getPassword(), Hudson.getInstance().getSecretKey());
-      long sessionId = systemService.logonUser(DESCRIPTOR.getUser(), deCryptedPwd);
+      long sessionId = systemService.logonUser(DESCRIPTOR.getUser(), DESCRIPTOR.getPassword());
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
       execService.setCurrentProject(sessionId, projectId);
       List<ExecutionHandle> execHandles = new ArrayList<ExecutionHandle>();
-      for (Integer execDefId : csvToList(execDefIds)) {
+      for (Integer execDefId : csvToIntList(execDefIds)) {
         ExecutionHandle[] execHandleArr = execService.startExecution(sessionId, execDefId);
-        listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulStartExecution", execDefId)); //$NON-NLS-1$
         if (execHandleArr.length <= 0 ||
             execHandleArr[0] == null ||
             (execHandleArr[0] != null && execHandleArr[0].getTimeStamp() <= 0)) {
           listener.error(Messages.getString("SCTMExecutor.err.execDefNotFound", execDefId)); //$NON-NLS-1$
           return false;
         } else {
+          listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulStartExecution", execDefId)); //$NON-NLS-1$
           for (ExecutionHandle executionHandle : execHandleArr) {
             execHandles.add(executionHandle);            
           }
         }
       }
       
-      ResultCollectorThread resultCollector = new ResultCollectorThread("SCTMExecutor.resultcollector", execService, sessionId, execHandles);
-      resultCollector.start();
-      resultCollector.join(); // maybe it is better to work with a timeout here
+      for (ExecutionHandle executionHandle : execHandles) {
+        FilePath rootDir = build.getProject().getWorkspace();
+        if (rootDir == null) {
+          listener.error("Cannot write the result file because slave is not connected.");
+          break;
+        }
+        rootDir = new FilePath(rootDir, "SCTMResults");
+        if (rootDir.exists())
+          rootDir.deleteRecursive();
+        rootDir.mkdirs();
+        // TODO: use ThreadPool
+        ResultCollectorThread resultCollector = new ResultCollectorThread(listener.getLogger(), execService, sessionId, executionHandle, new StdXMLResultWriter(rootDir));
+        resultCollector.start();        
+        resultCollector.join(); // maybe it is better to work with a timeout here
+      }
       return true;
     } catch (ServiceException e) {
       listener.error(Messages.getString("SCTMExecutor.err.wrongServiceURL")); //$NON-NLS-1$
@@ -100,7 +111,7 @@ public class SCTMExecutor extends Builder {
     }
   }
 
-  private List<Integer> csvToList(String execDefIds) {
+  private List<Integer> csvToIntList(String execDefIds) {
     List<Integer> list = new LinkedList<Integer>();
     if (execDefIds.contains(",")) { //$NON-NLS-1$
       String[] ids = execDefIds.split(","); //$NON-NLS-1$

@@ -1,12 +1,12 @@
 package hudson.plugins.sctmexecutor;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
+import hudson.model.BuildListener;
+
+import java.io.IOException;
+import java.io.PrintStream;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import com.borland.tm.webservices.tmexecution.TestDefinitionResult;
 public class TestResultCollector {
   
   @Test
-  public void testRun() throws RemoteException {
+  public void testRun() throws IOException {
     ExecutionWebService serviceMock = EasyMock.createStrictMock(ExecutionWebService.class);
     EasyMock.expect(serviceMock.getStateOfExecution(EasyMock.gt((long)1), (ExecutionHandle) EasyMock.notNull())).andReturn(2);
     EasyMock.expectLastCall().andReturn(-1);
@@ -32,19 +32,19 @@ public class TestResultCollector {
     ExecutionResult result = new ExecutionResult("test", cleanUp, 10, "testExecDef", "unknown", new String[] {"unknown"}, "", setup, results);
     EasyMock.expect(serviceMock.getExecutionResult(EasyMock.gt((long)1), (ExecutionHandle)EasyMock.notNull())).andReturn(result);
     
-    List<ExecutionHandle> handles = new ArrayList<ExecutionHandle>();
-    handles.add(new ExecutionHandle(2, 100));
+    ITestResultWriter resultWriterMock = EasyMock.createStrictMock(ITestResultWriter.class);
+    resultWriterMock.write(result);
     
-    ResultCollectorThread aut = new ResultCollectorThread("test", serviceMock, 10, handles);
+    ExecutionHandle handle = new ExecutionHandle(2, 100);
+    
+    ResultCollectorThread aut = new ResultCollectorThread(new PrintStream("test.log"), serviceMock, 10, handle, resultWriterMock);
     aut.setSleep(1);
     
     EasyMock.replay(serviceMock);
-    
-    assertFalse(aut.isFinished());
-    aut.run();
-    assertTrue(aut.isFinished());
-    
+    EasyMock.replay(resultWriterMock);
+    aut.run();    
     EasyMock.verify(serviceMock);
+    EasyMock.verify(resultWriterMock);
   }
   
   @Test(expected=RuntimeException.class)
@@ -52,17 +52,13 @@ public class TestResultCollector {
     ExecutionWebService serviceMock = EasyMock.createStrictMock(ExecutionWebService.class);
     EasyMock.expect(serviceMock.getStateOfExecution(EasyMock.gt((long)1), (ExecutionHandle) EasyMock.notNull())).andThrow(new RemoteException());
     
-    List<ExecutionHandle> handles = new ArrayList<ExecutionHandle>();
-    handles.add(new ExecutionHandle(2, 100));
+    ExecutionHandle handle = new ExecutionHandle(2, 100);
     
-    ResultCollectorThread aut = new ResultCollectorThread("test", serviceMock, 10, handles);
+    ResultCollectorThread aut = new ResultCollectorThread(new PrintStream("test.log"), serviceMock, 10, handle, null);
     aut.setSleep(1);
     
     EasyMock.replay(serviceMock);
-    
-    assertFalse(aut.isFinished());
     aut.run();
-    
     EasyMock.verify(serviceMock);
   }
 
