@@ -83,11 +83,13 @@ final class StdXMLResultWriter implements ITestResultWriter {
     atts.addAttribute("", "", "tests", "CDATA", String.valueOf(result.getTestDefResult().length));
     atts.addAttribute("", "", "timestamp", "CDATA", DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(new Date(System.currentTimeMillis())));
     handler.startElement("", "", "testsuite", atts);
-//    writeTestResult(handler, result.getSetupTestDef());
+    if (result.getSetupTestDef() != null)
+      writeTestResult(handler, result.getSetupTestDef());
     for (TestDefinitionResult testResult : result.getTestDefResult()) {
       writeTestResult(handler, testResult);      
     }
-//    writeTestResult(handler, result.getCleanupTestDef());
+    if (result.getCleanupTestDef() != null)
+      writeTestResult(handler, result.getCleanupTestDef());
     handler.endElement("", "", "testsuite");
   }
 
