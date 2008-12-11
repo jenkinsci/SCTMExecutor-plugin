@@ -28,17 +28,17 @@ import com.borland.tm.webservices.tmexecution.ExecutionWebServiceServiceLocator;
  * Executes a specified execution definition on Borland's SilkCentral Test Manager.
  * 
  * @author Thomas Fuerer
- *
+ * 
  */
-public class SCTMExecutor extends Builder { 
+public class SCTMExecutor extends Builder {
   public static final SCTMExecutorDescriptor DESCRIPTOR = new SCTMExecutorDescriptor();
-  
+
   private final int projectId;
   private final String execDefIds;
-  
+
   @DataBoundConstructor
   public SCTMExecutor(int projectId, String execDefIds) {
-    this.projectId = projectId; 
+    this.projectId = projectId;
     this.execDefIds = execDefIds;
   }
 
@@ -49,7 +49,7 @@ public class SCTMExecutor extends Builder {
   public String getExecDefIds() {
     return execDefIds;
   }
-  
+
   public int getProjectId() {
     return projectId;
   }
@@ -61,8 +61,8 @@ public class SCTMExecutor extends Builder {
     SystemService systemService;
     ExecutionWebService execService;
     try {
-      systemService = new SystemServiceServiceLocator().getsccsystem(new URL(serviceURL+"/sccsystem?wsdl")); //$NON-NLS-1$
-      execService = new ExecutionWebServiceServiceLocator().gettmexecution(new URL(serviceURL+"/tmexecution?wsdl")); //$NON-NLS-1$
+      systemService = new SystemServiceServiceLocator().getsccsystem(new URL(serviceURL + "/sccsystem?wsdl")); //$NON-NLS-1$
+      execService = new ExecutionWebServiceServiceLocator().gettmexecution(new URL(serviceURL + "/tmexecution?wsdl")); //$NON-NLS-1$
 
       long sessionId = systemService.logonUser(DESCRIPTOR.getUser(), DESCRIPTOR.getPassword());
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
@@ -70,32 +70,31 @@ public class SCTMExecutor extends Builder {
       List<ExecutionHandle> execHandles = new ArrayList<ExecutionHandle>();
       for (Integer execDefId : csvToIntList(execDefIds)) {
         ExecutionHandle[] execHandleArr = execService.startExecution(sessionId, execDefId);
-        if (execHandleArr.length <= 0 ||
-            execHandleArr[0] == null ||
-            (execHandleArr[0] != null && execHandleArr[0].getTimeStamp() <= 0)) {
+        if (execHandleArr.length <= 0 || execHandleArr[0] == null
+            || (execHandleArr[0] != null && execHandleArr[0].getTimeStamp() <= 0)) {
           listener.error(Messages.getString("SCTMExecutor.err.execDefNotFound", execDefId)); //$NON-NLS-1$
           return false;
         } else {
           listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulStartExecution", execDefId)); //$NON-NLS-1$
           for (ExecutionHandle executionHandle : execHandleArr) {
-            execHandles.add(executionHandle);            
+            execHandles.add(executionHandle);
           }
         }
       }
-      
+
+      FilePath rootDir = build.getProject().getWorkspace();
+      if (rootDir == null) {
+        listener.error("Cannot write the result file because slave is not connected.");
+      }
+      rootDir = new FilePath(rootDir, "SCTMResults");
+      if (rootDir.exists())
+        rootDir.deleteRecursive();
+      rootDir.mkdirs();
       for (ExecutionHandle executionHandle : execHandles) {
-        FilePath rootDir = build.getProject().getWorkspace();
-        if (rootDir == null) {
-          listener.error("Cannot write the result file because slave is not connected.");
-          break;
-        }
-        rootDir = new FilePath(rootDir, "SCTMResults");
-        if (rootDir.exists())
-          rootDir.deleteRecursive();
-        rootDir.mkdirs();
         // TODO: use ThreadPool
-        ResultCollectorThread resultCollector = new ResultCollectorThread(listener.getLogger(), execService, sessionId, executionHandle, new StdXMLResultWriter(rootDir));
-        resultCollector.start();        
+        ResultCollectorThread resultCollector = new ResultCollectorThread(listener.getLogger(), execService, sessionId,
+            executionHandle, new StdXMLResultWriter(rootDir));
+        resultCollector.start();
         resultCollector.join(); // maybe it is better to work with a timeout here
       }
       return true;

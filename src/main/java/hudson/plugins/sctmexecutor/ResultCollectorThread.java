@@ -33,6 +33,7 @@ public class ResultCollectorThread extends Thread {
   public void run() {
     ExecutionResult result = null;
     try {
+      Thread.sleep(5000); // because sometime SCTM is too slow and the run is not created when we ask for a result
       while (result == null) {
         int stateOfExecution = service.getStateOfExecution(sessionId, handle);
         if (stateOfExecution == -1) {

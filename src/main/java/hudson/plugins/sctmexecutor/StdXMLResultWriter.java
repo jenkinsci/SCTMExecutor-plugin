@@ -19,13 +19,23 @@ import com.borland.tm.webservices.tmexecution.TestDefinitionResult;
 final class StdXMLResultWriter implements ITestResultWriter {
   private static final int NOT_EXECUTED = 3;
   private static final int FAILED = 2;
+  
+  private static String sctmHost;
+  
   private FilePath rootDir;
   
   public StdXMLResultWriter(FilePath rootDir) {
     this.rootDir = rootDir;
+    initSctmHost();
+  }
+  
+  private static void initSctmHost() {
+    if (sctmHost == null || (sctmHost != null && sctmHost.equals(""))) {
+      String serviceURL = SCTMExecutor.DESCRIPTOR.getServiceURL();
+      sctmHost = serviceURL.substring(0, serviceURL.indexOf("/", "http://".length())) + "/silk/DEF";
+    }
   }
 
-  @Override
   public void write(ExecutionResult result) {
     int done = 3;
     String resultFileName = "TEST-"+result.getExecDefName();
@@ -96,7 +106,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
 
   private void writeError(ContentHandler handler, String resultURL) throws SAXException {
     AttributesImpl atts = new AttributesImpl();
-    atts.addAttribute("", "", "message", "CDATA", resultURL);
+    atts.addAttribute("", "", "message", "CDATA", sctmHost+resultURL);
     atts.addAttribute("", "", "type", "CDATA", "SCTMError");
     handler.startElement("", "", "error", atts);
     handler.endElement("", "", "error");
@@ -104,7 +114,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
 
   private void writeFailure(ContentHandler handler, String resultURL) throws SAXException {
     AttributesImpl atts = new AttributesImpl();
-    atts.addAttribute("", "", "message", "CDATA", resultURL);
+    atts.addAttribute("", "", "message", "CDATA", sctmHost+resultURL);
     atts.addAttribute("", "", "type", "CDATA", "SCTMFailure");
     handler.startElement("", "", "failure", atts);
     handler.endElement("", "", "failure");

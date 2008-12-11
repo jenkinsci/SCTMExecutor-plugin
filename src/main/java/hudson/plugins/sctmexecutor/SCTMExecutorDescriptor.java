@@ -31,7 +31,12 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
   public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
     String execDefIds = req.getParameter("sctmexecutor.execDefId"); //$NON-NLS-1$
     String str = req.getParameter("sctmexecutor.projectId"); //$NON-NLS-1$
-    int projectId = Integer.parseInt(str);
+    int projectId;
+    try {
+      projectId = Integer.parseInt(str);
+    } catch (NumberFormatException e) {
+      throw new FormException("Enter a valid number.", "sctmexecutor.projectId");
+    }
     return new SCTMExecutor(projectId, execDefIds);
   }
   
