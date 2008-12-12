@@ -29,23 +29,18 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
 
   @Override
   public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-    String execDefIds = req.getParameter("sctmexecutor.execDefId"); //$NON-NLS-1$
-    String str = req.getParameter("sctmexecutor.projectId"); //$NON-NLS-1$
-    int projectId;
-    try {
-      projectId = Integer.parseInt(str);
-    } catch (NumberFormatException e) {
-      throw new FormException("Enter a valid number.", "sctmexecutor.projectId");
-    }
+    String execDefIds = formData.getString("execDefId"); //$NON-NLS-1$
+    String str = formData.getString("projectId"); //$NON-NLS-1$
+    int projectId = Integer.parseInt(str);
     return new SCTMExecutor(projectId, execDefIds);
   }
   
   @Override
   public boolean configure(StaplerRequest req, JSONObject json) throws hudson.model.Descriptor.FormException {
-    serviceURL = req.getParameter("sctmexecutor.serviceURL"); //$NON-NLS-1$
-    user = req.getParameter("sctmexecutor.user"); //$NON-NLS-1$
+    serviceURL = json.getString("serviceURL"); //$NON-NLS-1$
+    user = json.getString("user"); //$NON-NLS-1$
     try {
-      password = PwdCrypt.encode(req.getParameter("sctmexecutor.password"), Hudson.getInstance().getSecretKey());
+      password = PwdCrypt.encode(json.getString("password"), Hudson.getInstance().getSecretKey());
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

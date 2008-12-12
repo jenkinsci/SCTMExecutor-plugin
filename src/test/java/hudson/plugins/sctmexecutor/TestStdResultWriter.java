@@ -15,7 +15,7 @@ public class TestStdResultWriter {
 
   @Test
   public void testWrite() {
-    StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(new File("C:\\tmp")));
+    StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(new File("C:\\tmp")), "http://localhost:19120/Service1.0/services");
     ExecutionResult result = new ExecutionResult();
     result.setExecDefName("TestExecDef");
     result.setExecServerName("MyVirtualExecSrv");

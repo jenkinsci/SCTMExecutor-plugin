@@ -93,7 +93,7 @@ public class SCTMExecutor extends Builder {
       for (ExecutionHandle executionHandle : execHandles) {
         // TODO: use ThreadPool
         ResultCollectorThread resultCollector = new ResultCollectorThread(listener.getLogger(), execService, sessionId,
-            executionHandle, new StdXMLResultWriter(rootDir));
+            executionHandle, new StdXMLResultWriter(rootDir, DESCRIPTOR.getServiceURL()));
         resultCollector.start();
         resultCollector.join(); // maybe it is better to work with a timeout here
       }
