@@ -5,6 +5,8 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
+import hudson.model.Hudson;
+import hudson.plugins.sctmexecutor.exceptions.EncryptionException;
 import hudson.tasks.Builder;
 
 import java.io.IOException;
@@ -32,6 +34,8 @@ import com.borland.tm.webservices.tmexecution.ExecutionWebServiceServiceLocator;
  */
 public class SCTMExecutor extends Builder {
   public static final SCTMExecutorDescriptor DESCRIPTOR = new SCTMExecutorDescriptor();
+
+  private static int resultNoForLastBuild = 0;
 
   private final int projectId;
   private final String execDefIds;
@@ -86,10 +90,8 @@ public class SCTMExecutor extends Builder {
       if (rootDir == null) {
         listener.error("Cannot write the result file because slave is not connected.");
       }
-      rootDir = new FilePath(rootDir, "SCTMResults");
-      if (rootDir.exists())
-        rootDir.deleteRecursive();
-      rootDir.mkdirs();
+      
+      rootDir = createResultDir(rootDir, build.number);
       for (ExecutionHandle executionHandle : execHandles) {
         // TODO: use ThreadPool
         ResultCollectorThread resultCollector = new ResultCollectorThread(listener.getLogger(), execService, sessionId,
@@ -104,10 +106,25 @@ public class SCTMExecutor extends Builder {
     } catch (RemoteException e) {
       listener.error(Messages.getString("SCTMExecutor.err.sctm", e.getMessage())); //$NON-NLS-1$
       return false;
-    } catch (Exception e) {
+    } catch (EncryptionException e){
       listener.error(Messages.getString("SCTMExecutor.err.pwdCryptFailed")); //$NON-NLS-1$
       return false;
+    } catch (Exception e) {
+      Hudson.getInstance().servletContext.log("Hudson SCTMExecutor-Plugin throws unknown error:", e);
+      listener.error(e.getLocalizedMessage());
+      return false;
     }
+  }
+
+  private static FilePath createResultDir(FilePath rootDir, int currentBuildNo) throws IOException, InterruptedException {
+    rootDir = new FilePath(rootDir, "SCTMResults");
+    if (resultNoForLastBuild  != currentBuildNo) {
+      if (rootDir.exists())
+        rootDir.deleteRecursive();
+      rootDir.mkdirs();
+      resultNoForLastBuild = currentBuildNo;
+    }
+    return rootDir;
   }
 
   private List<Integer> csvToIntList(String execDefIds) {

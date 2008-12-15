@@ -34,7 +34,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
     String resultFileName = "TEST-" + result.getExecDefName();
     while (done > 0) {
       try {
-        FilePath resultFile = rootDir.createTempFile(resultFileName, ".xml");
+        FilePath resultFile = rootDir.child(resultFileName+".xml");
         OutputStream fos = resultFile.write();
         XMLSerializer serializer = new XMLSerializer(fos, new OutputFormat("XML", "UTF-8", true));
         ContentHandler handler = serializer.asContentHandler();
@@ -107,7 +107,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
 
   private void writeError(ContentHandler handler, String resultURL) throws SAXException {
     AttributesImpl atts = new AttributesImpl();
-    atts.addAttribute("", "", "message", "CDATA", sctmHost + resultURL);
+    atts.addAttribute("", "", "message", "CDATA", "<a href=\""+sctmHost + resultURL+"\"/>");
     atts.addAttribute("", "", "type", "CDATA", "SCTMError");
     handler.startElement("", "", "error", atts);
     handler.endElement("", "", "error");
@@ -115,7 +115,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
 
   private void writeFailure(ContentHandler handler, String resultURL) throws SAXException {
     AttributesImpl atts = new AttributesImpl();
-    atts.addAttribute("", "", "message", "CDATA", sctmHost + resultURL);
+    atts.addAttribute("", "", "message", "CDATA", "<a href=\""+sctmHost + resultURL+"\"/>");
     atts.addAttribute("", "", "type", "CDATA", "SCTMFailure");
     handler.startElement("", "", "failure", atts);
     handler.endElement("", "", "failure");
