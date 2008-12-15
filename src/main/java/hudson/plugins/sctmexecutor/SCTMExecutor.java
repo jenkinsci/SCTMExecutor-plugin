@@ -8,6 +8,7 @@ import hudson.model.Descriptor;
 import hudson.model.Hudson;
 import hudson.plugins.sctmexecutor.exceptions.EncryptionException;
 import hudson.tasks.Builder;
+import hudson.util.FormFieldValidator;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,9 +17,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.xml.rpc.ServiceException;
 
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 import com.borland.scc.sccsystem.SystemService;
 import com.borland.scc.sccsystem.SystemServiceServiceLocator;
@@ -114,6 +118,28 @@ public class SCTMExecutor extends Builder {
       listener.error(e.getLocalizedMessage());
       return false;
     }
+  }
+  
+  public void doCheckExecDefIds(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+    new FormFieldValidator(req, rsp, false) {
+      @Override
+      protected void check() throws IOException, ServletException {
+        System.out.println("checked");
+      }
+    }.process();
+  }
+  
+  public void doCheckProjectId(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+    new FormFieldValidator(req, rsp, false) {
+      @Override
+      protected void check() throws IOException, ServletException {
+        try {
+          Integer.parseInt(request.getParameter("value"));
+        } catch (NumberFormatException e) {
+          error("Entered value is not a number.");
+        }
+      }
+    }.process();
   }
 
   private static FilePath createResultDir(FilePath rootDir, int currentBuildNo) throws IOException, InterruptedException {

@@ -3,9 +3,22 @@ package hudson.plugins.sctmexecutor;
 import hudson.model.Descriptor;
 import hudson.model.Hudson;
 import hudson.tasks.Builder;
+import hudson.util.FormFieldValidator;
+
+import java.io.IOException;
+import java.net.URL;
+
+import javax.servlet.ServletException;
+import javax.xml.rpc.ServiceException;
+
 import net.sf.json.JSONObject;
 
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
+import com.borland.scc.sccsystem.SystemService;
+import com.borland.scc.sccsystem.SystemServiceServiceLocator;
 
 /**
  * 
@@ -75,5 +88,24 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+  
+  public void doTestConnection(StaplerRequest req, StaplerResponse rsp, @QueryParameter("serviceURL") final String serviceURL, @QueryParameter("user") final String user, @QueryParameter("password") final String password) throws IOException, ServletException {
+    new FormFieldValidator(req, rsp, true) {
+      @Override
+      protected void check() throws IOException, ServletException {
+        try {
+          SystemService systemService = new SystemServiceServiceLocator().getsccsystem(new URL(serviceURL + "/sccsystem?wsdl"));
+          systemService.logonUser(user, password);
+          ok();
+        } catch (ServiceException e) {
+          error("Cannot connect to Borlands SilkCentral Test Manager. Please review the entered settings.");
+        }
+      }
+    }.process();
+  }
+  
+  public void doCheckProjectId(StaplerRequest req, StaplerResponse rsp) {
+    System.out.println("checked");
   }
 }

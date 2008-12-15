@@ -5,16 +5,17 @@ import hudson.FilePath;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.util.Date;
 
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.borland.tm.webservices.tmexecution.ExecutionResult;
 import com.borland.tm.webservices.tmexecution.TestDefinitionResult;
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 final class StdXMLResultWriter implements ITestResultWriter {
   private static final int NOT_EXECUTED = 3;
@@ -95,7 +96,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
   private void writeTestResult(ContentHandler handler, TestDefinitionResult testResult) throws SAXException {
     AttributesImpl atts = new AttributesImpl();
     atts.addAttribute("", "", "classname", "CDATA", testResult.getName());
-    atts.addAttribute("", "", "name", "CDATA", testResult.getName() + "#test");
+    atts.addAttribute("", "", "name", "CDATA", testResult.getName());
     atts.addAttribute("", "", "time", "CDATA", String.valueOf(testResult.getDuration() / 100));
     handler.startElement("", "", "testcase", atts);
     if (testResult.getStatus() == FAILED)
@@ -107,7 +108,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
 
   private void writeError(ContentHandler handler, String resultURL) throws SAXException {
     AttributesImpl atts = new AttributesImpl();
-    atts.addAttribute("", "", "message", "CDATA", "<a href=\""+sctmHost + resultURL+"\"/>");
+    atts.addAttribute("", "", "message", "CDATA", MessageFormat.format("{0}{1}", sctmHost, resultURL));
     atts.addAttribute("", "", "type", "CDATA", "SCTMError");
     handler.startElement("", "", "error", atts);
     handler.endElement("", "", "error");
@@ -115,7 +116,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
 
   private void writeFailure(ContentHandler handler, String resultURL) throws SAXException {
     AttributesImpl atts = new AttributesImpl();
-    atts.addAttribute("", "", "message", "CDATA", "<a href=\""+sctmHost + resultURL+"\"/>");
+    atts.addAttribute("", "", "message", "CDATA", MessageFormat.format("{0}{1}", sctmHost, resultURL));
     atts.addAttribute("", "", "type", "CDATA", "SCTMFailure");
     handler.startElement("", "", "failure", atts);
     handler.endElement("", "", "failure");
