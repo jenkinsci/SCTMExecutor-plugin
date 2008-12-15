@@ -12,7 +12,7 @@
   <artifactId>SCTMExecutor</artifactId>
   <packaging>hpi</packaging>
   <name>SCTMExecutor</name>
-  <version>0.5</version>
+  <version>0.6-SNAPSHOT</version>
   <url>http://hudson.gotdns.com/wiki/display/HUDSON/SCTMExecutor</url>
   <description>This plug-in allows executions on a Borland SilkCentral Test Manager 2008 R2 or larter.</description>
   
@@ -179,10 +179,4 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
-
-  <scm>
-    <connection>scm:svn:https://guest@svn.dev.java.net/svn/hudson/tags/SCTMExecutor-0.5</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/tags/SCTMExecutor-0.5</developerConnection>
-    <url>https://hudson.dev.java.net/source/browse/hudson/hudson/plugins/SCTMExecutor/tags/SCTMExecutor-0.5</url>
-  </scm>
 </project>
