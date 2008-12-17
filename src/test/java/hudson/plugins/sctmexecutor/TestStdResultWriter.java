@@ -22,7 +22,7 @@ public class TestStdResultWriter {
     TestDefinitionResult goodTestDefResult = new TestDefinitionResult(5, 0, 42, "GoodTestDef", "http://www.borland.com", 0, 17, 1234, 1, 0);
     TestDefinitionResult badTestDefResult = new TestDefinitionResult(5, 1, 43, "BadTestDef", "http://www.borland.com", 1, 4, 1235, 1, 0);
     result.setTestDefResult(new TestDefinitionResult[] {goodTestDefResult, badTestDefResult});
-    w.write(result );
+    w.write(result);
   }
 
 }

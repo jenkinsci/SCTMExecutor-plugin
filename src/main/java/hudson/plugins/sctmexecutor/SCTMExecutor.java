@@ -13,9 +13,12 @@ import hudson.util.FormFieldValidator;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.xml.rpc.ServiceException;
@@ -38,6 +41,7 @@ import com.borland.tm.webservices.tmexecution.ExecutionWebServiceServiceLocator;
  */
 public class SCTMExecutor extends Builder {
   public static final SCTMExecutorDescriptor DESCRIPTOR = new SCTMExecutorDescriptor();
+  private static final Logger LOGGER = Logger.getLogger("hudson.plumgins.sctmexecutor"); 
 
   private static int resultNoForLastBuild = 0;
 
@@ -92,6 +96,7 @@ public class SCTMExecutor extends Builder {
 
       FilePath rootDir = build.getProject().getWorkspace();
       if (rootDir == null) {
+        LOGGER.log(Level.SEVERE, "Cannot write the result file because slave is not connected.");
         listener.error("Cannot write the result file because slave is not connected.");
       }
       
@@ -105,9 +110,11 @@ public class SCTMExecutor extends Builder {
       }
       return true;
     } catch (ServiceException e) {
+      LOGGER.log(Level.SEVERE, MessageFormat.format("The URL {0} cannot be accessed or no service is found.", serviceURL));
       listener.error(Messages.getString("SCTMExecutor.err.wrongServiceURL")); //$NON-NLS-1$
       return false;
     } catch (RemoteException e) {
+      LOGGER.log(Level.SEVERE, e.getMessage());
       listener.error(Messages.getString("SCTMExecutor.err.sctm", e.getMessage())); //$NON-NLS-1$
       return false;
     } catch (EncryptionException e){

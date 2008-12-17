@@ -6,6 +6,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.security.Key;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -21,6 +23,7 @@ import sun.misc.BASE64Encoder;
  */
 final class PwdCrypt {
   private static final String CRYPTO_ALGORITHM = "DESede";
+  private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor");
   
   PwdCrypt() {}
 
@@ -37,6 +40,7 @@ final class PwdCrypt {
       
       return new BASE64Encoder().encode(out.toByteArray());
     } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Encode failed: "+e.getMessage());
       throw new EncryptionException(e);
     } 
   }
@@ -58,6 +62,7 @@ final class PwdCrypt {
       cis.close(); 
       return bos.toString();
     } catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Decode failed: "+e.getMessage());
       throw new EncryptionException(e);
     } 
   }

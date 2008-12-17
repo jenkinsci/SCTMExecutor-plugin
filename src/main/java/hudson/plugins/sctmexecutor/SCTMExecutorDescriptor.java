@@ -25,7 +25,7 @@ import com.borland.scc.sccsystem.SystemServiceServiceLocator;
  * @author Thomas Fuerer
  *
  */
-public final class SCTMExecutorDescriptor extends Descriptor<Builder> {   
+public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
   private String serviceURL;
   private String user;
   private String password;
@@ -52,11 +52,7 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
   public boolean configure(StaplerRequest req, JSONObject json) throws hudson.model.Descriptor.FormException {
     serviceURL = json.getString("serviceURL"); //$NON-NLS-1$
     user = json.getString("user"); //$NON-NLS-1$
-    try {
-      password = PwdCrypt.encode(json.getString("password"), Hudson.getInstance().getSecretKey());
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    password = PwdCrypt.encode(json.getString("password"), Hudson.getInstance().getSecretKey());
     
     save();
     return super.configure(req, json);
@@ -75,11 +71,7 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
   }
 
   public String getPassword() {
-    try {
-      return PwdCrypt.decode(password, Hudson.getInstance().getSecretKey());
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    return PwdCrypt.decode(password, Hudson.getInstance().getSecretKey());
   }
 
   public void setUser(String user) {

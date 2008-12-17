@@ -7,6 +7,8 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -20,6 +22,7 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 final class StdXMLResultWriter implements ITestResultWriter {
   private static final int NOT_EXECUTED = 3;
   private static final int FAILED = 2;
+  private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor");
 
   private String sctmHost;
 
@@ -48,13 +51,13 @@ final class StdXMLResultWriter implements ITestResultWriter {
         resultFileName = resultFileName + "[" + DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(new Date(System.currentTimeMillis()))
             + "]";
         if (--done <= 0)
-          System.err.println("[ERROR] Cannot write result file."); // TODO: use logging
+          LOGGER.log(Level.SEVERE, "Cannot write result file.");
       } catch (SAXException e) {
-        // FIXME: handle exception
+        LOGGER.log(Level.SEVERE, e.getMessage());
         e.printStackTrace();
         done = 0;
       } catch (InterruptedException e) {
-        // FIXME: handle exception
+        LOGGER.log(Level.SEVERE, e.getMessage());
         e.printStackTrace();
         done = 0;
       }
@@ -71,7 +74,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
         failures++;
       else if (testResult.getStatus() == NOT_EXECUTED)
         errors++;
-      duration += testResult.getDuration() / 100;
+      duration += testResult.getDuration() / 1000;
     }
     AttributesImpl atts = new AttributesImpl();
     atts.addAttribute("", "", "errors", "CDATA", String.valueOf(errors));
@@ -97,7 +100,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
     AttributesImpl atts = new AttributesImpl();
     atts.addAttribute("", "", "classname", "CDATA", testResult.getName());
     atts.addAttribute("", "", "name", "CDATA", testResult.getName());
-    atts.addAttribute("", "", "time", "CDATA", String.valueOf(testResult.getDuration() / 100));
+    atts.addAttribute("", "", "time", "CDATA", String.valueOf(testResult.getDuration() / 1000));
     handler.startElement("", "", "testcase", atts);
     if (testResult.getStatus() == FAILED)
       writeFailure(handler, testResult.getResultURL());
