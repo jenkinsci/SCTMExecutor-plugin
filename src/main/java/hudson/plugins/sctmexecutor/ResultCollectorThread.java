@@ -20,7 +20,6 @@ final class ResultCollectorThread extends Thread {
   private long sleep = 5; // in s
   private ITestResultWriter writer;
   private PrintStream consolenLogger;
-  private boolean testing;
 
   public ResultCollectorThread(PrintStream logger, ExecutionWebService service, long sessionId, ExecutionHandle handle, ITestResultWriter writer) {
     super("SCTMExecutor.resultcollector"+handle.getExecDefId());
@@ -29,7 +28,6 @@ final class ResultCollectorThread extends Thread {
     this.service = service;
     this.sessionId = sessionId;
     this.writer = writer;
-    this.testing = false;
   }
   
   /**
@@ -38,7 +36,6 @@ final class ResultCollectorThread extends Thread {
    */
   void setSleep(long sleep) {
     this.sleep = sleep;
-    this.testing = true;
   }
   
   @Override
@@ -51,7 +48,7 @@ final class ResultCollectorThread extends Thread {
         if (stateOfExecution == -1) {
           result = service.getExecutionResult(sessionId, handle);
           consolenLogger.println(MessageFormat.format("Received result for execution definition {0}.", handle.getExecDefId()));
-        } else if (!testing || sleep < MAX_SLEEP) {
+        } else if (sleep < MAX_SLEEP) {
           sleep *= 2;
           if (sleep > MAX_SLEEP)
             sleep = MAX_SLEEP;
