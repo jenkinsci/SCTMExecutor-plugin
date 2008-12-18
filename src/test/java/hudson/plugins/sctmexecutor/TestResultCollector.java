@@ -2,8 +2,6 @@ package hudson.plugins.sctmexecutor;
 
 import static org.junit.Assert.*;
 
-import hudson.model.BuildListener;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.rmi.RemoteException;

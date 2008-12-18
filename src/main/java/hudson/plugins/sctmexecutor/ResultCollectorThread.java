@@ -12,7 +12,7 @@ import com.borland.tm.webservices.tmexecution.ExecutionWebService;
 
 final class ResultCollectorThread extends Thread {
   private static final int MAX_SLEEP = 60;
-  private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor");
+  private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
   
   private ExecutionHandle handle;
   private ExecutionWebService service;
@@ -22,7 +22,7 @@ final class ResultCollectorThread extends Thread {
   private PrintStream consolenLogger;
 
   public ResultCollectorThread(PrintStream logger, ExecutionWebService service, long sessionId, ExecutionHandle handle, ITestResultWriter writer) {
-    super("SCTMExecutor.resultcollector"+handle.getExecDefId());
+    super("SCTMExecutor.resultcollector"+handle.getExecDefId()); //$NON-NLS-1$
     this.consolenLogger = logger;
     this.handle = handle;
     this.service = service;
@@ -47,7 +47,7 @@ final class ResultCollectorThread extends Thread {
         int stateOfExecution = service.getStateOfExecution(sessionId, handle);
         if (stateOfExecution == -1) {
           result = service.getExecutionResult(sessionId, handle);
-          consolenLogger.println(MessageFormat.format("Received result for execution definition {0}.", handle.getExecDefId()));
+          consolenLogger.println(MessageFormat.format(Messages.getString("ResultCollectorThread.log.resultReceived"), handle.getExecDefId())); //$NON-NLS-1$
         } else if (sleep < MAX_SLEEP) {
           sleep *= 2;
           if (sleep > MAX_SLEEP)
@@ -57,14 +57,14 @@ final class ResultCollectorThread extends Thread {
       
       this.writer.write(result);
     } catch (RemoteException e) {
-      LOGGER.log(Level.SEVERE, "Remote call to SCTM failed during result collection.");
+      LOGGER.log(Level.SEVERE, "Remote call to SCTM failed during result collection."); //$NON-NLS-1$
       LOGGER.log(Level.INFO, e.getMessage());
-      throw new RuntimeException("Collecting results failed: ", e);
+      throw new RuntimeException(Messages.getString("ResultCollectorThread.err.collectingResultFailed"), e); //$NON-NLS-1$
     } catch (InterruptedException e) {
-      LOGGER.log(Level.SEVERE, "Collecting results aborted.");
+      LOGGER.log(Level.SEVERE, "Collecting results aborted."); //$NON-NLS-1$
       LOGGER.log(Level.INFO, e.getMessage());
       interrupt();
-      throw new RuntimeException("Collecting result aborted: ", e);
+      throw new RuntimeException(Messages.getString("ResultCollectorThread.err.collectionResultAborted"), e); //$NON-NLS-1$
     }
   }
 }

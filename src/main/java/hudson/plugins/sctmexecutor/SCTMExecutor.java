@@ -41,7 +41,7 @@ import com.borland.tm.webservices.tmexecution.ExecutionWebServiceServiceLocator;
  */
 public class SCTMExecutor extends Builder {
   public static final SCTMExecutorDescriptor DESCRIPTOR = new SCTMExecutorDescriptor();
-  private static final Logger LOGGER = Logger.getLogger("hudson.plumgins.sctmexecutor"); 
+  private static final Logger LOGGER = Logger.getLogger("hudson.plumgins.sctmexecutor");  //$NON-NLS-1$
 
   private static int resultNoForLastBuild = 0;
 
@@ -77,17 +77,17 @@ public class SCTMExecutor extends Builder {
       execService = new ExecutionWebServiceServiceLocator().gettmexecution(new URL(serviceURL + "/tmexecution?wsdl")); //$NON-NLS-1$
 
       long sessionId = systemService.logonUser(DESCRIPTOR.getUser(), DESCRIPTOR.getPassword());
-      listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
+      listener.getLogger().println(""); //$NON-NLS-1$
       execService.setCurrentProject(sessionId, projectId);
       List<ExecutionHandle> execHandles = new ArrayList<ExecutionHandle>();
       for (Integer execDefId : csvToIntList(execDefIds)) {
         ExecutionHandle[] execHandleArr = execService.startExecution(sessionId, execDefId);
         if (execHandleArr.length <= 0 || execHandleArr[0] == null
             || (execHandleArr[0] != null && execHandleArr[0].getTimeStamp() <= 0)) {
-          listener.error(Messages.getString("SCTMExecutor.err.execDefNotFound", execDefId)); //$NON-NLS-1$
+          listener.error(""); //$NON-NLS-1$
           return false;
         } else {
-          listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulStartExecution", execDefId)); //$NON-NLS-1$
+          listener.getLogger().println(""); //$NON-NLS-1$
           for (ExecutionHandle executionHandle : execHandleArr) {
             execHandles.add(executionHandle);
           }
@@ -96,8 +96,8 @@ public class SCTMExecutor extends Builder {
 
       FilePath rootDir = build.getProject().getWorkspace();
       if (rootDir == null) {
-        LOGGER.log(Level.SEVERE, "Cannot write the result file because slave is not connected.");
-        listener.error("Cannot write the result file because slave is not connected.");
+        LOGGER.log(Level.SEVERE, "Cannot write the result file because slave is not connected."); //$NON-NLS-1$
+        listener.error(Messages.getString("SCTMExecutor.log.slaveNotConnected")); //$NON-NLS-1$
       }
       
       rootDir = createResultDir(rootDir, build.number);
@@ -110,18 +110,17 @@ public class SCTMExecutor extends Builder {
       }
       return true;
     } catch (ServiceException e) {
-      LOGGER.log(Level.SEVERE, MessageFormat.format("The URL {0} cannot be accessed or no service is found.", serviceURL));
-      listener.error(Messages.getString("SCTMExecutor.err.wrongServiceURL")); //$NON-NLS-1$
+      LOGGER.log(Level.SEVERE, MessageFormat.format("The URL {0} cannot be accessed or no service has been found.", serviceURL)); //$NON-NLS-1$
+      listener.error(MessageFormat.format(Messages.getString("SCTMExecutor.err.urlOrServiceBroken"), serviceURL)); //$NON-NLS-1$
       return false;
     } catch (RemoteException e) {
       LOGGER.log(Level.SEVERE, e.getMessage());
-      listener.error(Messages.getString("SCTMExecutor.err.sctm", e.getMessage())); //$NON-NLS-1$
+      listener.error(Messages.getString("SCTMExecutor.err.accessDenied")); //$NON-NLS-1$
       return false;
     } catch (EncryptionException e){
-      listener.error(Messages.getString("SCTMExecutor.err.pwdCryptFailed")); //$NON-NLS-1$
       return false;
     } catch (Exception e) {
-      Hudson.getInstance().servletContext.log("Hudson SCTMExecutor-Plugin throws unknown error:", e);
+      Hudson.getInstance().servletContext.log(Messages.getString("SCTMExecutor.log.unknownError"), e); //$NON-NLS-1$
       listener.error(e.getLocalizedMessage());
       return false;
     }
@@ -131,7 +130,7 @@ public class SCTMExecutor extends Builder {
     new FormFieldValidator(req, rsp, false) {
       @Override
       protected void check() throws IOException, ServletException {
-        System.out.println("checked");
+        System.out.println("checked"); //$NON-NLS-1$
       }
     }.process();
   }
@@ -141,16 +140,16 @@ public class SCTMExecutor extends Builder {
       @Override
       protected void check() throws IOException, ServletException {
         try {
-          Integer.parseInt(request.getParameter("value"));
+          Integer.parseInt(request.getParameter("value")); //$NON-NLS-1$
         } catch (NumberFormatException e) {
-          error("Entered value is not a number.");
+          error(Messages.getString("SCTMExecutor.err.valueNotANumber")); //$NON-NLS-1$
         }
       }
     }.process();
   }
 
   private static FilePath createResultDir(FilePath rootDir, int currentBuildNo) throws IOException, InterruptedException {
-    rootDir = new FilePath(rootDir, "SCTMResults");
+    rootDir = new FilePath(rootDir, "SCTMResults"); //$NON-NLS-1$
     if (resultNoForLastBuild  != currentBuildNo) {
       if (rootDir.exists())
         rootDir.deleteRecursive();
