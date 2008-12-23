@@ -65,6 +65,28 @@ final class StdXMLResultWriter implements ITestResultWriter {
   }
 
   private void writeTestSuite(ContentHandler handler, ExecutionResult result) throws SAXException {
+    AttributesImpl atts = new AttributesImpl();
+    writeTestSuiteCountAttributes(atts, result);    
+    atts.addAttribute("", "", "hostname", "CDATA", result.getExecServerName());
+    atts.addAttribute("", "", "name", "CDATA", result.getExecDefName());
+    atts.addAttribute("", "", "timestamp", "CDATA", DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
+        new Date(System.currentTimeMillis())));
+    handler.startElement("", "", "testsuite", atts);
+    
+    TestDefinitionResult setupTestDef = result.getSetupTestDef();
+    TestDefinitionResult cleanupTestDef = result.getCleanupTestDef();
+    if (setupTestDef != null)
+      writeTestResult(handler, setupTestDef, result.getExecDefName());
+    for (TestDefinitionResult testResult : result.getTestDefResult()) {
+      writeTestResult(handler, testResult, result.getExecDefName());
+    }
+    if (cleanupTestDef != null)
+      writeTestResult(handler, cleanupTestDef, result.getExecDefName());
+    
+    handler.endElement("", "", "testsuite");
+  }
+  
+  private void writeTestSuiteCountAttributes(AttributesImpl atts, ExecutionResult result) {
     int errors = 0;
     int failures = 0;
     double duration = 0;
@@ -76,29 +98,41 @@ final class StdXMLResultWriter implements ITestResultWriter {
         errors++;
       duration += testResult.getDuration() / 1000;
     }
-    AttributesImpl atts = new AttributesImpl();
+    TestDefinitionResult setupTestDef = result.getSetupTestDef();
+    TestDefinitionResult cleanupTestDef = result.getCleanupTestDef();
+    if (setupTestDef != null) {
+      if (setupTestDef.getStatus() == FAILED)
+        failures++;
+      else if (setupTestDef.getStatus() == NOT_EXECUTED)
+        failures++;
+      duration += setupTestDef.getDuration() / 1000;
+    }
+    if (cleanupTestDef != null) {
+      if (cleanupTestDef.getStatus() == FAILED)
+        failures++;
+      else if (cleanupTestDef.getStatus() == NOT_EXECUTED)
+        failures++;
+      duration += cleanupTestDef.getDuration() / 1000;
+    }
+    
+    atts.addAttribute("", "", "tests", "CDATA", String.valueOf(countTest(result)));
     atts.addAttribute("", "", "errors", "CDATA", String.valueOf(errors));
     atts.addAttribute("", "", "failures", "CDATA", String.valueOf(failures));
-    atts.addAttribute("", "", "hostname", "CDATA", result.getExecServerName());
-    atts.addAttribute("", "", "name", "CDATA", result.getExecDefName());
     atts.addAttribute("", "", "time", "CDATA", String.valueOf(duration));
-    atts.addAttribute("", "", "tests", "CDATA", String.valueOf(result.getTestDefResult().length));
-    atts.addAttribute("", "", "timestamp", "CDATA", DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-        new Date(System.currentTimeMillis())));
-    handler.startElement("", "", "testsuite", atts);
-    if (result.getSetupTestDef() != null)
-      writeTestResult(handler, result.getSetupTestDef());
-    for (TestDefinitionResult testResult : result.getTestDefResult()) {
-      writeTestResult(handler, testResult);
-    }
-    if (result.getCleanupTestDef() != null)
-      writeTestResult(handler, result.getCleanupTestDef());
-    handler.endElement("", "", "testsuite");
   }
 
-  private void writeTestResult(ContentHandler handler, TestDefinitionResult testResult) throws SAXException {
+  private int countTest(ExecutionResult result) {
+    int testCount = result.getTestDefResult().length;
+    if (result.getSetupTestDef() != null)
+      testCount++;
+    if (result.getCleanupTestDef() != null)
+      testCount++;
+    return testCount;
+  }
+
+  private void writeTestResult(ContentHandler handler, TestDefinitionResult testResult, String testsuiteName) throws SAXException {
     AttributesImpl atts = new AttributesImpl();
-    atts.addAttribute("", "", "classname", "CDATA", testResult.getName());
+    atts.addAttribute("", "", "classname", "CDATA", testsuiteName);
     atts.addAttribute("", "", "name", "CDATA", testResult.getName());
     atts.addAttribute("", "", "time", "CDATA", String.valueOf(testResult.getDuration() / 1000));
     handler.startElement("", "", "testcase", atts);
