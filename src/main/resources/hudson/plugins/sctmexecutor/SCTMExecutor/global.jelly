@@ -12,7 +12,7 @@
     <f:entry title="${%SCTMExecutor.global.property.label.pwd}"
       help="/plugin/SCTMExecutor/help-password.html">
       <f:password name="sctmexecutor.password" value="${descriptor.password}"/>
-    <f:validateButton title="Test Connection" progress="Testing..." method="testConnection" with="serviceURL, user, sctmexecutor.password"/>
     </f:entry>
+    <!--f:validateButton title="Test Connection" progress="Testing..." method="testConnection" with="serviceURL, user"></f:validateButton -->
   </f:section>
 </j:jelly>

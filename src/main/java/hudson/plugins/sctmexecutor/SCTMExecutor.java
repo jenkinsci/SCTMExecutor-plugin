@@ -24,6 +24,7 @@ import javax.servlet.ServletException;
 import javax.xml.rpc.ServiceException;
 
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -168,6 +169,10 @@ public class SCTMExecutor extends Builder {
         }
       }
     }.process();
+  }
+  
+  public void doTestConnection(StaplerRequest req, StaplerResponse rsp, @QueryParameter("serviceURL") final String serviceURL, @QueryParameter("user") final String user) throws IOException, ServletException {
+    System.out.println("test connection");
   }
 
   private static FilePath createResultDir(FilePath rootDir, int currentBuildNo) throws IOException, InterruptedException {
