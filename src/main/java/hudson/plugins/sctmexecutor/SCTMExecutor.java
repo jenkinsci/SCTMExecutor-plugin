@@ -77,37 +77,17 @@ public class SCTMExecutor extends Builder {
       execService = new ExecutionWebServiceServiceLocator().gettmexecution(new URL(serviceURL + "/tmexecution?wsdl")); //$NON-NLS-1$
 
       long sessionId = systemService.logonUser(DESCRIPTOR.getUser(), DESCRIPTOR.getPassword());
-      listener.getLogger().println(""); //$NON-NLS-1$
+      listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
       execService.setCurrentProject(sessionId, projectId);
-      List<ExecutionHandle> execHandles = new ArrayList<ExecutionHandle>();
-      for (Integer execDefId : csvToIntList(execDefIds)) {
-        ExecutionHandle[] execHandleArr = execService.startExecution(sessionId, execDefId);
-        if (execHandleArr.length <= 0 || execHandleArr[0] == null
-            || (execHandleArr[0] != null && execHandleArr[0].getTimeStamp() <= 0)) {
-          listener.error(""); //$NON-NLS-1$
-          return false;
-        } else {
-          listener.getLogger().println(""); //$NON-NLS-1$
-          for (ExecutionHandle executionHandle : execHandleArr) {
-            execHandles.add(executionHandle);
-          }
-        }
+      List<ExecutionHandle> execHandles;
+      try {
+        execHandles = startExecutions(listener, execService, sessionId);
+      } catch (IllegalArgumentException e) {
+        return false;
       }
 
-      FilePath rootDir = build.getProject().getWorkspace();
-      if (rootDir == null) {
-        LOGGER.log(Level.SEVERE, "Cannot write the result file because slave is not connected."); //$NON-NLS-1$
-        listener.error(Messages.getString("SCTMExecutor.log.slaveNotConnected")); //$NON-NLS-1$
-      }
+      collectResults(build, listener, execService, sessionId, execHandles);
       
-      rootDir = createResultDir(rootDir, build.number);
-      for (ExecutionHandle executionHandle : execHandles) {
-        // TODO: use ThreadPool
-        ResultCollectorThread resultCollector = new ResultCollectorThread(listener.getLogger(), execService, sessionId,
-            executionHandle, new StdXMLResultWriter(rootDir, DESCRIPTOR.getServiceURL()));
-        resultCollector.start();
-        resultCollector.join(); // maybe it is better to work with a timeout here
-      }
       return true;
     } catch (ServiceException e) {
       LOGGER.log(Level.SEVERE, MessageFormat.format("The URL {0} cannot be accessed or no service has been found.", serviceURL)); //$NON-NLS-1$
@@ -124,6 +104,48 @@ public class SCTMExecutor extends Builder {
       listener.error(e.getLocalizedMessage());
       return false;
     }
+  }
+
+  private void collectResults(AbstractBuild<?, ?> build, BuildListener listener, ExecutionWebService execService,
+      long sessionId, List<ExecutionHandle> execHandles) throws IOException, InterruptedException {
+    FilePath rootDir = build.getProject().getWorkspace();
+    if (rootDir == null) {
+      LOGGER.log(Level.SEVERE, "Cannot write the result file because slave is not connected."); //$NON-NLS-1$
+      listener.error(Messages.getString("SCTMExecutor.log.slaveNotConnected")); //$NON-NLS-1$
+    }
+    
+    rootDir = createResultDir(rootDir, build.number);
+    List<ResultCollectorThread> collectorThreads = new ArrayList<ResultCollectorThread>(execHandles.size());
+    for (ExecutionHandle executionHandle : execHandles) {
+      // TODO: use ThreadPool
+      ResultCollectorThread resultCollector = new ResultCollectorThread(listener.getLogger(), execService, sessionId,
+          executionHandle, new StdXMLResultWriter(rootDir, DESCRIPTOR.getServiceURL()));
+      resultCollector.start();
+      collectorThreads.add(resultCollector);
+    }
+    
+    for (ResultCollectorThread resultCollector : collectorThreads) {
+      resultCollector.join(); // maybe it is better to work with a timeout here        
+    }
+  }
+
+  private List<ExecutionHandle> startExecutions(BuildListener listener, ExecutionWebService execService, long sessionId)
+      throws RemoteException {
+    List<ExecutionHandle> execHandles = new ArrayList<ExecutionHandle>();
+    for (Integer execDefId : csvToIntList(execDefIds)) {
+      ExecutionHandle[] execHandleArr = execService.startExecution(sessionId, execDefId);
+      if (execHandleArr.length <= 0 || execHandleArr[0] == null
+          || (execHandleArr[0] != null && execHandleArr[0].getTimeStamp() <= 0)) {
+        listener.error(MessageFormat.format(Messages.getString("SCTMExecutor.err.execDefNotFound"), execDefId)); //$NON-NLS-1$
+        throw new IllegalArgumentException();
+      } else {
+        listener.getLogger().println(MessageFormat.format(Messages.getString("SCTMExecutor.log.successfulStartExecution"), execDefId)); //$NON-NLS-1$
+        for (ExecutionHandle executionHandle : execHandleArr) {
+          execHandles.add(executionHandle);
+        }
+      }
+    }
+    return execHandles;
   }
   
   public void doCheckExecDefIds(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {

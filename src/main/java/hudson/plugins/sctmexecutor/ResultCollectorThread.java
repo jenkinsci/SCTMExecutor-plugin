@@ -12,6 +12,7 @@ import com.borland.tm.webservices.tmexecution.ExecutionWebService;
 
 final class ResultCollectorThread extends Thread {
   private static final int MAX_SLEEP = 60;
+  private static final int MAX_RETRIES = 2;
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
   
   private ExecutionHandle handle;
@@ -20,6 +21,7 @@ final class ResultCollectorThread extends Thread {
   private long sleep = 5; // in s
   private ITestResultWriter writer;
   private PrintStream consolenLogger;
+  private int retries;
 
   public ResultCollectorThread(PrintStream logger, ExecutionWebService service, long sessionId, ExecutionHandle handle, ITestResultWriter writer) {
     super("SCTMExecutor.resultcollector"+handle.getExecDefId()); //$NON-NLS-1$
@@ -41,10 +43,11 @@ final class ResultCollectorThread extends Thread {
   @Override
   public void run() {
     ExecutionResult result = null;
+    int stateOfExecution = -2;
     try {
       do {
         Thread.sleep(sleep*1000); // because sometime SCTM is too slow and the run is not created when we ask for a result
-        int stateOfExecution = service.getStateOfExecution(sessionId, handle);
+        stateOfExecution = service.getStateOfExecution(sessionId, handle);
         if (stateOfExecution == -1) {
           result = service.getExecutionResult(sessionId, handle);
           consolenLogger.println(MessageFormat.format(Messages.getString("ResultCollectorThread.log.resultReceived"), handle.getExecDefId())); //$NON-NLS-1$
@@ -57,9 +60,15 @@ final class ResultCollectorThread extends Thread {
       
       this.writer.write(result);
     } catch (RemoteException e) {
-      LOGGER.log(Level.SEVERE, "Remote call to SCTM failed during result collection."); //$NON-NLS-1$
-      LOGGER.log(Level.INFO, e.getMessage());
-      throw new RuntimeException(Messages.getString("ResultCollectorThread.err.collectingResultFailed"), e); //$NON-NLS-1$
+      if (stateOfExecution == -1 && retries < MAX_RETRIES) { // we get a finished execution but no result, this seems to be a sctm bug/timing problem
+        retries++;
+        LOGGER.log(Level.WARNING, MessageFormat.format("Execution should be finished, but it is no result available for execution definition {0}. Try again {1}!", handle.getExecDefId(), retries));
+        run();
+      } else {
+        LOGGER.log(Level.SEVERE, "Remote call to SCTM failed during result collection."); //$NON-NLS-1$
+        LOGGER.log(Level.INFO, e.getMessage());
+        throw new RuntimeException(Messages.getString("ResultCollectorThread.err.collectingResultFailed"), e); //$NON-NLS-1$
+      }
     } catch (InterruptedException e) {
       LOGGER.log(Level.SEVERE, "Collecting results aborted."); //$NON-NLS-1$
       LOGGER.log(Level.INFO, e.getMessage());

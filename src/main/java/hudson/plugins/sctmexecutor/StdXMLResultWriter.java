@@ -22,6 +22,7 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 final class StdXMLResultWriter implements ITestResultWriter {
   private static final int NOT_EXECUTED = 3;
   private static final int FAILED = 2;
+  private static final String DEFAULT_SCTM_PACKAGENAME = "silkcentral.testmanager.";
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor");
 
   private String sctmHost;
@@ -66,9 +67,10 @@ final class StdXMLResultWriter implements ITestResultWriter {
 
   private void writeTestSuite(ContentHandler handler, ExecutionResult result) throws SAXException {
     AttributesImpl atts = new AttributesImpl();
+    String execDefName = DEFAULT_SCTM_PACKAGENAME + result.getExecDefName();
     writeTestSuiteCountAttributes(atts, result);    
     atts.addAttribute("", "", "hostname", "CDATA", result.getExecServerName());
-    atts.addAttribute("", "", "name", "CDATA", result.getExecDefName());
+    atts.addAttribute("", "", "name", "CDATA", execDefName);
     atts.addAttribute("", "", "timestamp", "CDATA", DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
         new Date(System.currentTimeMillis())));
     handler.startElement("", "", "testsuite", atts);
@@ -76,12 +78,12 @@ final class StdXMLResultWriter implements ITestResultWriter {
     TestDefinitionResult setupTestDef = result.getSetupTestDef();
     TestDefinitionResult cleanupTestDef = result.getCleanupTestDef();
     if (setupTestDef != null)
-      writeTestResult(handler, setupTestDef, result.getExecDefName());
+      writeTestResult(handler, setupTestDef, execDefName);
     for (TestDefinitionResult testResult : result.getTestDefResult()) {
-      writeTestResult(handler, testResult, result.getExecDefName());
+      writeTestResult(handler, testResult, execDefName);
     }
     if (cleanupTestDef != null)
-      writeTestResult(handler, cleanupTestDef, result.getExecDefName());
+      writeTestResult(handler, cleanupTestDef, execDefName);
     
     handler.endElement("", "", "testsuite");
   }
