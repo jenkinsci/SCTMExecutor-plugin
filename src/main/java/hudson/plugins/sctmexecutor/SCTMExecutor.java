@@ -77,7 +77,9 @@ public class SCTMExecutor extends Builder {
       systemService = new SystemServiceServiceLocator().getsccsystem(new URL(serviceURL + "/sccsystem?wsdl")); //$NON-NLS-1$
       execService = new ExecutionWebServiceServiceLocator().gettmexecution(new URL(serviceURL + "/tmexecution?wsdl")); //$NON-NLS-1$
 
-      long sessionId = systemService.logonUser(DESCRIPTOR.getUser(), DESCRIPTOR.getPassword());
+      ISessionHandler sessionHandler = new SessionHandler(systemService);
+      
+      long sessionId = sessionHandler.getSessionId(-1);
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
       execService.setCurrentProject(sessionId, projectId);
       List<ExecutionHandle> execHandles;
@@ -87,7 +89,7 @@ public class SCTMExecutor extends Builder {
         return false;
       }
 
-      collectResults(build, listener, execService, sessionId, execHandles);
+      collectResults(build, listener, execService, sessionHandler, execHandles);
       
       return true;
     } catch (ServiceException e) {
@@ -108,7 +110,7 @@ public class SCTMExecutor extends Builder {
   }
 
   private void collectResults(AbstractBuild<?, ?> build, BuildListener listener, ExecutionWebService execService,
-      long sessionId, List<ExecutionHandle> execHandles) throws IOException, InterruptedException {
+      ISessionHandler sessionHandler, List<ExecutionHandle> execHandles) throws IOException, InterruptedException {
     FilePath rootDir = build.getProject().getWorkspace();
     if (rootDir == null) {
       LOGGER.log(Level.SEVERE, "Cannot write the result file because slave is not connected."); //$NON-NLS-1$
@@ -117,10 +119,10 @@ public class SCTMExecutor extends Builder {
     
     rootDir = createResultDir(rootDir, build.number);
     List<ResultCollectorThread> collectorThreads = new ArrayList<ResultCollectorThread>(execHandles.size());
+    
     for (ExecutionHandle executionHandle : execHandles) {
       // TODO: use ThreadPool
-      ResultCollectorThread resultCollector = new ResultCollectorThread(listener.getLogger(), execService, sessionId,
-          executionHandle, new StdXMLResultWriter(rootDir, DESCRIPTOR.getServiceURL()));
+      ResultCollectorThread resultCollector = new ResultCollectorThread(listener.getLogger(), execService, sessionHandler, executionHandle, new StdXMLResultWriter(rootDir, DESCRIPTOR.getServiceURL()));
       resultCollector.start();
       collectorThreads.add(resultCollector);
     }
