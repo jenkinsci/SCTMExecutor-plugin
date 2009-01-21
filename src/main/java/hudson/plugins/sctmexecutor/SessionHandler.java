@@ -10,8 +10,10 @@ class SessionHandler implements ISessionHandler {
   private String pwd;
   private String user;
   
-  public SessionHandler(SystemService service) {
+  public SessionHandler(SystemService service, String user, String pwd) {
     this.service = service;
+    this.user = user;
+    this.pwd = pwd;
   }
     
   @Override
@@ -21,13 +23,4 @@ class SessionHandler implements ISessionHandler {
     }
     return this.sessionId;
   }
-
-  void setPwd(String pwd) {
-    this.pwd = pwd;
-  }
-
-  void setUser(String user) {
-    this.user = user;
-  }
-
 }

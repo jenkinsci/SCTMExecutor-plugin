@@ -18,9 +18,7 @@ public class TestSessionHandler {
     EasyMock.expectLastCall().andReturn(2);
     
     EasyMock.replay(systemServiceMock);
-    SessionHandler sessionHandler = new SessionHandler(systemServiceMock);
-    sessionHandler.setPwd("");
-    sessionHandler.setUser("");
+    SessionHandler sessionHandler = new SessionHandler(systemServiceMock, "", "");
     assertEquals(1, sessionHandler.getSessionId(-1));
     assertEquals(2, sessionHandler.getSessionId(1));
     assertEquals(2, sessionHandler.getSessionId(1));

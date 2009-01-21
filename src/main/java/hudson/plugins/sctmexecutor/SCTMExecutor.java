@@ -77,7 +77,7 @@ public class SCTMExecutor extends Builder {
       systemService = new SystemServiceServiceLocator().getsccsystem(new URL(serviceURL + "/sccsystem?wsdl")); //$NON-NLS-1$
       execService = new ExecutionWebServiceServiceLocator().gettmexecution(new URL(serviceURL + "/tmexecution?wsdl")); //$NON-NLS-1$
 
-      ISessionHandler sessionHandler = new SessionHandler(systemService);
+      ISessionHandler sessionHandler = new SessionHandler(systemService, SCTMExecutor.DESCRIPTOR.getUser(), SCTMExecutor.DESCRIPTOR.getPassword());
       
       long sessionId = sessionHandler.getSessionId(-1);
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
