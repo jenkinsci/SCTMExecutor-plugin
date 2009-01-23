@@ -52,7 +52,7 @@ final class ResultCollectorThread extends Thread {
         stateOfExecution = execService.getStateOfExecution(sessionId, handle);
         if (stateOfExecution == -1) {
           result = execService.getExecutionResult(sessionId, handle);
-          consolenLogger.println(MessageFormat.format(Messages.getString("ResultCollectorThread.log.resultReceived"), handle.getExecDefId())); //$NON-NLS-1$
+          consolenLogger.println(MessageFormat.format("", handle.getExecDefId())); //$NON-NLS-1$
         } else if (sleep < MAX_SLEEP) {
           sleep *= 2;
           if (sleep > MAX_SLEEP)
@@ -64,27 +64,27 @@ final class ResultCollectorThread extends Thread {
     } catch (RemoteException e) {
       if (stateOfExecution == -1 && retries < MAX_RETRIES) { // we get a finished execution but no result, this seems to be a sctm bug/timing problem
         retries++;
-        LOGGER.log(Level.WARNING, MessageFormat.format("Execution should be finished, but it is no result available for execution definition {0}. Try again {1}!", handle.getExecDefId(), retries));
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("ResultCollectorThread.wrn.execFinishedButNoResult"), handle.getExecDefId(), retries)); //$NON-NLS-1$
         run();
-      } else if (e.getMessage().contains("Not logged in.")) {
-        LOGGER.log(Level.INFO, "Session lost - open new session by new login and try once more.");
+      } else if (e.getMessage().contains("Not logged in.")) { //$NON-NLS-1$
+        LOGGER.log(Level.INFO, Messages.getString("ResultCollectorThread.log.sessionTimeOut")); //$NON-NLS-1$
         try {
           sessionId = sessionHandler.getSessionId(sessionId);
         } catch (RemoteException e1) {
           LOGGER.log(Level.INFO, e.getMessage());
-          throw new RuntimeException(Messages.getString("ResultCollectorThread.err.collectingResultFailed"), e); //$NON-NLS-1$
+          throw new RuntimeException("", e); //$NON-NLS-1$
         }
         run();
       } else {
         LOGGER.log(Level.SEVERE, "Remote call to SCTM failed during result collection."); //$NON-NLS-1$
         LOGGER.log(Level.INFO, e.getMessage());
-        throw new RuntimeException(Messages.getString("ResultCollectorThread.err.collectingResultFailed"), e); //$NON-NLS-1$
+        throw new RuntimeException("", e); //$NON-NLS-1$
       }
     } catch (InterruptedException e) {
       LOGGER.log(Level.SEVERE, "Collecting results aborted."); //$NON-NLS-1$
       LOGGER.log(Level.INFO, e.getMessage());
       interrupt();
-      throw new RuntimeException(Messages.getString("ResultCollectorThread.err.collectionResultAborted"), e); //$NON-NLS-1$
+      throw new RuntimeException("", e); //$NON-NLS-1$
     }
   }
 }

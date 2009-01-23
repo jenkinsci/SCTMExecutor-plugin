@@ -22,8 +22,8 @@ import sun.misc.BASE64Encoder;
  * 
  */
 final class PwdCrypt {
-  private static final String CRYPTO_ALGORITHM = "DESede";
-  private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor");
+  private static final String CRYPTO_ALGORITHM = "DESede"; //$NON-NLS-1$
+  private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
   
   PwdCrypt() {}
 
@@ -40,7 +40,7 @@ final class PwdCrypt {
       
       return new BASE64Encoder().encode(out.toByteArray());
     } catch (Exception e) {
-      LOGGER.log(Level.SEVERE, "Encode failed: "+e.getMessage());
+      LOGGER.log(Level.SEVERE, Messages.getString("PwdCrypt.err.pwdEncodeFailed")+e.getMessage()); //$NON-NLS-1$
       throw new EncryptionException(e);
     } 
   }
@@ -62,7 +62,7 @@ final class PwdCrypt {
       cis.close(); 
       return bos.toString();
     } catch (Exception e) {
-      LOGGER.log(Level.SEVERE, "Decode failed: "+e.getMessage());
+      LOGGER.log(Level.SEVERE, Messages.getString("PwdCrypt.err.pwdDeodeFailed")+e.getMessage()); //$NON-NLS-1$
       throw new EncryptionException(e);
     } 
   }

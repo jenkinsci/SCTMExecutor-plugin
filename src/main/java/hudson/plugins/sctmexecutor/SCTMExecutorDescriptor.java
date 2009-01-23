@@ -37,7 +37,7 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
 
   @Override
   public String getDisplayName() {
-    return Messages.getString("SCTMExecutorDescriptor.plugin.title"); //$NON-NLS-1$
+    return ""; //$NON-NLS-1$
   }
 
   @Override
@@ -52,7 +52,7 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
   public boolean configure(StaplerRequest req, JSONObject json) throws hudson.model.Descriptor.FormException {
     serviceURL = json.getString("serviceURL"); //$NON-NLS-1$
     user = json.getString("user"); //$NON-NLS-1$
-    password = PwdCrypt.encode(json.getString("password"), Hudson.getInstance().getSecretKey());
+    password = PwdCrypt.encode(json.getString("password"), Hudson.getInstance().getSecretKey()); //$NON-NLS-1$
     
     save();
     return super.configure(req, json);
@@ -83,7 +83,7 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
   }
   
   public void doTestConnection(StaplerRequest req, StaplerResponse rsp, @QueryParameter("serviceURL") final String serviceURL, @QueryParameter("user") final String user) throws IOException, ServletException {
-    System.out.println("test connection");
+    System.out.println("test connection"); //$NON-NLS-1$
     //    new FormFieldValidator(req, rsp, true) {
 //      @Override
 //      protected void check() throws IOException, ServletException {
@@ -99,6 +99,6 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
   }
   
   public void doCheckProjectId(StaplerRequest req, StaplerResponse rsp) {
-    System.out.println("checked");
+    System.out.println("checked"); //$NON-NLS-1$
   }
 }
