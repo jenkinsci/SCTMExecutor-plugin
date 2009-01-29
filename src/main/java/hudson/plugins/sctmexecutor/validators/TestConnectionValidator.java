@@ -1,5 +1,6 @@
 package hudson.plugins.sctmexecutor.validators;
 
+import hudson.plugins.sctmexecutor.Messages;
 import hudson.util.FormFieldValidator;
 
 import java.io.IOException;
@@ -7,7 +8,6 @@ import java.net.URL;
 import java.rmi.RemoteException;
 
 import javax.servlet.ServletException;
-import javax.xml.rpc.ServiceException;
 
 import com.borland.scc.sccsystem.SystemService;
 import com.borland.scc.sccsystem.SystemServiceServiceLocator;
@@ -28,20 +28,20 @@ public class TestConnectionValidator extends FormFieldValidator {
 
   @Override
   protected void check() throws IOException, ServletException {
-    if (!serviceURL.matches("http://((\\d{1,3}.){3}\\d{1,3})??|(\\p{Alnum}*)(:\\d{0,5})??(/\\p{Alnum}*)??/services"))
-      error("Enter a valid URL.");
+    if (!serviceURL.matches("http://((\\d{1,3}.){3}\\d{1,3})??|(\\p{Alnum}*)(:\\d{0,5})??(/\\p{Alnum}*)??/services")) { //$NON-NLS-1$
+      error(Messages.getString("TestConnectionValidator.msg.noValidURL")); //$NON-NLS-1$
+      return;
+    }
     try {
       SystemService systemService = new SystemServiceServiceLocator().getsccsystem(new URL(serviceURL + "/sccsystem?wsdl")); //$NON-NLS-1$
       try {
         systemService.logonUser(user, password);
-        ok("Connection successfully established");
+        ok(Messages.getString("TestConnectionValidator.msg.connectionSuccessful")); //$NON-NLS-1$
       } catch (RemoteException e) {
-        error("Wrong user or password.");
+        error(Messages.getString("TestConnectionValidator.msg.wrongLoginData")); //$NON-NLS-1$
       }
-    } catch (RemoteException e) {
-      error("Cannot connect to SilkCentral TestManager. Please check the connection data.");
-    } catch (ServiceException e) {
-      error("Cannot connect to SilkCentral TestManager. Please check the connection data.");
+    } catch (Exception e) {
+      error(Messages.getString("TestConnectionValidator.msg.connectionFailed")); //$NON-NLS-1$
     }
   }
 
