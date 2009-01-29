@@ -8,7 +8,6 @@ import hudson.model.Descriptor;
 import hudson.model.Hudson;
 import hudson.plugins.sctmexecutor.exceptions.EncryptionException;
 import hudson.tasks.Builder;
-import hudson.util.FormFieldValidator;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,13 +19,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletException;
 import javax.xml.rpc.ServiceException;
 
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 import com.borland.scc.sccsystem.SystemService;
 import com.borland.scc.sccsystem.SystemServiceServiceLocator;
@@ -149,32 +144,6 @@ public class SCTMExecutor extends Builder {
       }
     }
     return execHandles;
-  }
-  
-  public void doCheckExecDefIds(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
-    new FormFieldValidator(req, rsp, false) {
-      @Override
-      protected void check() throws IOException, ServletException {
-        System.out.println("checked"); //$NON-NLS-1$
-      }
-    }.process();
-  }
-  
-  public void doCheckProjectId(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
-    new FormFieldValidator(req, rsp, false) {
-      @Override
-      protected void check() throws IOException, ServletException {
-        try {
-          Integer.parseInt(request.getParameter("value")); //$NON-NLS-1$
-        } catch (NumberFormatException e) {
-          error(""); //$NON-NLS-1$
-        }
-      }
-    }.process();
-  }
-  
-  public void doTestConnection(StaplerRequest req, StaplerResponse rsp, @QueryParameter("serviceURL") final String serviceURL, @QueryParameter("user") final String user) throws IOException, ServletException {
-    System.out.println("test connection"); //$NON-NLS-1$
   }
 
   private static FilePath createResultDir(FilePath rootDir, int currentBuildNo) throws IOException, InterruptedException {

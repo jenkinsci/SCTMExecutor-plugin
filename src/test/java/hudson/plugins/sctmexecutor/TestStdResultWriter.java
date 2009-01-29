@@ -1,7 +1,5 @@
 package hudson.plugins.sctmexecutor;
 
-import static org.junit.Assert.*;
-
 import hudson.FilePath;
 
 import java.io.File;

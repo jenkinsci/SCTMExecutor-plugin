@@ -1,4 +1,4 @@
-#Tue Oct 21 21:34:11 CEST 2008
+#Thu Jan 29 21:48:27 CET 2009
 eclipse.preferences.version=1
 encoding//src/main/java/com/borland/scc/AppModule.java=UTF-8
 encoding//src/main/java/com/borland/scc/ExtendedAppModule.java=UTF-8
@@ -18,3 +18,4 @@ encoding//src/main/java/com/borland/tm/webservices/tmexecution/PropertyMetaInfo.
 encoding//src/main/java/com/borland/tm/webservices/tmexecution/PropertyValue.java=UTF-8
 encoding//src/main/java/com/borland/tm/webservices/tmexecution/TestDefinitionResult.java=UTF-8
 encoding//src/main/java/com/borland/tm/webservices/tmexecution/TmexecutionSoapBindingStub.java=UTF-8
+encoding/<project>=UTF-8

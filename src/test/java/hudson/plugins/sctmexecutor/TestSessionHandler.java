@@ -1,6 +1,6 @@
 package hudson.plugins.sctmexecutor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.rmi.RemoteException;
 

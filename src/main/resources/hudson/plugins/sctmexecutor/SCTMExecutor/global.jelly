@@ -3,16 +3,17 @@
     <f:entry title="${%SCTMExecutor.global.property.label.serviceId}"
       description="http://host:port/Services1.0/services"
       help="/plugin/SCTMExecutor/help-host.html">
-      <f:textbox field="serviceURL"/>
+      <f:textbox field="serviceURL" value="${descriptor.serviceURL}"/>
     </f:entry>
     <f:entry title="${%SCTMExecutor.global.property.label.userId}"
       help="/plugin/SCTMExecutor/help-user.html">
-      <f:textbox field="user"/>
+      <f:textbox field="user" value="${descriptor.user}"/>
     </f:entry>
     <f:entry title="${%SCTMExecutor.global.property.label.pwd}"
       help="/plugin/SCTMExecutor/help-password.html">
-      <f:password name="sctmexecutor.password" value="${descriptor.password}"/>
+      <f:password field="password" value="${descriptor.password}"/>
     </f:entry>
-    <!--f:validateButton title="Test Connection" progress="Testing..." method="testConnection" with="serviceURL, user"></f:validateButton -->
+    <f:validateButton title="Test Connection" progress="connecting..." 
+        method="testConnection" with="serviceURL,user,password" />
   </f:section>
 </j:jelly>
