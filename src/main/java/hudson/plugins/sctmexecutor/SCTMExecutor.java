@@ -75,7 +75,7 @@ public class SCTMExecutor extends Builder {
       ISessionHandler sessionHandler = new SessionHandler(systemService, SCTMExecutor.DESCRIPTOR.getUser(), SCTMExecutor.DESCRIPTOR.getPassword());
       
       long sessionId = sessionHandler.getSessionId(-1);
-      listener.getLogger().println(""); //$NON-NLS-1$
+      listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
       execService.setCurrentProject(sessionId, projectId);
       List<ExecutionHandle> execHandles;
       try {
@@ -89,16 +89,16 @@ public class SCTMExecutor extends Builder {
       return true;
     } catch (ServiceException e) {
       LOGGER.log(Level.SEVERE, MessageFormat.format("The URL {0} cannot be accessed or no service has been found.", serviceURL));
-      listener.error(MessageFormat.format("", serviceURL)); //$NON-NLS-1$
+      listener.error(MessageFormat.format(Messages.getString("SCTMExecutor.err.urlOrServiceBroken"), serviceURL)); //$NON-NLS-1$
       return false;
     } catch (RemoteException e) {
       LOGGER.log(Level.SEVERE, e.getMessage());
-      listener.error(""); //$NON-NLS-1$
+      listener.error(Messages.getString("SCTMExecutor.err.accessDenied")); //$NON-NLS-1$
       return false;
     } catch (EncryptionException e){
       return false;
     } catch (Exception e) {
-      Hudson.getInstance().servletContext.log("", e); //$NON-NLS-1$
+      Hudson.getInstance().servletContext.log(Messages.getString("SCTMExecutor.log.unknownError"), e); //$NON-NLS-1$
       listener.error(e.getLocalizedMessage());
       return false;
     }
@@ -109,7 +109,7 @@ public class SCTMExecutor extends Builder {
     FilePath rootDir = build.getProject().getWorkspace();
     if (rootDir == null) {
       LOGGER.log(Level.SEVERE, "Cannot write the result file because slave is not connected.");
-      listener.error(""); //$NON-NLS-1$
+      listener.error(Messages.getString("SCTMExecutor.log.slaveNotConnected")); //$NON-NLS-1$
     }
     
     rootDir = createResultDir(rootDir, build.number);
@@ -134,10 +134,10 @@ public class SCTMExecutor extends Builder {
       ExecutionHandle[] execHandleArr = execService.startExecution(sessionId, execDefId);
       if (execHandleArr.length <= 0 || execHandleArr[0] == null
           || (execHandleArr[0] != null && execHandleArr[0].getTimeStamp() <= 0)) {
-        listener.error(MessageFormat.format("", execDefId)); //$NON-NLS-1$
+        listener.error(Messages.getString(Messages.getString("SCTMExecutor.err.execDefNotFound"), execDefId)); //$NON-NLS-1$
         throw new IllegalArgumentException();
       } else {
-        listener.getLogger().println(MessageFormat.format("", execDefId)); //$NON-NLS-1$
+        listener.getLogger().println(MessageFormat.format(Messages.getString("SCTMExecutor.log.successfulStartExecution"), execDefId));
         for (ExecutionHandle executionHandle : execHandleArr) {
           execHandles.add(executionHandle);
         }

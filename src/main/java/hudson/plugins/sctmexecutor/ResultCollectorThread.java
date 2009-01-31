@@ -52,7 +52,7 @@ final class ResultCollectorThread extends Thread {
         stateOfExecution = execService.getStateOfExecution(sessionId, handle);
         if (stateOfExecution == -1) {
           result = execService.getExecutionResult(sessionId, handle);
-          consolenLogger.println(MessageFormat.format("", handle.getExecDefId())); //$NON-NLS-1$
+          consolenLogger.println(MessageFormat.format(Messages.getString("ResultCollectorThread.log.resultReceived"), handle.getExecDefId())); //$NON-NLS-1$
         } else if (sleep < MAX_SLEEP) {
           sleep *= 2;
           if (sleep > MAX_SLEEP)
@@ -72,19 +72,19 @@ final class ResultCollectorThread extends Thread {
           sessionId = sessionHandler.getSessionId(sessionId);
         } catch (RemoteException e1) {
           LOGGER.log(Level.INFO, e.getMessage());
-          throw new RuntimeException("", e); //$NON-NLS-1$
+          throw new RuntimeException(Messages.getString("ResultCollectorThread.err.collectingResultFailed"), e); //$NON-NLS-1$
         }
         run();
       } else {
-        LOGGER.log(Level.SEVERE, "Remote call to SCTM failed during result collection."); //$NON-NLS-1$
+        LOGGER.log(Level.SEVERE, "Remote call to SCTM failed during result collection.");
         LOGGER.log(Level.INFO, e.getMessage());
-        throw new RuntimeException("", e); //$NON-NLS-1$
+        throw new RuntimeException(Messages.getString("ResultCollectorThread.err.collectingResultFailed"), e); //$NON-NLS-1$
       }
     } catch (InterruptedException e) {
-      LOGGER.log(Level.SEVERE, "Collecting results aborted."); //$NON-NLS-1$
+      LOGGER.log(Level.SEVERE, "Collecting results aborted.");
       LOGGER.log(Level.INFO, e.getMessage());
       interrupt();
-      throw new RuntimeException("", e); //$NON-NLS-1$
+      throw new RuntimeException(Messages.getString("ResultCollectorThread.err.collectionResultAborted"), e); //$NON-NLS-1$
     }
   }
 }
