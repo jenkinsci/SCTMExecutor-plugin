@@ -35,12 +35,12 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
 
   @Override
   public String getDisplayName() {
-    return ""; //$NON-NLS-1$
+    return Messages.getString("SCTMExecutorDescriptor.plugin.title"); //$NON-NLS-1$
   }
 
   @Override
   public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-    String execDefIds = formData.getString("execDefId"); //$NON-NLS-1$
+    String execDefIds = formData.getString("execDefIds"); //$NON-NLS-1$
     String str = formData.getString("projectId"); //$NON-NLS-1$
     int projectId = Integer.parseInt(str);
     return new SCTMExecutor(projectId, execDefIds);

@@ -88,7 +88,7 @@ public class SCTMExecutor extends Builder {
       
       return true;
     } catch (ServiceException e) {
-      LOGGER.log(Level.SEVERE, MessageFormat.format("The URL {0} cannot be accessed or no service has been found.", serviceURL)); //$NON-NLS-1$
+      LOGGER.log(Level.SEVERE, MessageFormat.format("The URL {0} cannot be accessed or no service has been found.", serviceURL));
       listener.error(MessageFormat.format("", serviceURL)); //$NON-NLS-1$
       return false;
     } catch (RemoteException e) {
@@ -108,7 +108,7 @@ public class SCTMExecutor extends Builder {
       ISessionHandler sessionHandler, List<ExecutionHandle> execHandles) throws IOException, InterruptedException {
     FilePath rootDir = build.getProject().getWorkspace();
     if (rootDir == null) {
-      LOGGER.log(Level.SEVERE, "Cannot write the result file because slave is not connected."); //$NON-NLS-1$
+      LOGGER.log(Level.SEVERE, "Cannot write the result file because slave is not connected.");
       listener.error(""); //$NON-NLS-1$
     }
     

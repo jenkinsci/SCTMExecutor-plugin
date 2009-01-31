@@ -1,7 +1,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
   <f:section title="${%SCTMExecutor.global.title}">
     <f:entry title="${%SCTMExecutor.global.property.label.serviceId}"
-      description="http://host:port/Services1.0/services"
+      description="http://host:port/services"
       help="/plugin/SCTMExecutor/help-host.html">
       <f:textbox field="serviceURL" value="${descriptor.serviceURL}"/>
     </f:entry>
