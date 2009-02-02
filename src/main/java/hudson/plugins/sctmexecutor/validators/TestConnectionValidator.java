@@ -28,10 +28,6 @@ public class TestConnectionValidator extends FormFieldValidator {
 
   @Override
   protected void check() throws IOException, ServletException {
-    if (!serviceURL.matches("http://(((\\d{1,3}.){3}\\d{1,3})?|([\\p{Alnum}-_.])*)(:\\d{0,5})?(/([\\p{Alnum}-_.])*)?/services")) { //$NON-NLS-1$
-      error(Messages.getString("TestConnectionValidator.msg.noValidURL")); //$NON-NLS-1$
-      return;
-    }
     try {
       SystemService systemService = new SystemServiceServiceLocator().getsccsystem(new URL(serviceURL + "/sccsystem?wsdl")); //$NON-NLS-1$
       try {

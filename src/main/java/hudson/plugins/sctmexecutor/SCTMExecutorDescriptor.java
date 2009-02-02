@@ -5,8 +5,10 @@ import hudson.model.Hudson;
 import hudson.plugins.sctmexecutor.validators.EmptySingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.NumberCSVSingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.NumberSingleFieldValidator;
+import hudson.plugins.sctmexecutor.validators.SCTMUrlValidator;
 import hudson.plugins.sctmexecutor.validators.TestConnectionValidator;
 import hudson.tasks.Builder;
+import hudson.util.FormFieldValidator;
 
 import java.io.IOException;
 
@@ -69,7 +71,10 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
   }
 
   public String getPassword() {
-    return PwdCrypt.decode(password, Hudson.getInstance().getSecretKey());
+    if (password != null && !password.equals(""))
+      return PwdCrypt.decode(password, Hudson.getInstance().getSecretKey());
+    else
+      return "";
   }
 
   public void setUser(String user) {
@@ -83,7 +88,7 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
   public void doCheckServiceURL(StaplerRequest req, StaplerResponse rsp, 
       @QueryParameter("value") final String value)
       throws IOException, ServletException {
-    new EmptySingleFieldValidator(value).process();
+    new SCTMUrlValidator(req, rsp, value).process();
   }
 
   public void doCheckUser(StaplerRequest req, StaplerResponse rsp, 
