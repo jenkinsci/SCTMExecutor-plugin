@@ -28,7 +28,7 @@ public class TestConnectionValidator extends FormFieldValidator {
 
   @Override
   protected void check() throws IOException, ServletException {
-    if (!serviceURL.matches("http://(((\\d{1,3}.){3}\\d{1,3})?|(\\p{Alnum}*))(:\\d{0,5})?(/(\\p{Punct}|\\p{Alnum})*)?/services")) { //$NON-NLS-1$
+    if (!serviceURL.matches("http://(((\\d{1,3}.){3}\\d{1,3})?|([\\p{Alnum}-_.])*)(:\\d{0,5})?(/([\\p{Alnum}-_.])*)?/services")) { //$NON-NLS-1$
       error(Messages.getString("TestConnectionValidator.msg.noValidURL")); //$NON-NLS-1$
       return;
     }
