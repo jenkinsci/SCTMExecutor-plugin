@@ -16,6 +16,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,6 +39,7 @@ import com.borland.tm.webservices.tmexecution.ExecutionWebServiceServiceLocator;
  * 
  */
 public class SCTMExecutor extends Builder {
+  private static final int DEFAULT_TIMEOUT = 150;
   public static final SCTMExecutorDescriptor DESCRIPTOR = new SCTMExecutorDescriptor();
   private static final Logger LOGGER = Logger.getLogger("hudson.plumgins.sctmexecutor");  //$NON-NLS-1$
 
@@ -43,11 +47,16 @@ public class SCTMExecutor extends Builder {
 
   private final int projectId;
   private final String execDefIds;
+  private int timeout = DEFAULT_TIMEOUT; // in minutes
 
   @DataBoundConstructor
-  public SCTMExecutor(int projectId, String execDefIds) {
+  public SCTMExecutor(int projectId, String execDefIds, int timeout) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
+    if (timeout > 0)
+      this.timeout = timeout;
+    else
+      this.timeout = DEFAULT_TIMEOUT;
   }
 
   public Descriptor<Builder> getDescriptor() {
@@ -60,6 +69,10 @@ public class SCTMExecutor extends Builder {
 
   public int getProjectId() {
     return projectId;
+  }
+  
+  public int getTimeout() {
+    return timeout;
   }
 
   @Override
@@ -114,17 +127,15 @@ public class SCTMExecutor extends Builder {
     
     rootDir = createResultDir(rootDir, build.number);
     List<ResultCollectorThread> collectorThreads = new ArrayList<ResultCollectorThread>(execHandles.size());
-    
+    ThreadPoolExecutor tp = new ThreadPoolExecutor(4, 8, 5, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(true));
     for (ExecutionHandle executionHandle : execHandles) {
-      // TODO: use ThreadPool
       ResultCollectorThread resultCollector = new ResultCollectorThread(listener.getLogger(), execService, sessionHandler, executionHandle, new StdXMLResultWriter(rootDir, DESCRIPTOR.getServiceURL()));
-      resultCollector.start();
+      tp.execute(resultCollector);
       collectorThreads.add(resultCollector);
     }
     
-    for (ResultCollectorThread resultCollector : collectorThreads) {
-      resultCollector.join(); // maybe it is better to work with a timeout here        
-    }
+    if (!tp.awaitTermination(timeout, TimeUnit.MINUTES))
+      listener.getLogger().append(MessageFormat.format("WARNING: Collecting results aborted because timeout ({0}) reached.", timeout));
   }
 
   private List<ExecutionHandle> startExecutions(BuildListener listener, ExecutionWebService execService, long sessionId)

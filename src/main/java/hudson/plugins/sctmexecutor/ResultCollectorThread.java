@@ -10,7 +10,7 @@ import com.borland.tm.webservices.tmexecution.ExecutionHandle;
 import com.borland.tm.webservices.tmexecution.ExecutionResult;
 import com.borland.tm.webservices.tmexecution.ExecutionWebService;
 
-final class ResultCollectorThread extends Thread {
+final class ResultCollectorThread implements Runnable {
   private static final int MAX_SLEEP = 60;
   private static final int MAX_RETRIES = 2;
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
@@ -24,7 +24,7 @@ final class ResultCollectorThread extends Thread {
   private ISessionHandler sessionHandler;
   
   public ResultCollectorThread(PrintStream logger, ExecutionWebService service, ISessionHandler sessionHandler, ExecutionHandle handle, ITestResultWriter writer) {
-    super("SCTMExecutor.resultcollector"+handle.getExecDefId()); //$NON-NLS-1$
+    //super("SCTMExecutor.resultcollector"+handle.getExecDefId()); //$NON-NLS-1$
     this.consolenLogger = logger;
     this.handle = handle;
     this.execService = service;
@@ -83,7 +83,6 @@ final class ResultCollectorThread extends Thread {
     } catch (InterruptedException e) {
       LOGGER.log(Level.SEVERE, "Collecting results aborted.");
       LOGGER.log(Level.INFO, e.getMessage());
-      interrupt();
       throw new RuntimeException(Messages.getString("ResultCollectorThread.err.collectionResultAborted"), e); //$NON-NLS-1$
     }
   }

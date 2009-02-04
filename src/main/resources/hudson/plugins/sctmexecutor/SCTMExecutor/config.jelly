@@ -1,8 +1,13 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
   <f:entry title="${%SCTMExecutor.projectConf.property.label.execDefId}" help="/plugin/SCTMExecutor/help-execdefid.html">
     <f:textbox field="execDefIds" value="${instance.execDefIds}"/>
-	</f:entry>
-	<f:entry title="${%SCTMExecutor.projectConf.property.label.projectId}" help="/plugin/SCTMExecutor/help-projectid.html">
+  </f:entry>
+  <f:entry title="${%SCTMExecutor.projectConf.property.label.projectId}" help="/plugin/SCTMExecutor/help-projectid.html">
     <f:textbox field="projectId" value="${instance.projectId}"/>
-	</f:entry>
+  </f:entry>
+  <f:advanced>
+    <f:entry title="${%SCTMExecutor.projectConf.property.label.timeout}" help="/plugin/SCTMExecutor/help-timeout.html">
+      <f:textbox field="timeout" value="${instance.timeout}"/>
+    </f:entry>
+  </f:advanced>
 </j:jelly>
