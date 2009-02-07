@@ -1,5 +1,8 @@
 package hudson.plugins.sctmexecutor.validators;
 
+import hudson.plugins.sctmexecutor.Messages;
+import hudson.util.FormFieldValidator.URLCheck;
+
 import java.io.IOException;
 import java.net.URL;
 
@@ -7,9 +10,6 @@ import javax.servlet.ServletException;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-
-import hudson.plugins.sctmexecutor.Messages;
-import hudson.util.FormFieldValidator.URLCheck;
 
 public class SCTMUrlValidator extends URLCheck {
 
@@ -28,7 +28,7 @@ public class SCTMUrlValidator extends URLCheck {
       return;
     }
     try {
-      findText(open(new  URL(this.url)), "tmexecution");      
+      findText(open(new URL(this.url)), "tmexecution");      
     } catch (IOException e) {
       handleIOException(this.url, e);
     }

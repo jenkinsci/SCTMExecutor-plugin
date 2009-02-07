@@ -5,7 +5,6 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
 import hudson.plugins.sctmexecutor.exceptions.EncryptionException;
 import hudson.tasks.Builder;
 
@@ -16,9 +15,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -101,24 +100,25 @@ public class SCTMExecutor extends Builder {
       
       return true;
     } catch (ServiceException e) {
-      LOGGER.log(Level.SEVERE, MessageFormat.format("The URL {0} cannot be accessed or no service has been found.", serviceURL));
+      LOGGER.log(Level.WARNING, e.getMessage(), e);
       listener.error(MessageFormat.format(Messages.getString("SCTMExecutor.err.urlOrServiceBroken"), serviceURL)); //$NON-NLS-1$
       return false;
     } catch (RemoteException e) {
-      LOGGER.log(Level.SEVERE, e.getMessage());
+      LOGGER.log(Level.WARNING, e.getMessage(), e);
       listener.error(Messages.getString("SCTMExecutor.err.accessDenied")); //$NON-NLS-1$
       return false;
     } catch (EncryptionException e){
+      LOGGER.log(Level.WARNING, e.getMessage(), e);
       return false;
     } catch (Exception e) {
-      Hudson.getInstance().servletContext.log(Messages.getString("SCTMExecutor.log.unknownError"), e); //$NON-NLS-1$
-      listener.error(e.getLocalizedMessage());
+      LOGGER.log(Level.SEVERE, e.getMessage(), e);
+      listener.error(MessageFormat.format("{0} {1}", Messages.getString("SCTMExecutor.log.unknownError"), e.getLocalizedMessage()));
       return false;
     }
   }
 
   private void collectResults(AbstractBuild<?, ?> build, BuildListener listener, ExecutionWebService execService,
-      ISessionHandler sessionHandler, List<ExecutionHandle> execHandles) throws IOException, InterruptedException {
+      ISessionHandler sessionHandler, List<ExecutionHandle> execHandles) throws IOException, InterruptedException, ExecutionException {
     FilePath rootDir = build.getProject().getWorkspace();
     if (rootDir == null) {
       LOGGER.log(Level.SEVERE, "Cannot write the result file because slave is not connected.");
@@ -126,16 +126,16 @@ public class SCTMExecutor extends Builder {
     }
     
     rootDir = createResultDir(rootDir, build.number);
-    List<ResultCollectorThread> collectorThreads = new ArrayList<ResultCollectorThread>(execHandles.size());
-    ThreadPoolExecutor tp = new ThreadPoolExecutor(4, 8, 5, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(true));
+    ExecutorService tp = DESCRIPTOR.getExecutorPool();
+    List<Future<?>> results = new ArrayList<Future<?>>(execHandles.size());
     for (ExecutionHandle executionHandle : execHandles) {
       ResultCollectorThread resultCollector = new ResultCollectorThread(listener.getLogger(), execService, sessionHandler, executionHandle, new StdXMLResultWriter(rootDir, DESCRIPTOR.getServiceURL()));
-      tp.execute(resultCollector);
-      collectorThreads.add(resultCollector);
+      results.add(tp.submit(resultCollector));
     }
     
-    if (!tp.awaitTermination(timeout, TimeUnit.MINUTES))
-      listener.getLogger().append(MessageFormat.format("WARNING: Collecting results aborted because timeout ({0}) reached.", timeout));
+    for (Future<?> res : results) {
+      res.get();
+    }
   }
 
   private List<ExecutionHandle> startExecutions(BuildListener listener, ExecutionWebService execService, long sessionId)

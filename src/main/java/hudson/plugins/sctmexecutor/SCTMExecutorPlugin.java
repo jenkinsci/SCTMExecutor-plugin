@@ -14,4 +14,9 @@ public class SCTMExecutorPlugin extends Plugin {
   public void start() throws Exception {
     BuildStep.BUILDERS.add(SCTMExecutor.DESCRIPTOR);
   }
+  
+  @Override
+  public void stop() throws Exception {
+    SCTMExecutor.DESCRIPTOR.shutdown();
+  }
 }

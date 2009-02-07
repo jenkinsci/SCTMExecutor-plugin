@@ -8,9 +8,10 @@ import hudson.plugins.sctmexecutor.validators.NumberSingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.SCTMUrlValidator;
 import hudson.plugins.sctmexecutor.validators.TestConnectionValidator;
 import hudson.tasks.Builder;
-import hudson.util.FormFieldValidator;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.servlet.ServletException;
 
@@ -29,6 +30,7 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
   private String serviceURL;
   private String user;
   private String password;
+  private ExecutorService threadPool;
 
   SCTMExecutorDescriptor() {
     super(SCTMExecutor.class);
@@ -46,7 +48,11 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
     String str = formData.getString("projectId"); //$NON-NLS-1$
     int projectId = Integer.parseInt(str);
     str = formData.getString("timeout"); //$NON-NLS-1$
-    int timeout = Integer.parseInt(str);
+    int timeout;
+    if (str != null && !str.equals(""))
+      timeout = Integer.parseInt(str);
+    else
+      timeout = 0;
     return new SCTMExecutor(projectId, execDefIds, timeout);
   }
 
@@ -122,5 +128,16 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
       @QueryParameter("user") final String user,
       @QueryParameter("password") final String password) throws IOException, ServletException {
     new TestConnectionValidator(serviceURL, user, password).process();
+  }
+
+  public ExecutorService getExecutorPool() {
+    if (threadPool == null || threadPool.isShutdown() || threadPool.isTerminated())
+      threadPool = Executors.newFixedThreadPool(8);
+    return threadPool;
+  }
+
+  public void shutdown() {
+    if (threadPool != null)
+      threadPool.shutdown();
   }
 }
