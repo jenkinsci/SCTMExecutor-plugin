@@ -38,7 +38,6 @@ import com.borland.tm.webservices.tmexecution.ExecutionWebServiceServiceLocator;
  * 
  */
 public class SCTMExecutor extends Builder {
-  private static final int DEFAULT_TIMEOUT = 150;
   public static final SCTMExecutorDescriptor DESCRIPTOR = new SCTMExecutorDescriptor();
   private static final Logger LOGGER = Logger.getLogger("hudson.plumgins.sctmexecutor");  //$NON-NLS-1$
 
@@ -46,16 +45,12 @@ public class SCTMExecutor extends Builder {
 
   private final int projectId;
   private final String execDefIds;
-  private int timeout = DEFAULT_TIMEOUT; // in minutes
 
   @DataBoundConstructor
-  public SCTMExecutor(int projectId, String execDefIds, int timeout) {
+  public SCTMExecutor(int projectId, String execDefIds) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
-    if (timeout > 0)
-      this.timeout = timeout;
-    else
-      this.timeout = DEFAULT_TIMEOUT;
+    
   }
 
   public Descriptor<Builder> getDescriptor() {
@@ -68,10 +63,6 @@ public class SCTMExecutor extends Builder {
 
   public int getProjectId() {
     return projectId;
-  }
-  
-  public int getTimeout() {
-    return timeout;
   }
 
   @Override

@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.security.Key;
+import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,8 +15,7 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.SecretKeySpec;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Crypto-logic
@@ -37,17 +37,16 @@ final class PwdCrypt {
       OutputStream cos = new CipherOutputStream(out, c);
       cos.write(toCrypt.getBytes());
       cos.close();
-      
-      return new BASE64Encoder().encode(out.toByteArray());
+      return new String(new Base64().encode(out.toByteArray()));
     } catch (Exception e) {
-      LOGGER.log(Level.SEVERE, Messages.getString("PwdCrypt.err.pwdEncodeFailed")+e.getMessage()); //$NON-NLS-1$
+      LOGGER.log(Level.SEVERE, MessageFormat.format("Encode failed: {0}", e.getMessage())); //$NON-NLS-1$
       throw new EncryptionException(e);
     } 
   }
 
   static String decode(String secret, String pass ) { 
     try {
-      ByteArrayInputStream is = new ByteArrayInputStream(new BASE64Decoder().decodeBuffer(secret));
+      ByteArrayInputStream is = new ByteArrayInputStream(new Base64().decode(secret.getBytes()));
       Cipher c = Cipher.getInstance(CRYPTO_ALGORITHM); 
       Key k = new SecretKeySpec(pass.substring(0, 24).getBytes(), CRYPTO_ALGORITHM ); 
       c.init( Cipher.DECRYPT_MODE, k ); 
@@ -62,7 +61,7 @@ final class PwdCrypt {
       cis.close(); 
       return bos.toString();
     } catch (Exception e) {
-      LOGGER.log(Level.SEVERE, Messages.getString("PwdCrypt.err.pwdDeodeFailed")+e.getMessage()); //$NON-NLS-1$
+      LOGGER.log(Level.SEVERE, MessageFormat.format("Decode failed: ",e.getMessage())); //$NON-NLS-1$
       throw new EncryptionException(e);
     } 
   }

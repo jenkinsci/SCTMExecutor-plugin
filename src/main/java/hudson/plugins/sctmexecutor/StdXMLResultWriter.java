@@ -10,14 +10,13 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import com.borland.tm.webservices.tmexecution.ExecutionResult;
 import com.borland.tm.webservices.tmexecution.TestDefinitionResult;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 final class StdXMLResultWriter implements ITestResultWriter {
   private static final int NOT_EXECUTED = 3;
@@ -41,23 +40,26 @@ final class StdXMLResultWriter implements ITestResultWriter {
       try {
         FilePath resultFile = rootDir.child(resultFileName+".xml"); //$NON-NLS-1$
         OutputStream fos = resultFile.write();
-        XMLSerializer serializer = new XMLSerializer(fos, new OutputFormat("XML", "UTF-8", true)); //$NON-NLS-1$ //$NON-NLS-2$
-        ContentHandler handler = serializer.asContentHandler();
-        handler.startDocument();
-        writeTestSuite(handler, result);
-        handler.endDocument();
+        XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(fos);
+        writer.writeStartDocument();
+        writeTestSuite(writer, result);
+        writer.writeEndDocument();
         fos.close();
         done = 0;
       } catch (IOException e) {
         resultFileName = resultFileName + "[" + DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(new Date(System.currentTimeMillis())) //$NON-NLS-1$
             + "]"; //$NON-NLS-1$
         if (--done <= 0)
-          LOGGER.log(Level.SEVERE, Messages.getString("StdXMLResultWriter.err.writeResultFailed")); //$NON-NLS-1$
-      } catch (SAXException e) {
+          LOGGER.log(Level.SEVERE, "Cannot write result file."); //$NON-NLS-1$
+      } catch (InterruptedException e) {
         LOGGER.log(Level.SEVERE, e.getMessage());
         e.printStackTrace();
         done = 0;
-      } catch (InterruptedException e) {
+      } catch (XMLStreamException e) {
+        LOGGER.log(Level.SEVERE, e.getMessage());
+        e.printStackTrace();
+        done = 0;
+      } catch (FactoryConfigurationError e) {
         LOGGER.log(Level.SEVERE, e.getMessage());
         e.printStackTrace();
         done = 0;
@@ -65,30 +67,29 @@ final class StdXMLResultWriter implements ITestResultWriter {
     }
   }
 
-  private void writeTestSuite(ContentHandler handler, ExecutionResult result) throws SAXException {
-    AttributesImpl atts = new AttributesImpl();
+  private void writeTestSuite(XMLStreamWriter writer, ExecutionResult result) throws XMLStreamException {
     String execDefName = DEFAULT_SCTM_PACKAGENAME + result.getExecDefName();
-    writeTestSuiteCountAttributes(atts, result);    
-    atts.addAttribute("", "", "hostname", "CDATA", result.getExecServerName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    atts.addAttribute("", "", "name", "CDATA", execDefName); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    atts.addAttribute("", "", "timestamp", "CDATA", DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    writer.writeStartElement("testsuite"); //$NON-NLS-1$
+    writeTestSuiteCountAttributes(writer, result);    
+    writer.writeAttribute("hostname", result.getExecServerName()); //$NON-NLS-1$
+    writer.writeAttribute("name", execDefName); //$NON-NLS-1$
+    writer.writeAttribute("timestamp", DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format( //$NON-NLS-1$
         new Date(System.currentTimeMillis())));
-    handler.startElement("", "", "testsuite", atts); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     
     TestDefinitionResult setupTestDef = result.getSetupTestDef();
     TestDefinitionResult cleanupTestDef = result.getCleanupTestDef();
     if (setupTestDef != null)
-      writeTestResult(handler, setupTestDef, execDefName);
+      writeTestResult(writer, setupTestDef, execDefName);
     for (TestDefinitionResult testResult : result.getTestDefResult()) {
-      writeTestResult(handler, testResult, execDefName);
+      writeTestResult(writer, testResult, execDefName);
     }
     if (cleanupTestDef != null)
-      writeTestResult(handler, cleanupTestDef, execDefName);
+      writeTestResult(writer, cleanupTestDef, execDefName);
     
-    handler.endElement("", "", "testsuite"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    writer.writeEndElement();
   }
   
-  private void writeTestSuiteCountAttributes(AttributesImpl atts, ExecutionResult result) {
+  private void writeTestSuiteCountAttributes(XMLStreamWriter writer, ExecutionResult result) throws XMLStreamException {
     int errors = 0;
     int failures = 0;
     double duration = 0;
@@ -117,10 +118,10 @@ final class StdXMLResultWriter implements ITestResultWriter {
       duration += cleanupTestDef.getDuration() / 1000;
     }
     
-    atts.addAttribute("", "", "tests", "CDATA", String.valueOf(countTest(result))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    atts.addAttribute("", "", "errors", "CDATA", String.valueOf(errors)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    atts.addAttribute("", "", "failures", "CDATA", String.valueOf(failures)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    atts.addAttribute("", "", "time", "CDATA", String.valueOf(duration)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    writer.writeAttribute("tests", String.valueOf(countTest(result))); //$NON-NLS-1$
+    writer.writeAttribute("errors", String.valueOf(errors)); //$NON-NLS-1$
+    writer.writeAttribute("failures", String.valueOf(failures)); //$NON-NLS-1$
+    writer.writeAttribute("time", String.valueOf(duration)); //$NON-NLS-1$
   }
 
   private int countTest(ExecutionResult result) {
@@ -132,32 +133,29 @@ final class StdXMLResultWriter implements ITestResultWriter {
     return testCount;
   }
 
-  private void writeTestResult(ContentHandler handler, TestDefinitionResult testResult, String testsuiteName) throws SAXException {
-    AttributesImpl atts = new AttributesImpl();
-    atts.addAttribute("", "", "classname", "CDATA", testsuiteName); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    atts.addAttribute("", "", "name", "CDATA", testResult.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    atts.addAttribute("", "", "time", "CDATA", String.valueOf(testResult.getDuration() / 1000)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    handler.startElement("", "", "testcase", atts); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+  private void writeTestResult(XMLStreamWriter writer, TestDefinitionResult testResult, String testsuiteName) throws XMLStreamException {
+    writer.writeStartElement("testcase"); //$NON-NLS-1$
+    writer.writeAttribute("classname", testsuiteName); //$NON-NLS-1$
+    writer.writeAttribute("name", testResult.getName()); //$NON-NLS-1$
+    writer.writeAttribute("time", String.valueOf(testResult.getDuration() / 1000)); //$NON-NLS-1$
     if (testResult.getStatus() == FAILED)
-      writeFailure(handler, testResult.getResultURL());
+      writeFailure(writer, testResult.getResultURL());
     else if (testResult.getStatus() == NOT_EXECUTED)
-      writeError(handler, testResult.getResultURL());
-    handler.endElement("", "", "testcase"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      writeError(writer, testResult.getResultURL());
+    writer.writeEndElement();
   }
 
-  private void writeError(ContentHandler handler, String resultURL) throws SAXException {
-    AttributesImpl atts = new AttributesImpl();
-    atts.addAttribute("", "", "message", "CDATA", MessageFormat.format("{0}{1}", sctmHost, resultURL)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    atts.addAttribute("", "", "type", "CDATA", "SCTMError"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    handler.startElement("", "", "error", atts); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    handler.endElement("", "", "error"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+  private void writeError(XMLStreamWriter writer, String resultURL) throws XMLStreamException {
+    writer.writeStartElement("error"); //$NON-NLS-1$
+    writer.writeAttribute("message", MessageFormat.format("{0}{1}", sctmHost, resultURL)); //$NON-NLS-1$
+    writer.writeAttribute("type", "SCTMError"); //$NON-NLS-1$ //$NON-NLS-2$
+    writer.writeEndElement();
   }
 
-  private void writeFailure(ContentHandler handler, String resultURL) throws SAXException {
-    AttributesImpl atts = new AttributesImpl();
-    atts.addAttribute("", "", "message", "CDATA", MessageFormat.format("{0}{1}", sctmHost, resultURL)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    atts.addAttribute("", "", "type", "CDATA", Messages.getString("StdXMLResultWriter.testresult.failure")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    handler.startElement("", "", "failure", atts); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    handler.endElement("", "", "failure"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+  private void writeFailure(XMLStreamWriter writer, String resultURL) throws XMLStreamException {
+    writer.writeStartElement("failure"); //$NON-NLS-1$
+    writer.writeAttribute("message", MessageFormat.format("{0}{1}", sctmHost, resultURL)); //$NON-NLS-1$ //$NON-NLS-2$
+    writer.writeAttribute("type", Messages.getString("StdXMLResultWriter.testresult.failure")); //$NON-NLS-1$ //$NON-NLS-2$
+    writer.writeEndElement();
   }
 }

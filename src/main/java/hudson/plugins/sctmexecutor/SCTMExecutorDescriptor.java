@@ -47,13 +47,7 @@ public final class SCTMExecutorDescriptor extends Descriptor<Builder> {
     String execDefIds = formData.getString("execDefIds"); //$NON-NLS-1$
     String str = formData.getString("projectId"); //$NON-NLS-1$
     int projectId = Integer.parseInt(str);
-    str = formData.getString("timeout"); //$NON-NLS-1$
-    int timeout;
-    if (str != null && !str.equals(""))
-      timeout = Integer.parseInt(str);
-    else
-      timeout = 0;
-    return new SCTMExecutor(projectId, execDefIds, timeout);
+    return new SCTMExecutor(projectId, execDefIds);
   }
 
   @Override

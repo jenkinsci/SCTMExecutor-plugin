@@ -1,6 +1,5 @@
 package hudson.plugins.sctmexecutor;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -174,11 +173,6 @@ public class TestResultCollector {
     EasyMock.verify(serviceMock);
     EasyMock.verify(resultWriterMock1);
     EasyMock.verify(sessionHandlerMock);
-  }
-
-  @Test
-  public void test() throws Exception {
-    
   }
   
   private ExecutionResult createDummyResult() {

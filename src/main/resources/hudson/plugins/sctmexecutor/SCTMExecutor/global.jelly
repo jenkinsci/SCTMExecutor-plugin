@@ -13,7 +13,7 @@
       help="/plugin/SCTMExecutor/help-password.html">
       <f:password field="password" value="${descriptor.password}"/>
     </f:entry>
-    <f:validateButton title="Test Connection" progress="connecting..." 
+    <f:validateButton title="Test Connection" progress="${%SCTMExecutor.global.tryConnect}" 
         method="testConnection" with="serviceURL,user,password" />
   </f:section>
 </j:jelly>

@@ -5,9 +5,4 @@
   <f:entry title="${%SCTMExecutor.projectConf.property.label.projectId}" help="/plugin/SCTMExecutor/help-projectid.html">
     <f:textbox field="projectId" value="${instance.projectId}"/>
   </f:entry>
-  <f:advanced>
-    <f:entry title="${%SCTMExecutor.projectConf.property.label.timeout}" help="/plugin/SCTMExecutor/help-timeout.html">
-      <f:textbox field="timeout" value="${instance.timeout}"/>
-    </f:entry>
-  </f:advanced>
 </j:jelly>
