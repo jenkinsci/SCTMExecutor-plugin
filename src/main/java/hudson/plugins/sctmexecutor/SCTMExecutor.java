@@ -96,7 +96,10 @@ public class SCTMExecutor extends Builder {
       return false;
     } catch (RemoteException e) {
       LOGGER.log(Level.WARNING, e.getMessage(), e);
-      listener.error(Messages.getString("SCTMExecutor.err.accessDenied")); //$NON-NLS-1$
+      if (e.getMessage().contains("Not logged in."))
+        listener.error(Messages.getString("SCTMExecutor.err.accessDenied")); //$NON-NLS-1$
+      else
+        listener.error(e.getMessage());
       return false;
     } catch (EncryptionException e){
       LOGGER.log(Level.WARNING, e.getMessage(), e);
