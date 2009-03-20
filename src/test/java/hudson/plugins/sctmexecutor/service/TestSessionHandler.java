@@ -1,6 +1,8 @@
-package hudson.plugins.sctmexecutor;
+package hudson.plugins.sctmexecutor.service;
 
 import static org.junit.Assert.assertEquals;
+
+import hudson.plugins.sctmexecutor.service.SessionHandler;
 
 import java.rmi.RemoteException;
 
