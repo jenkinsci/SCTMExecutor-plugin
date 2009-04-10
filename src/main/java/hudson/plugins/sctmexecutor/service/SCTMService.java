@@ -30,16 +30,19 @@ public class SCTMService implements ISCTMService {
   
   private SystemService systemService;
   private ExecutionWebService execService;
-  private SessionHandler sessionHandler;
   private long sessionId;
   private volatile int logonRetryCount = 0;
+  private String user;
+  private String pwd;
 
   public SCTMService(String serviceURL, String user, String pwd) throws SCTMException {
     try {
+      this.user = user;
+      this.pwd = pwd;
+      
       systemService = new SystemServiceServiceLocator().getsccsystem(new URL(serviceURL + "/sccsystem?wsdl")); //$NON-NLS-1$
       execService = new ExecutionWebServiceServiceLocator().gettmexecution(new URL(serviceURL + "/tmexecution?wsdl")); //$NON-NLS-1$
-      sessionHandler = new SessionHandler(systemService, user, pwd);
-      this.sessionId = this.sessionHandler.getSessionId(-1);
+      this.sessionId = this.systemService.logonUser(this.user, this.pwd);;
     } catch (MalformedURLException e) {
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
       throw new SCTMException("The 'serviceURL' is not a valid url. Check the global configuration.");
@@ -61,19 +64,29 @@ public class SCTMService implements ISCTMService {
       logonRetryCount = 0;
       return convertToList(handles);
     } catch (RemoteException e) {
-      if (e.getMessage().contains("Not logged in.") && logonRetryCount < MAX_LOGONRETRYCOUNT) {
-        logonRetryCount++;
-        LOGGER.warning("Session lost - open new session by new login and try once more.");
-        try {
-          this.sessionId = this.sessionHandler.getSessionId(this.sessionId);
-          start(executionId);
-        } catch (RemoteException e1) {
-          LOGGER.log(Level.SEVERE, "Cannot open a new session. SCTM is busy.");
-        }
-      }
+      if (handleLostSessionException(executionId, e))
+        return start(executionId);
       LOGGER.log(Level.WARNING, e.getMessage(), e);
       throw new SCTMException(MessageFormat.format("Cannot start execution definition {0}. Check ID for existance.", executionId));
     }
+  }
+
+  private boolean handleLostSessionException(int executionId, RemoteException e) throws SCTMException {
+    if (e.getMessage().contains("Not logged in.") && logonRetryCount < MAX_LOGONRETRYCOUNT) {
+      logonRetryCount++;
+      LOGGER.warning("Session lost - open new session and try once more.");
+      try {
+        this.sessionId = this.systemService.logonUser(this.user, this.pwd);
+        return true;
+      } catch (RemoteException e1) {
+        LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        if (e.getMessage().contains("Not logged in"))
+          throw new SCTMException(Messages.getString("SCTMExecutor.err.accessDenied"));
+        else
+          throw new SCTMException(MessageFormat.format("Unknown Error: ",e.getMessage()));
+      }
+    }
+    return false;
   }
 
   private Collection<ExecutionHandle> convertToList(ExecutionHandle[] handles) {
@@ -92,6 +105,9 @@ public class SCTMService implements ISCTMService {
       ExecutionHandle[] handles = execService.startExecution(this.sessionId, executionId, buildNumber, 1, null);
       return convertToList(handles);
     } catch (RemoteException e) {
+      if (handleLostSessionException(executionId, e)) {
+        return start(executionId, buildNumber);
+      }
       LOGGER.log(Level.WARNING, e.getMessage(), e);
       throw new SCTMException(MessageFormat.format("Cannot start execution definition {0}. Check ID for existance.", executionId));
     }
@@ -104,6 +120,8 @@ public class SCTMService implements ISCTMService {
     try {
       return execService.getStateOfExecution(sessionId, handle) < 0;
     } catch (RemoteException e) {
+      if (handleLostSessionException(handle.getExecDefId(), e))
+        return isFinished(handle);
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
       String time = DateFormat.getTimeInstance(DateFormat.FULL).format(new Date(handle.getTimeStamp()));
       throw new SCTMException(MessageFormat.format("Cannot get state from run of the execution defintion {0} started at {1}. Check the Hudson and SilkCentral TestManager logs.", handle.getExecDefId(), time ));
@@ -117,21 +135,11 @@ public class SCTMService implements ISCTMService {
     try {
       return execService.getExecutionResult(this.sessionId, handle);
     } catch (RemoteException e) {
+      if (handleLostSessionException(handle.getExecDefId(), e))
+        return getExecutionResult(handle);
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
       String time = DateFormat.getTimeInstance(DateFormat.FULL).format(new Date(handle.getTimeStamp()));
       throw new SCTMException(MessageFormat.format("Cannot get result from run of the execution defintion {0} started at {1}. Check the Hudson and SilkCentral TestManager logs.", handle.getExecDefId(), time ));
-    }
-  }
-
-  private void login() throws SCTMException {
-    try {
-      this.sessionId = this.sessionHandler.getSessionId(this.sessionId);
-    } catch (RemoteException e) {
-      LOGGER.log(Level.SEVERE, e.getMessage(), e);
-      if (e.getMessage().contains("Not logged in"))
-        throw new SCTMException(Messages.getString("SCTMExecutor.err.accessDenied"));
-      else
-        throw new SCTMException(MessageFormat.format("Unknown Error: ",e.getMessage()));
     }
   }
 }

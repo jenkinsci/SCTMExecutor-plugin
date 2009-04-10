@@ -2,6 +2,10 @@ package hudson.plugins.sctmexecutor;
 
 import static org.junit.Assert.assertTrue;
 
+import hudson.plugins.sctmexecutor.exceptions.SCTMException;
+import hudson.plugins.sctmexecutor.service.ISCTMService;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.rmi.RemoteException;
@@ -17,162 +21,162 @@ import com.borland.tm.webservices.tmexecution.TestDefinitionResult;
 public class TestResultCollector {
   
   @Test
-  public void collectingResults() throws IOException {
-    ExecutionWebService serviceMock = createServiceMock();
+  public void collectingResults() throws SCTMException, FileNotFoundException {
+    ISCTMService serviceMock = createServiceMock();
     ExecutionResult result = createDummyResult();
-    EasyMock.expect(serviceMock.getExecutionResult(EasyMock.gt((long)1), (ExecutionHandle)EasyMock.notNull())).andReturn(result);
+    EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andReturn(result);
     
     ITestResultWriter resultWriterMock = EasyMock.createStrictMock(ITestResultWriter.class);
     resultWriterMock.write(result);
     
     ExecutionHandle handle = new ExecutionHandle(2, 100);
     
-    ISessionHandler sessionHandlerMock = EasyMock.createStrictMock(ISessionHandler.class);
-    EasyMock.expect(sessionHandlerMock.getSessionId(EasyMock.lt(0l))).andReturn(Long.valueOf(10));
-    
-    ResultCollectorThread aut = new ResultCollectorThread(new PrintStream("test.log"), serviceMock, sessionHandlerMock, handle, resultWriterMock);
+    ResultCollectorRunnable aut = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle, resultWriterMock);
     aut.setSleep(1);
     
     EasyMock.replay(serviceMock);
     EasyMock.replay(resultWriterMock);
-    EasyMock.replay(sessionHandlerMock);
     aut.run();
     EasyMock.verify(serviceMock);
     EasyMock.verify(resultWriterMock);
-    EasyMock.verify(sessionHandlerMock);
   }
   
   @Test
-  public void runCollectorThread() throws IOException {
-    ExecutionWebService serviceMock = EasyMock.createStrictMock(ExecutionWebService.class);
-    EasyMock.expect(serviceMock.getStateOfExecution(EasyMock.gt((long)1), (ExecutionHandle) EasyMock.notNull())).andReturn(2);
-    EasyMock.expectLastCall().times(2).andReturn(2);
-    EasyMock.expectLastCall().andReturn(-1);
+  public void runCollectorThread() throws SCTMException, FileNotFoundException {
+    ISCTMService serviceMock = EasyMock.createStrictMock(ISCTMService.class);
+    EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(false);
+    EasyMock.expectLastCall().times(2).andReturn(false);
+    EasyMock.expectLastCall().andReturn(true);
     ExecutionResult result = createDummyResult();
-    EasyMock.expect(serviceMock.getExecutionResult(EasyMock.gt((long)1), (ExecutionHandle)EasyMock.notNull())).andReturn(result);
+    EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andReturn(result);
     
     ITestResultWriter resultWriterMock = EasyMock.createStrictMock(ITestResultWriter.class);
     resultWriterMock.write(result);
     
     ExecutionHandle handle = new ExecutionHandle(2, 100);
     
-    ISessionHandler sessionHandlerMock = EasyMock.createStrictMock(ISessionHandler.class);
-    EasyMock.expect(sessionHandlerMock.getSessionId(EasyMock.lt(0l))).andReturn(Long.valueOf(10));
-    ResultCollectorThread aut = new ResultCollectorThread(new PrintStream("test.log"), serviceMock, sessionHandlerMock, handle, resultWriterMock);
+    ResultCollectorRunnable aut = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle, resultWriterMock);
     aut.setSleep(1);
     
     EasyMock.replay(serviceMock);
     EasyMock.replay(resultWriterMock);
-    EasyMock.replay(sessionHandlerMock);
     long start = System.currentTimeMillis();
     aut.run();
     long duration = (System.currentTimeMillis()-start)/1000;
     assertTrue(duration > 8 && duration < 16);
     EasyMock.verify(serviceMock);
     EasyMock.verify(resultWriterMock);
-    EasyMock.verify(sessionHandlerMock);
   }
   
   @Test(expected=RuntimeException.class)
   public void testBadRun() throws Exception {
-    ExecutionWebService serviceMock = EasyMock.createStrictMock(ExecutionWebService.class);
-    EasyMock.expect(serviceMock.getStateOfExecution(EasyMock.gt((long)1), (ExecutionHandle) EasyMock.notNull())).andThrow(new RemoteException());
+    ISCTMService serviceMock = EasyMock.createStrictMock(ISCTMService.class);
+    EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andThrow(new RemoteException());
     
     ExecutionHandle handle = new ExecutionHandle(2, 100);
     
-    ISessionHandler sessionHandlerMock = EasyMock.createStrictMock(ISessionHandler.class);
-    EasyMock.expect(sessionHandlerMock.getSessionId(EasyMock.lt(0l))).andReturn(Long.valueOf(10));
-    ResultCollectorThread aut = new ResultCollectorThread(new PrintStream("test.log"), serviceMock, sessionHandlerMock, handle, null);
+    ResultCollectorRunnable aut = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle, null);
     aut.setSleep(1);
     
     EasyMock.replay(serviceMock);
-    EasyMock.replay(sessionHandlerMock);
     aut.run();
     EasyMock.verify(serviceMock);
-    EasyMock.verify(sessionHandlerMock);
   }
   
   @Test(expected=RuntimeException.class)
   public void testBadResult() throws Exception {
-    ExecutionWebService serviceMock = createServiceMock();
-    EasyMock.expect(serviceMock.getExecutionResult(EasyMock.gt((long)1), (ExecutionHandle)EasyMock.notNull())).andThrow(new RemoteException());
-    EasyMock.expect(serviceMock.getStateOfExecution(EasyMock.gt((long)1), (ExecutionHandle) EasyMock.notNull())).andReturn(-1);
-    EasyMock.expect(serviceMock.getExecutionResult(EasyMock.gt((long)1), (ExecutionHandle)EasyMock.notNull())).andThrow(new RemoteException());
-    EasyMock.expect(serviceMock.getStateOfExecution(EasyMock.gt((long)1), (ExecutionHandle) EasyMock.notNull())).andReturn(-1);
-    EasyMock.expect(serviceMock.getExecutionResult(EasyMock.gt((long)1), (ExecutionHandle)EasyMock.notNull())).andThrow(new RemoteException());
-    EasyMock.expect(serviceMock.getStateOfExecution(EasyMock.gt((long)1), (ExecutionHandle) EasyMock.notNull())).andReturn(-1);
+    ISCTMService serviceMock = createServiceMock();
+    EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andThrow(new RemoteException());
+    EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(true);
+    EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andThrow(new RemoteException());
+    EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(true);
+    EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andThrow(new RemoteException());
     
     ExecutionHandle handle = new ExecutionHandle(2, 100);
     
-    ISessionHandler sessionHandlerMock = EasyMock.createStrictMock(ISessionHandler.class);
-    EasyMock.expect(sessionHandlerMock.getSessionId(EasyMock.lt(0l))).times(2).andReturn(Long.valueOf(10));
-    ResultCollectorThread aut = new ResultCollectorThread(new PrintStream("test.log"), serviceMock, sessionHandlerMock, handle, null);
+    ResultCollectorRunnable aut = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle, null);
     aut.setSleep(1);
     
     EasyMock.replay(serviceMock);
-    EasyMock.replay(sessionHandlerMock);
     aut.run();
     EasyMock.verify(serviceMock);
-    EasyMock.verify(sessionHandlerMock);
   }
   
   @Test
   public void testLostExecutionResult() throws Exception {
-    ExecutionWebService serviceMock = createServiceMock();
-    EasyMock.expect(serviceMock.getExecutionResult(EasyMock.gt((long)1), (ExecutionHandle)EasyMock.notNull())).andThrow(new RemoteException());
-    EasyMock.expect(serviceMock.getStateOfExecution(EasyMock.gt((long)1), (ExecutionHandle) EasyMock.notNull())).andReturn(-1);
-
+    ISCTMService serviceMock = createServiceMock();
+    EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andThrow(new SCTMException("dfdsf"));
+    EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(true);
+    
     ExecutionResult result = createDummyResult();
-    EasyMock.expect(serviceMock.getExecutionResult(EasyMock.gt((long)1), (ExecutionHandle)EasyMock.notNull())).andReturn(result);
+    EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andReturn(result);
     
     ITestResultWriter resultWriterMock1 = createTestResultWriterMock(result);
     
     ExecutionHandle handle1 = new ExecutionHandle(2, 100);
     
-    ISessionHandler sessionHandlerMock = EasyMock.createStrictMock(ISessionHandler.class);
-    EasyMock.expect(sessionHandlerMock.getSessionId(EasyMock.eq(-1l))).andReturn(Long.valueOf(10l));
-    EasyMock.expectLastCall().andReturn(Long.valueOf(10l));
-    
-    ResultCollectorThread aut1 = new ResultCollectorThread(new PrintStream("test.log"), serviceMock, sessionHandlerMock, handle1, resultWriterMock1);
+    ResultCollectorRunnable aut1 = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle1, resultWriterMock1);
     aut1.setSleep(1);
     
     EasyMock.replay(serviceMock);
     EasyMock.replay(resultWriterMock1);
-    EasyMock.replay(sessionHandlerMock);
     aut1.run();
     EasyMock.verify(serviceMock);
     EasyMock.verify(resultWriterMock1);
-    EasyMock.verify(sessionHandlerMock);
+  }
+  
+  @Test
+  public void testBadLostExecutionResult() throws Exception {
+    ISCTMService serviceMock = createServiceMock();
+    EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andThrow(new SCTMException("dfdsf"));
+    EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(true);
+    EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andThrow(new SCTMException("dfdsf"));
+    EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(true);
+    EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andThrow(new SCTMException("dfdsf"));
+    
+    ITestResultWriter resultWriterMock1 = EasyMock.createStrictMock(ITestResultWriter.class);
+    ExecutionHandle handle1 = new ExecutionHandle(2, 100);
+    ResultCollectorRunnable aut1 = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle1, resultWriterMock1);
+    aut1.setSleep(1);
+    
+    EasyMock.replay(serviceMock);
+    EasyMock.replay(resultWriterMock1);
+    aut1.run();
+    EasyMock.verify(serviceMock);
+    EasyMock.verify(resultWriterMock1);
   }
   
   @Test
   public void testLostSession() throws Exception {
-    ExecutionWebService serviceMock = EasyMock.createStrictMock(ExecutionWebService.class);
-    EasyMock.expect(serviceMock.getStateOfExecution(EasyMock.gt((long)0), (ExecutionHandle) EasyMock.notNull())).andThrow(new RemoteException("Invalid identifier. Not logged in."));
-    
-    EasyMock.expect(serviceMock.getStateOfExecution(EasyMock.gt((long)0), (ExecutionHandle) EasyMock.notNull())).andReturn(-1);
-    ExecutionResult result = createDummyResult();
-    EasyMock.expect(serviceMock.getExecutionResult(EasyMock.gt((long)0), (ExecutionHandle)EasyMock.notNull())).andReturn(result);
-    
-    ITestResultWriter resultWriterMock1 = createTestResultWriterMock(result);
-    
+    ISCTMService serviceMock = EasyMock.createStrictMock(ISCTMService.class);
+    EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andThrow(new SCTMException("Logon failed."));
+    ITestResultWriter resultWriterMock1 = EasyMock.createStrictMock(ITestResultWriter.class);
     ExecutionHandle handle1 = new ExecutionHandle(2, 100);
-    
-    ISessionHandler sessionHandlerMock = EasyMock.createStrictMock(ISessionHandler.class);
-    EasyMock.expect(sessionHandlerMock.getSessionId(EasyMock.eq(-1l))).andReturn(Long.valueOf(10l));
-    EasyMock.expect(sessionHandlerMock.getSessionId(EasyMock.eq(10l))).andReturn(Long.valueOf(20l));
-    EasyMock.expect(sessionHandlerMock.getSessionId(EasyMock.eq(-1l))).andReturn(Long.valueOf(20l));
-    
-    ResultCollectorThread aut1 = new ResultCollectorThread(new PrintStream("test.log"), serviceMock, sessionHandlerMock, handle1, resultWriterMock1);
+    ResultCollectorRunnable aut1 = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle1, resultWriterMock1);
     aut1.setSleep(1);
     
     EasyMock.replay(serviceMock);
     EasyMock.replay(resultWriterMock1);
-    EasyMock.replay(sessionHandlerMock);
     aut1.run();
     EasyMock.verify(serviceMock);
     EasyMock.verify(resultWriterMock1);
-    EasyMock.verify(sessionHandlerMock);
+  }
+  
+  @Test
+  public void testLostSession2() throws Exception {
+    ISCTMService serviceMock = EasyMock.createStrictMock(ISCTMService.class);
+    EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(true);
+    EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andThrow(new SCTMException("Logon failed."));
+    ITestResultWriter resultWriterMock1 = EasyMock.createStrictMock(ITestResultWriter.class);
+    ExecutionHandle handle1 = new ExecutionHandle(2, 100);
+    ResultCollectorRunnable aut1 = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle1, resultWriterMock1);
+    aut1.setSleep(1);
+    
+    EasyMock.replay(serviceMock);
+    EasyMock.replay(resultWriterMock1);
+    aut1.run();
+    EasyMock.verify(serviceMock);
+    EasyMock.verify(resultWriterMock1);
   }
   
   private ExecutionResult createDummyResult() {
@@ -186,10 +190,10 @@ public class TestResultCollector {
     return result;
   }
 
-  private ExecutionWebService createServiceMock() throws RemoteException {
-    ExecutionWebService serviceMock = EasyMock.createStrictMock(ExecutionWebService.class);
-    EasyMock.expect(serviceMock.getStateOfExecution(EasyMock.gt((long)0), (ExecutionHandle) EasyMock.notNull())).andReturn(2);
-    EasyMock.expectLastCall().andReturn(-1);
+  private ISCTMService createServiceMock() throws SCTMException {
+    ISCTMService serviceMock = EasyMock.createStrictMock(ISCTMService.class);
+    EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(false);
+    EasyMock.expectLastCall().andReturn(true);
     return serviceMock;
   }
 
