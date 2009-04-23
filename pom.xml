@@ -13,7 +13,7 @@
   <packaging>hpi</packaging>
   <name>SCTMExecutor</name>
   <version>1.1-SNAPSHOT</version>
-  <url>http://hudson.gotdns.com/wiki/display/HUDSON/SCTMExecutor</url>
+  <url>http://wiki.hudson-ci.org/display/HUDSON/SCTMExecutor</url>
   <description>This plug-in allows executions on a Borland SilkCentral Test Manager 2008 R2 or later.</description>
   
   <licenses>
