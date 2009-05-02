@@ -3,38 +3,30 @@ package hudson.plugins.sctmexecutor;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
-import hudson.model.Descriptor;
-import hudson.plugins.sctmexecutor.exceptions.EncryptionException;
+import hudson.model.Hudson;
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 import hudson.plugins.sctmexecutor.service.ISCTMService;
-import hudson.plugins.sctmexecutor.service.SCTMServiceFactory;
+import hudson.plugins.sctmexecutor.service.SCTMReRunProxy;
+import hudson.plugins.sctmexecutor.service.SCTMService;
 import hudson.tasks.Builder;
 
 import java.io.IOException;
-import java.net.URL;
-import java.rmi.RemoteException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.xml.rpc.ServiceException;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import com.borland.scc.sccsystem.SystemService;
-import com.borland.scc.sccsystem.SystemServiceServiceLocator;
 import com.borland.tm.webservices.tmexecution.ExecutionHandle;
-import com.borland.tm.webservices.tmexecution.ExecutionWebService;
-import com.borland.tm.webservices.tmexecution.ExecutionWebServiceServiceLocator;
 
 /**
  * Executes a specified execution definition on Borland's SilkCentral Test Manager.
@@ -43,6 +35,9 @@ import com.borland.tm.webservices.tmexecution.ExecutionWebServiceServiceLocator;
  * 
  */
 public class SCTMExecutor extends Builder {
+  static final int OPT_NO_BUILD_NUMBER = 1;
+  static final int OPT_USE_THIS_BUILD_NUMBER = 2;
+  static final int OPT_USE_UPSTREAMJOB_BUILDNUMBER = 3;
   public static final SCTMExecutorDescriptor DESCRIPTOR = new SCTMExecutorDescriptor();
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
 
@@ -50,15 +45,21 @@ public class SCTMExecutor extends Builder {
 
   private final int projectId;
   private final String execDefIds;
+  private final int buildNumberUsageOption;
+  private final String upStreamJobName;
+  
+  private Boolean failedBefore = false; // set to true if a action is failed but the execution can be continued
 
   @DataBoundConstructor
-  public SCTMExecutor(int projectId, String execDefIds) {
+  public SCTMExecutor(int projectId, String execDefIds, int buildNumberUsageOption, String upStreamJobName) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
-
+    this.buildNumberUsageOption = buildNumberUsageOption;
+    this.upStreamJobName = upStreamJobName;
   }
 
-  public Descriptor<Builder> getDescriptor() {
+  @Override
+  public SCTMExecutorDescriptor getDescriptor() {
     return DESCRIPTOR;
   }
 
@@ -69,24 +70,53 @@ public class SCTMExecutor extends Builder {
   public int getProjectId() {
     return projectId;
   }
+  
+  public int getBuildNumberUsageOption() {
+    return this.buildNumberUsageOption;
+  }
+  
+  public String getUpStreamJobName() {
+    return this.upStreamJobName;
+  }
+  
+  public String[] getUpStreamProjects() {
+    Collection<String> jobNames = Hudson.getInstance().getJobNames(); // TODO filter real upstream projects
+    return jobNames.toArray(new String[jobNames.size()]);
+  }
 
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
     ISCTMService service = null;
     String serviceURL = DESCRIPTOR.getServiceURL();
     try {
-      service = SCTMServiceFactory.getInstance().getService(serviceURL, DESCRIPTOR.getUser(), DESCRIPTOR.getPassword(), true);
+      service = new SCTMReRunProxy(new SCTMService(serviceURL, DESCRIPTOR.getUser(), DESCRIPTOR.getPassword()));
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
     } catch (SCTMException e) {
       listener.error(e.getMessage());
       return false;
     }
-
-    Queue<ExecutionHandle> execHandles = startExecutions(listener, service);
+    int buildNumber = getBuildNumber(build, listener);
+    Queue<ExecutionHandle> execHandles = startExecutions(listener, service, buildNumber);
     
     collectResults(build, listener, service, execHandles);
-  
-    return true;
+    return !failedBefore;
+  }
+
+  private int getBuildNumber(AbstractBuild<?, ?> build, BuildListener listener) {
+    if (OPT_USE_UPSTREAMJOB_BUILDNUMBER == buildNumberUsageOption)
+      return getBuildNumberFromUpStreamProject(upStreamJobName, build.getUpstreamBuilds());
+    else if (OPT_USE_THIS_BUILD_NUMBER == buildNumberUsageOption)
+      return build.number;
+    else
+      return -1;
+  }
+
+  private int getBuildNumberFromUpStreamProject(String projectName, Map<AbstractProject, Integer> upstreamBuilds) {
+    for (AbstractProject<?,?> project : upstreamBuilds.keySet()) {
+      if (project.getName().equals(projectName))
+        return upstreamBuilds.get(project);
+    }
+    return -1;
   }
 
   private void collectResults(AbstractBuild<?, ?> build, BuildListener listener, ISCTMService service, Queue<ExecutionHandle> execHandles) {
@@ -112,16 +142,19 @@ public class SCTMExecutor extends Builder {
     } catch (Exception e) {
       LOGGER.severe(e.getMessage());
       listener.error("Cannot create directory for the testresults in the hudson workspace. Check permissions and diskspace.");
-      throw new RuntimeException();
+      failedBefore = true;
     }
   }
 
-  private Queue<ExecutionHandle> startExecutions(BuildListener listener, ISCTMService service) {
+  private Queue<ExecutionHandle> startExecutions(BuildListener listener, ISCTMService service, int buildNumber) {
     Queue<ExecutionHandle> execHandles = new LinkedList<ExecutionHandle>();
     for (Integer execDefId : csvToIntList(execDefIds)) {
       Collection<ExecutionHandle> result = null;
       try {
-        result = service.start(execDefId);
+        if (OPT_NO_BUILD_NUMBER == buildNumberUsageOption || buildNumber == -1)
+          result = service.start(execDefId);
+        else
+          result = service.start(execDefId, String.valueOf(buildNumber));
         if (result == null || result.size() <= 0) {
           listener.error(Messages.getString(Messages.getString("SCTMExecutor.err.execDefNotFound"), execDefId)); //$NON-NLS-1$
         } else {
@@ -130,6 +163,7 @@ public class SCTMExecutor extends Builder {
         }
       } catch (SCTMException e) {
         listener.error(e.getMessage());
+        failedBefore = true;
       }
     }
     return execHandles;

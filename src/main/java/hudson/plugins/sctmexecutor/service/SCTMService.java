@@ -6,11 +6,9 @@ import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,7 +49,7 @@ public class SCTMService implements ISCTMService {
       throw new SCTMException(MessageFormat.format(Messages.getString("SCTMExecutor.err.urlOrServiceBroken"), serviceURL));
     } catch (RemoteException e) {
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
-      throw new SCTMException("Logon failed.");
+      throw new SCTMException(MessageFormat.format("SCTM Fatal Error: {0}", e.getMessage()));
     }
   }
   
@@ -67,7 +65,7 @@ public class SCTMService implements ISCTMService {
       if (handleLostSessionException(executionId, e))
         return start(executionId);
       LOGGER.log(Level.WARNING, e.getMessage(), e);
-      throw new SCTMException(MessageFormat.format("Cannot start execution definition {0}. Check ID for existance.", executionId));
+      throw new SCTMException(e.getMessage());
     }
   }
 
@@ -83,7 +81,7 @@ public class SCTMService implements ISCTMService {
         if (e.getMessage().contains("Not logged in"))
           throw new SCTMException(Messages.getString("SCTMExecutor.err.accessDenied"));
         else
-          throw new SCTMException(MessageFormat.format("Unknown Error: ",e.getMessage()));
+          throw new SCTMException(MessageFormat.format("SCTM Fatal Error: {0}", e.getMessage()));
       }
     }
     return false;
@@ -109,7 +107,7 @@ public class SCTMService implements ISCTMService {
         return start(executionId, buildNumber);
       }
       LOGGER.log(Level.WARNING, e.getMessage(), e);
-      throw new SCTMException(MessageFormat.format("Cannot start execution definition {0}. Check ID for existance.", executionId));
+      throw new SCTMException(MessageFormat.format("SCTM Fatal Error: {0}", e.getMessage()));
     }
   }
   
@@ -123,8 +121,7 @@ public class SCTMService implements ISCTMService {
       if (handleLostSessionException(handle.getExecDefId(), e))
         return isFinished(handle);
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
-      String time = DateFormat.getTimeInstance(DateFormat.FULL).format(new Date(handle.getTimeStamp()));
-      throw new SCTMException(MessageFormat.format("Cannot get state from run of the execution defintion {0} started at {1}. Check the Hudson and SilkCentral TestManager logs.", handle.getExecDefId(), time ));
+      throw new SCTMException(MessageFormat.format("SCTM Fatal Error: {0}", e.getMessage()));
     }
   }
   
@@ -138,8 +135,7 @@ public class SCTMService implements ISCTMService {
       if (handleLostSessionException(handle.getExecDefId(), e))
         return getExecutionResult(handle);
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
-      String time = DateFormat.getTimeInstance(DateFormat.FULL).format(new Date(handle.getTimeStamp()));
-      throw new SCTMException(MessageFormat.format("Cannot get result from run of the execution defintion {0} started at {1}. Check the Hudson and SilkCentral TestManager logs.", handle.getExecDefId(), time ));
+      throw new SCTMException(MessageFormat.format("SCTM Fatal Error: {0}", e.getMessage()));
     }
   }
 }

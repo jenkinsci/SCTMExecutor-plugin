@@ -67,7 +67,7 @@ final class ResultCollectorRunnable implements Runnable {
           consolenLogger.println(MessageFormat.format("INFO: Remote call to SCTM failed during result collection for execution definition {0}. Try once more {1}.", handle.getExecDefId(), retries));
           run();
         } else
-          consolenLogger.println(MessageFormat.format("ERROR: Collecting results for execution definition {0} stopped because of a fatal error.", handle.getExecDefId()));
+          consolenLogger.println(MessageFormat.format("ERROR for execution definition {0}: ", handle.getExecDefId()));
       }
     } catch (InterruptedException e) {
       consolenLogger.println(MessageFormat.format("INFO: Collecting results for execution definition {0} aborted.", handle.getExecDefId()));
