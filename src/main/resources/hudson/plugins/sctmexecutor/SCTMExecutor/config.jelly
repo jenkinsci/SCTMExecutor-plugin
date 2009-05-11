@@ -9,13 +9,22 @@
     <f:entry title="Start Delay:" help="/plugin/SCTMExecutor/help-startDelay.html">
       <f:textbox field="delay" value="${instance.delay}" />
     </f:entry>
-  <!--
-    f:radioBlock name="buildNumberUsageOption" value="1" checked="${instance.buildNumberUsageOption=='1'}" title="Don't care about a build number" />
+    <f:entry title="Continue on error:" help="/plugin/SCTMExecutor/help-contAfterErr.html">
+      <f:checkbox field="continueOnError" value="${instance.continueOnError}" />
+    </f:entry>
+    <!--f:radioBlock name="buildNumberUsageOption" value="1" checked="${instance.buildNumberUsageOption=='1'}" title="Don't care about a build number" />
     <f:radioBlock name="buildNumberUsageOption" value="2" checked="${instance.buildNumberUsageOption=='2'}" title="Use build number from this job" />
     <f:radioBlock name="buildNumberUsageOption" value="3" checked="${instance.buildNumberUsageOption=='3'}" title="Use build number from upstream job">
-    f:dropdownList name="upStreamJobName" title="Name of upstream job"> <j:forEach var="d" items="${instance.getUpStreamProjects()}" varStatus="loop">
-    <f:dropdownListBlock value="${d}" selected="${instance.upStreamJobName==d}" title="${d}"> </f:dropdownListBlock> </j:forEach> </f:dropdownList f:entry
-    title="Name of upstream job"> <f:textbox field="upStreamJobName" value="${instance.upStreamJobName}"></f:textbox> </f:entry> </f:radioBlock
-  -->
+      <f:dropdownList name="upStreamJobName" title="Name of upstream job">
+        <j:forEach var="d" items="${instance.getUpStreamProjects()}" varStatus="loop">
+          <f:dropdownListBlock name="upStreamJobName" value="${d}" selected="${instance.upStreamJobName==d}" title="${d}">
+          </f:dropdownListBlock>
+        </j:forEach>
+      </f:dropdownList>
+      <f:entry title="Name of upstream job">
+        <f:textbox field="upStreamJobName" value="${instance.upStreamJobName}">
+        </f:textbox>
+      </f:entry>
+    </f:radioBlock-->
   </f:advanced>
 </j:jelly>

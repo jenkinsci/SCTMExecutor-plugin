@@ -15,6 +15,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.borland.tm.webservices.tmexecution.ExecutionHandle;
 import com.borland.tm.webservices.tmexecution.ExecutionResult;
 import com.borland.tm.webservices.tmexecution.TestDefinitionResult;
 
@@ -53,15 +54,12 @@ final class StdXMLResultWriter implements ITestResultWriter {
           LOGGER.log(Level.SEVERE, "Cannot write result file."); //$NON-NLS-1$
       } catch (InterruptedException e) {
         LOGGER.log(Level.SEVERE, e.getMessage());
-        e.printStackTrace();
         done = 0;
       } catch (XMLStreamException e) {
         LOGGER.log(Level.SEVERE, e.getMessage());
-        e.printStackTrace();
         done = 0;
       } catch (FactoryConfigurationError e) {
         LOGGER.log(Level.SEVERE, e.getMessage());
-        e.printStackTrace();
         done = 0;
       }
     }
@@ -158,4 +156,5 @@ final class StdXMLResultWriter implements ITestResultWriter {
     writer.writeAttribute("type", Messages.getString("StdXMLResultWriter.testresult.failure")); //$NON-NLS-1$ //$NON-NLS-2$
     writer.writeEndElement();
   }
+
 }

@@ -59,12 +59,13 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     int delay = formData.getInt("delay");
 //    JSONObject buildNumberUsageOption = (JSONObject)formData.get("buildNumberUsageOption");
     String upStreamJobName = "";
-    int optValue = 1;//buildNumberUsageOption.getInt("value");
+    int optValue = SCTMExecutor.OPT_NO_BUILD_NUMBER;// buildNumberUsageOption.getInt("value");
 //    if (optValue == SCTMExecutor.OPT_USE_UPSTREAMJOB_BUILDNUMBER) {
 //      upStreamJobName = buildNumberUsageOption.getString("upStreamJobName");
 //    }
+    boolean contOnErr = formData.getBoolean("continueOnError");
     
-    return new SCTMExecutor(projectId, execDefIds, delay, optValue, upStreamJobName);
+    return new SCTMExecutor(projectId, execDefIds, delay, optValue, upStreamJobName, contOnErr);
   }
 
   @Override
@@ -155,7 +156,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     return FormValidation.validateNonNegativeInteger(value);
   }
   
-  public FormValidation doCheckDelay(StaplerRequest rep, StaplerResponse rsp, @QueryParameter("delay") final String value) {
+  public FormValidation doCheckDelay(StaplerRequest rep, StaplerResponse rsp, @QueryParameter("value") final String value) {
     return FormValidation.validateNonNegativeInteger(value);
   }
 

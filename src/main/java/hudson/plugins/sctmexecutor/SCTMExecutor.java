@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -49,16 +48,18 @@ public class SCTMExecutor extends Builder {
   private final int delay;
   private final int buildNumberUsageOption;
   private final String upStreamJobName;
+  private final boolean continueOnError;
   
   private Boolean failedBefore = false; // set to true if a action failed but the execution can be continued
 
   @DataBoundConstructor
-  public SCTMExecutor(int projectId, String execDefIds, int delay, int buildNumberUsageOption, String upStreamJobName) {
+  public SCTMExecutor(int projectId, String execDefIds, int delay, int buildNumberUsageOption, String upStreamJobName, boolean contOnErr) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
     this.delay = delay;
     this.buildNumberUsageOption = buildNumberUsageOption;
     this.upStreamJobName = upStreamJobName;
+    this.continueOnError = contOnErr;
   }
 
   @Override
@@ -86,8 +87,13 @@ public class SCTMExecutor extends Builder {
     return this.upStreamJobName;
   }
   
+  public boolean getContinueOnError() {
+    return this.continueOnError;
+  }
+  
   public String[] getUpStreamProjects() {
     Collection<String> jobNames = Hudson.getInstance().getJobNames(); // TODO filter real upstream projects
+    
     return jobNames.toArray(new String[jobNames.size()]);
   }
 
@@ -106,23 +112,25 @@ public class SCTMExecutor extends Builder {
     Queue<ExecutionHandle> execHandles = startExecutions(listener, service, buildNumber);
     
     collectResults(build, listener, service, execHandles);
-    return !failedBefore;
+  
+    return continueOnError || !failedBefore;
   }
 
   private int getBuildNumber(AbstractBuild<?, ?> build, BuildListener listener) {
     if (OPT_USE_UPSTREAMJOB_BUILDNUMBER == buildNumberUsageOption)
-      return getBuildNumberFromUpStreamProject(upStreamJobName, build.getUpstreamBuilds());
+      return getBuildNumberFromUpStreamProject(upStreamJobName, build.getUpstreamBuilds(), listener);
     else if (OPT_USE_THIS_BUILD_NUMBER == buildNumberUsageOption)
       return build.number;
     else
       return -1;
   }
 
-  private int getBuildNumberFromUpStreamProject(String projectName, Map<AbstractProject, Integer> upstreamBuilds) {
+  private int getBuildNumberFromUpStreamProject(String projectName, Map<AbstractProject, Integer> upstreamBuilds, BuildListener listener) {
     for (AbstractProject<?,?> project : upstreamBuilds.keySet()) {
       if (project.getName().equals(projectName))
         return upstreamBuilds.get(project);
     }
+    listener.error(MessageFormat.format("The configured job {0} ist not found as Upstreamjob. Check your configuration!", projectName));
     return -1;
   }
 
