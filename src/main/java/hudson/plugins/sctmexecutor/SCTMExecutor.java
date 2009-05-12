@@ -50,7 +50,7 @@ public class SCTMExecutor extends Builder {
   private final String upStreamJobName;
   private final boolean continueOnError;
   
-  private Boolean succeed = Boolean.TRUE;
+  private boolean succeed = true;
 
   @DataBoundConstructor
   public SCTMExecutor(int projectId, String execDefIds, int delay, int buildNumberUsageOption, String upStreamJobName, boolean contOnErr) {
@@ -100,14 +100,14 @@ public class SCTMExecutor extends Builder {
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
     ISCTMService service = null;
-    succeed = Boolean.TRUE;
+    succeed = false;
     String serviceURL = DESCRIPTOR.getServiceURL();
     try {
       service = new SCTMReRunProxy(new SCTMService(serviceURL, DESCRIPTOR.getUser(), DESCRIPTOR.getPassword()));
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
     } catch (SCTMException e) {
       listener.error(e.getMessage());
-      succeed = Boolean.FALSE;
+      return false;
     }
     int buildNumber = getBuildNumber(build, listener);
     Queue<ExecutionHandle> execHandles = startExecutions(listener, service, buildNumber);
@@ -158,7 +158,7 @@ public class SCTMExecutor extends Builder {
     } catch (Exception e) {
       LOGGER.severe(e.getMessage());
       listener.error("Cannot create directory for the testresults in the hudson workspace. Check permissions and diskspace.");
-      succeed = Boolean.FALSE;
+      succeed = false;
     }
   }
 
@@ -182,10 +182,10 @@ public class SCTMExecutor extends Builder {
           Thread.sleep(delay*1000);
       } catch (SCTMException e) {
         listener.error(e.getMessage());
-        succeed = Boolean.FALSE;
+        succeed = false;
       } catch (InterruptedException e) {
         LOGGER.severe(e.getMessage());
-        succeed = Boolean.FALSE;
+        succeed = false;
       }
     }
     return execHandles;
