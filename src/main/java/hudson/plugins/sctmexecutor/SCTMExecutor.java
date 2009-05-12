@@ -50,7 +50,7 @@ public class SCTMExecutor extends Builder {
   private final String upStreamJobName;
   private final boolean continueOnError;
   
-  private Boolean failedBefore = false; // set to true if a action failed but the execution can be continued
+  private Boolean succeed = Boolean.TRUE;
 
   @DataBoundConstructor
   public SCTMExecutor(int projectId, String execDefIds, int delay, int buildNumberUsageOption, String upStreamJobName, boolean contOnErr) {
@@ -100,20 +100,21 @@ public class SCTMExecutor extends Builder {
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
     ISCTMService service = null;
+    succeed = Boolean.TRUE;
     String serviceURL = DESCRIPTOR.getServiceURL();
     try {
       service = new SCTMReRunProxy(new SCTMService(serviceURL, DESCRIPTOR.getUser(), DESCRIPTOR.getPassword()));
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
     } catch (SCTMException e) {
       listener.error(e.getMessage());
-      return false;
+      succeed = Boolean.FALSE;
     }
     int buildNumber = getBuildNumber(build, listener);
     Queue<ExecutionHandle> execHandles = startExecutions(listener, service, buildNumber);
     
     collectResults(build, listener, service, execHandles);
   
-    return continueOnError || !failedBefore;
+    return continueOnError || succeed;
   }
 
   private int getBuildNumber(AbstractBuild<?, ?> build, BuildListener listener) {
@@ -157,7 +158,7 @@ public class SCTMExecutor extends Builder {
     } catch (Exception e) {
       LOGGER.severe(e.getMessage());
       listener.error("Cannot create directory for the testresults in the hudson workspace. Check permissions and diskspace.");
-      failedBefore = true;
+      succeed = Boolean.FALSE;
     }
   }
 
@@ -181,10 +182,10 @@ public class SCTMExecutor extends Builder {
           Thread.sleep(delay*1000);
       } catch (SCTMException e) {
         listener.error(e.getMessage());
-        failedBefore = true;
+        succeed = Boolean.FALSE;
       } catch (InterruptedException e) {
         LOGGER.severe(e.getMessage());
-        failedBefore = true;
+        succeed = Boolean.FALSE;
       }
     }
     return execHandles;
