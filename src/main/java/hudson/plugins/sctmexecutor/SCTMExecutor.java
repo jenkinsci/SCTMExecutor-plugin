@@ -50,7 +50,7 @@ public class SCTMExecutor extends Builder {
   private final String upStreamJobName;
   private final boolean continueOnError;
   
-  private boolean succeed = true;
+  private boolean succeed = false;
 
   @DataBoundConstructor
   public SCTMExecutor(int projectId, String execDefIds, int delay, int buildNumberUsageOption, String upStreamJobName, boolean contOnErr) {
@@ -100,11 +100,11 @@ public class SCTMExecutor extends Builder {
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
     ISCTMService service = null;
-    succeed = false;
     String serviceURL = DESCRIPTOR.getServiceURL();
     try {
       service = new SCTMReRunProxy(new SCTMService(serviceURL, DESCRIPTOR.getUser(), DESCRIPTOR.getPassword()));
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
+      succeed = true;
     } catch (SCTMException e) {
       listener.error(e.getMessage());
       return false;
