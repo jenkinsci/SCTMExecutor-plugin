@@ -19,14 +19,12 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kohsuke.stapler.DataBoundConstructor;
-
-import com.borland.tm.webservices.tmexecution.ExecutionHandle;
 
 /**
  * Executes a specified execution definition on Borland's SilkCentral Test Manager.
@@ -34,7 +32,7 @@ import com.borland.tm.webservices.tmexecution.ExecutionHandle;
  * @author Thomas Fuerer
  * 
  */
-public class SCTMExecutor extends Builder {
+public final class SCTMExecutor extends Builder {
   public static final SCTMExecutorDescriptor DESCRIPTOR = new SCTMExecutorDescriptor();
   static final int OPT_NO_BUILD_NUMBER = 1;
   static final int OPT_USE_THIS_BUILD_NUMBER = 2;
@@ -49,17 +47,19 @@ public class SCTMExecutor extends Builder {
   private final int buildNumberUsageOption;
   private final String upStreamJobName;
   private final boolean continueOnError;
+  private final boolean collectResults;
   
-  private boolean succeed = false;
+  private boolean succeed;
 
   @DataBoundConstructor
-  public SCTMExecutor(int projectId, String execDefIds, int delay, int buildNumberUsageOption, String upStreamJobName, boolean contOnErr) {
+  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption, final String upStreamJobName, final boolean contOnErr, final boolean collectResults) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
     this.delay = delay;
     this.buildNumberUsageOption = buildNumberUsageOption;
     this.upStreamJobName = upStreamJobName;
     this.continueOnError = contOnErr;
+    this.collectResults = collectResults;
   }
 
   @Override
@@ -87,7 +87,7 @@ public class SCTMExecutor extends Builder {
     return this.upStreamJobName;
   }
   
-  public boolean getContinueOnError() {
+  public boolean isContinueOnError() {
     return this.continueOnError;
   }
   
@@ -97,23 +97,44 @@ public class SCTMExecutor extends Builder {
     return jobNames.toArray(new String[jobNames.size()]);
   }
 
+  public boolean isCollectResults() {
+    return this.collectResults;
+  }
+  
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-    ISCTMService service = null;
     String serviceURL = DESCRIPTOR.getServiceURL();
     try {
-      service = new SCTMReRunProxy(new SCTMService(serviceURL, DESCRIPTOR.getUser(), DESCRIPTOR.getPassword()));
+      ISCTMService service = new SCTMReRunProxy(new SCTMService(serviceURL, DESCRIPTOR.getUser(), DESCRIPTOR.getPassword()));
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
+      FilePath rootDir = createResultDir(build.number, build, listener);
+      Collection<Integer> ids = csvToIntList(execDefIds);
+
+      Collection<Future<?>> results = new ArrayList<Future<?>>(ids.size());
+      for (Integer execDefId : ids) {        
+        StdXMLResultWriter resultWriter = null;
+        if (collectResults)
+          resultWriter = new StdXMLResultWriter(rootDir, DESCRIPTOR.getServiceURL());
+        Runnable resultCollector = new ExecutionRunnable(service, execDefId, getBuildNumber(build, listener),
+            resultWriter, listener.getLogger());
+        results.add(DESCRIPTOR.getExecutorPool().submit(resultCollector));
+        if (delay > 0 && ids.size() > 1)
+          Thread.sleep(delay*1000);
+      }
+      
+      for (Future<?> res : results) {
+        res.get();
+      }
       succeed = true;
     } catch (SCTMException e) {
-      listener.error(e.getMessage());
-      return false;
-    }
-    int buildNumber = getBuildNumber(build, listener);
-    Queue<ExecutionHandle> execHandles = startExecutions(listener, service, buildNumber);
-    
-    collectResults(build, listener, service, execHandles);
-  
+      LOGGER.log(Level.SEVERE, MessageFormat.format("Creating a remote connection to SCTM host ({0}) failed. Check the global hudson settings!", serviceURL), e);
+      listener.fatalError(e.getMessage());
+      succeed = false;
+    } catch (ExecutionException e) {
+      LOGGER.log(Level.SEVERE, "Starting or collection a SCTM execution failed.", e);
+      listener.fatalError(e.getMessage());
+      succeed = false;
+    } 
     return continueOnError || succeed;
   }
 
@@ -135,63 +156,14 @@ public class SCTMExecutor extends Builder {
     return -1;
   }
 
-  private void collectResults(AbstractBuild<?, ?> build, BuildListener listener, ISCTMService service, Queue<ExecutionHandle> execHandles) {
-    try {
-      FilePath rootDir = build.getProject().getWorkspace();
-      if (rootDir == null) {
-        LOGGER.severe("Cannot write the result file because slave is not connected.");
-        listener.error(Messages.getString("SCTMExecutor.log.slaveNotConnected")); //$NON-NLS-1$
-        throw new RuntimeException();
-      }
-      rootDir = createResultDir(rootDir, build.number);
-      ExecutorService tp = DESCRIPTOR.getExecutorPool();
-      List<Future<?>> results = new ArrayList<Future<?>>(execHandles.size());
-      for (ExecutionHandle executionHandle : execHandles) {
-        Runnable resultCollector = new ResultCollectorRunnable(service, listener.getLogger(), executionHandle, new StdXMLResultWriter(rootDir,
-            DESCRIPTOR.getServiceURL()));
-        results.add(tp.submit(resultCollector));
-      }
-
-      for (Future<?> res : results) {
-        res.get();
-      }
-    } catch (Exception e) {
-      LOGGER.severe(e.getMessage());
-      listener.error("Cannot create directory for the testresults in the hudson workspace. Check permissions and diskspace.");
-      succeed = false;
+  private static FilePath createResultDir(int currentBuildNo, AbstractBuild<?,?> build, BuildListener listener) throws IOException, InterruptedException {
+    FilePath rootDir = build.getProject().getWorkspace();
+    if (rootDir == null) {
+      LOGGER.severe("Cannot write the result file because slave is not connected.");
+      listener.error(Messages.getString("SCTMExecutor.log.slaveNotConnected")); //$NON-NLS-1$
+      throw new RuntimeException();
     }
-  }
-
-  private Queue<ExecutionHandle> startExecutions(BuildListener listener, ISCTMService service, int buildNumber) {
-    Queue<ExecutionHandle> execHandles = new LinkedList<ExecutionHandle>();
-    Collection<Integer> ids = csvToIntList(execDefIds);
-    for (Integer execDefId : ids) {
-      Collection<ExecutionHandle> result = null;
-      try {
-        if (OPT_NO_BUILD_NUMBER == buildNumberUsageOption || buildNumber == -1)
-          result = service.start(execDefId);
-        else
-          result = service.start(execDefId, String.valueOf(buildNumber));
-        if (result == null || result.size() <= 0) {
-          listener.error(MessageFormat.format(Messages.getString("SCTMExecutor.err.execDefNotFound"), execDefId)); //$NON-NLS-1$
-        } else {
-          listener.getLogger().println(MessageFormat.format(Messages.getString("SCTMExecutor.log.successfulStartExecution"), execDefId));
-          execHandles.addAll(result);
-        }
-        if (delay > 0 && ids.size() > 1)
-          Thread.sleep(delay*1000);
-      } catch (SCTMException e) {
-        listener.error(e.getMessage());
-        succeed = false;
-      } catch (InterruptedException e) {
-        LOGGER.severe(e.getMessage());
-        succeed = false;
-      }
-    }
-    return execHandles;
-  }
-
-  private static FilePath createResultDir(FilePath rootDir, int currentBuildNo) throws IOException, InterruptedException {
+    
     rootDir = new FilePath(rootDir, "SCTMResults"); //$NON-NLS-1$
     if (resultNoForLastBuild != currentBuildNo) {
       if (rootDir.exists())

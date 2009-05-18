@@ -23,13 +23,12 @@ import com.borland.tm.webservices.tmexecution.ExecutionWebServiceServiceLocator;
 
 public class SCTMService implements ISCTMService {
   private static final int MAX_LOGONRETRYCOUNT = 3;
-
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmservice");  //$NON-NLS-1$
   
   private SystemService systemService;
   private ExecutionWebService execService;
   private long sessionId;
-  private volatile int logonRetryCount = 0;
+  private volatile int logonRetryCount;
   private String user;
   private String pwd;
 

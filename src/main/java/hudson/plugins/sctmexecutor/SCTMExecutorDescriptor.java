@@ -4,7 +4,6 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
-import hudson.model.Project;
 import hudson.plugins.sctmexecutor.validators.EmptySingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.NumberCSVSingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.TestConnectionValidator;
@@ -15,15 +14,12 @@ import hudson.util.FormValidation;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.text.NumberFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.servlet.ServletException;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.QueryParameter;
@@ -56,16 +52,25 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
     String execDefIds = formData.getString("execDefIds"); //$NON-NLS-1$
     int projectId = formData.getInt("projectId"); //$NON-NLS-1$
-    int delay = formData.getInt("delay");
+    int delay = getOptionalIntValue(formData.getString("delay"), 0);
 //    JSONObject buildNumberUsageOption = (JSONObject)formData.get("buildNumberUsageOption");
-    String upStreamJobName = "";
     int optValue = SCTMExecutor.OPT_NO_BUILD_NUMBER;// buildNumberUsageOption.getInt("value");
+    String upStreamJobName = "";
 //    if (optValue == SCTMExecutor.OPT_USE_UPSTREAMJOB_BUILDNUMBER) {
 //      upStreamJobName = buildNumberUsageOption.getString("upStreamJobName");
 //    }
     boolean contOnErr = formData.getBoolean("continueOnError");
+    boolean collectResults = formData.getBoolean("collectResults");
     
-    return new SCTMExecutor(projectId, execDefIds, delay, optValue, upStreamJobName, contOnErr);
+    return new SCTMExecutor(projectId, execDefIds, delay, optValue, upStreamJobName, contOnErr, collectResults);
+  }
+  
+  private int getOptionalIntValue(String value, int defaultValue) {
+    try {
+      return Integer.parseInt(value);
+    } catch (NumberFormatException e) {
+      return defaultValue;
+    }
   }
 
   @Override
@@ -133,30 +138,27 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   }
 
   public FormValidation doCheckUser(StaplerRequest req, StaplerResponse rsp, 
-      @QueryParameter("value") final String value)
-      throws IOException, ServletException {
+      @QueryParameter("value") final String value) {
     return new EmptySingleFieldValidator().check(value);
   }
 
   public FormValidation doCheckPassword(StaplerRequest req, StaplerResponse rsp, 
-      @QueryParameter("value") final String value)
-      throws IOException, ServletException {
+      @QueryParameter("value") final String value) {
     return new EmptySingleFieldValidator().check(value);
   }
 
   public FormValidation doCheckExecDefIds(StaplerRequest req, StaplerResponse rsp, 
-      @QueryParameter("value") final String value)
-      throws IOException, ServletException {
+      @QueryParameter("value") final String value) {
     return new NumberCSVSingleFieldValidator().check(value);
   }
 
   public FormValidation doCheckProjectId(StaplerRequest req, StaplerResponse rsp, 
-      @QueryParameter("value") final String value)
-      throws IOException, ServletException {
+      @QueryParameter("value") final String value) {
     return FormValidation.validateNonNegativeInteger(value);
   }
   
-  public FormValidation doCheckDelay(StaplerRequest rep, StaplerResponse rsp, @QueryParameter("value") final String value) {
+  public FormValidation doCheckDelay(StaplerRequest rep, StaplerResponse rsp, 
+      @QueryParameter("value") final String value) {
     return FormValidation.validateNonNegativeInteger(value);
   }
 

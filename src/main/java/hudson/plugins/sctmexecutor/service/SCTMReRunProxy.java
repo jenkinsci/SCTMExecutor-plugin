@@ -15,7 +15,7 @@ public class SCTMReRunProxy implements ISCTMService {
   private ISCTMService target;
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor.sctmservice"); //$NON-NLS-1$
   
-  public SCTMReRunProxy(ISCTMService target) throws SCTMException {
+  public SCTMReRunProxy(ISCTMService target) {
     this.target = target;
   } 
   
@@ -32,7 +32,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = "";
         if (tryCount > 1)
           tryMore = "Try once more.";
-        LOGGER.log(Level.INFO, MessageFormat.format("Fetch result for execution definition {0} failed. {1}", handle.getExecDefId(), tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format("Fetch result for execution definition {0} failed. {1}", handle.getExecDefId(), tryMore));
         return doGetExecutionResult(handle, --tryCount);
       } else
         throw e;        
@@ -52,7 +52,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = "";
         if (tryCount > 1)
           tryMore = "Try once more.";
-        LOGGER.log(Level.INFO, MessageFormat.format("Fetch state of execution for execution definition {0} failed. {1}", handle.getExecDefId(), tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format("Fetch state of execution for execution definition {0} failed. {1}", handle.getExecDefId(), tryMore));
         return doIsFinished(handle, --tryCount);
       } else
         throw e;
@@ -72,7 +72,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = "";
         if (tryCount > 1)
           tryMore = "Try once more.";
-        LOGGER.log(Level.INFO, MessageFormat.format("Start execution for execution definition {0} failed. {1}", executionId, tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format("Start execution for execution definition {0} failed. {1}", executionId, tryMore));
         return doStart(executionId, --tryCount);
       } else
         throw e;
@@ -92,7 +92,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = "";
         if (tryCount > 1)
           tryMore = "Try once more.";
-        LOGGER.log(Level.INFO, MessageFormat.format("Start execution for execution definition {0} failed. {1}", executionId, tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format("Start execution for execution definition {0} failed. {1}", executionId, tryMore));
         return doStart(executionId, buildNumber, --tryCount);
       } else
         throw e;

@@ -31,7 +31,7 @@ public class TestResultCollector {
     
     ExecutionHandle handle = new ExecutionHandle(2, 100);
     
-    ResultCollectorRunnable aut = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle, resultWriterMock);
+    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, new PrintStream("test.log"), handle, resultWriterMock);
     aut.setSleep(1);
     
     EasyMock.replay(serviceMock);
@@ -55,7 +55,7 @@ public class TestResultCollector {
     
     ExecutionHandle handle = new ExecutionHandle(2, 100);
     
-    ResultCollectorRunnable aut = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle, resultWriterMock);
+    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, new PrintStream("test.log"), handle, resultWriterMock);
     aut.setSleep(1);
     
     EasyMock.replay(serviceMock);
@@ -75,7 +75,7 @@ public class TestResultCollector {
     
     ExecutionHandle handle = new ExecutionHandle(2, 100);
     
-    ResultCollectorRunnable aut = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle, null);
+    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, new PrintStream("test.log"), handle, null);
     aut.setSleep(1);
     
     EasyMock.replay(serviceMock);
@@ -94,7 +94,7 @@ public class TestResultCollector {
     
     ExecutionHandle handle = new ExecutionHandle(2, 100);
     
-    ResultCollectorRunnable aut = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle, null);
+    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, new PrintStream("test.log"), handle, null);
     aut.setSleep(1);
     
     EasyMock.replay(serviceMock);
@@ -115,7 +115,7 @@ public class TestResultCollector {
     
     ExecutionHandle handle1 = new ExecutionHandle(2, 100);
     
-    ResultCollectorRunnable aut1 = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle1, resultWriterMock1);
+    ExecutionRunnable aut1 = new ExecutionRunnable(serviceMock, new PrintStream("test.log"), handle1, resultWriterMock1);
     aut1.setSleep(1);
     
     EasyMock.replay(serviceMock);
@@ -136,7 +136,7 @@ public class TestResultCollector {
     
     ITestResultWriter resultWriterMock1 = EasyMock.createStrictMock(ITestResultWriter.class);
     ExecutionHandle handle1 = new ExecutionHandle(2, 100);
-    ResultCollectorRunnable aut1 = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle1, resultWriterMock1);
+    ExecutionRunnable aut1 = new ExecutionRunnable(serviceMock, new PrintStream("test.log"), handle1, resultWriterMock1);
     aut1.setSleep(1);
     
     EasyMock.replay(serviceMock);
@@ -152,7 +152,7 @@ public class TestResultCollector {
     EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andThrow(new SCTMException("Logon failed."));
     ITestResultWriter resultWriterMock1 = EasyMock.createStrictMock(ITestResultWriter.class);
     ExecutionHandle handle1 = new ExecutionHandle(2, 100);
-    ResultCollectorRunnable aut1 = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle1, resultWriterMock1);
+    ExecutionRunnable aut1 = new ExecutionRunnable(serviceMock, new PrintStream("test.log"), handle1, resultWriterMock1);
     aut1.setSleep(1);
     
     EasyMock.replay(serviceMock);
@@ -169,7 +169,7 @@ public class TestResultCollector {
     EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andThrow(new SCTMException("Logon failed."));
     ITestResultWriter resultWriterMock1 = EasyMock.createStrictMock(ITestResultWriter.class);
     ExecutionHandle handle1 = new ExecutionHandle(2, 100);
-    ResultCollectorRunnable aut1 = new ResultCollectorRunnable(serviceMock, new PrintStream("test.log"), handle1, resultWriterMock1);
+    ExecutionRunnable aut1 = new ExecutionRunnable(serviceMock, new PrintStream("test.log"), handle1, resultWriterMock1);
     aut1.setSleep(1);
     
     EasyMock.replay(serviceMock);
