@@ -33,7 +33,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * 
  */
 public final class SCTMExecutor extends Builder {
-  public static final SCTMExecutorDescriptor DESCRIPTOR = new SCTMExecutorDescriptor();
   static final int OPT_NO_BUILD_NUMBER = 1;
   static final int OPT_USE_THIS_BUILD_NUMBER = 2;
   static final int OPT_USE_UPSTREAMJOB_BUILDNUMBER = 3;
@@ -64,7 +63,7 @@ public final class SCTMExecutor extends Builder {
 
   @Override
   public SCTMExecutorDescriptor getDescriptor() {
-    return DESCRIPTOR;
+    return (SCTMExecutorDescriptor)Hudson.getInstance().getDescriptor(getClass());
   }
 
   public String getExecDefIds() {
@@ -103,9 +102,10 @@ public final class SCTMExecutor extends Builder {
   
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-    String serviceURL = DESCRIPTOR.getServiceURL();
+    SCTMExecutorDescriptor descriptor = (SCTMExecutorDescriptor)Hudson.getInstance().getDescriptor(getClass());
+    String serviceURL = descriptor.getServiceURL();
     try {
-      ISCTMService service = new SCTMReRunProxy(new SCTMService(serviceURL, DESCRIPTOR.getUser(), DESCRIPTOR.getPassword()));
+      ISCTMService service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor.getPassword()));
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
       FilePath rootDir = createResultDir(build.number, build, listener);
       Collection<Integer> ids = csvToIntList(execDefIds);
@@ -114,10 +114,10 @@ public final class SCTMExecutor extends Builder {
       for (Integer execDefId : ids) {        
         StdXMLResultWriter resultWriter = null;
         if (collectResults)
-          resultWriter = new StdXMLResultWriter(rootDir, DESCRIPTOR.getServiceURL());
+          resultWriter = new StdXMLResultWriter(rootDir, descriptor.getServiceURL());
         Runnable resultCollector = new ExecutionRunnable(service, execDefId, getBuildNumber(build, listener),
             resultWriter, listener.getLogger());
-        results.add(DESCRIPTOR.getExecutorPool().submit(resultCollector));
+        results.add(descriptor.getExecutorPool().submit(resultCollector));
         if (delay > 0 && ids.size() > 1)
           Thread.sleep(delay*1000);
       }
