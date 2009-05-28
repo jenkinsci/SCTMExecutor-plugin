@@ -72,8 +72,8 @@ final class ExecutionRunnable implements Runnable {
     ExecutionResult result = null;
     try {
       do {
-        Thread.sleep(resultCollectingDelay * 1000); // because sometime SCTM is too slow and the run is not created when we ask for a
-        // result
+        Thread.sleep(resultCollectingDelay * 1000);
+     // because sometime SCTM is too slow and the run is not created when we ask for a result
         if (service.isFinished(handle)) {
           result = service.getExecutionResult(handle);
           consolenLogger.println(MessageFormat.format(
