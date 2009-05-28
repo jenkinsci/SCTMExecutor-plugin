@@ -27,18 +27,20 @@ final class StdXMLResultWriter implements ITestResultWriter {
   private String sctmHost;
 
   private FilePath rootDir;
+  private String buildNumber;
 
-  public StdXMLResultWriter(FilePath rootDir, String serviceURL) {
+  public StdXMLResultWriter(FilePath rootDir, String serviceURL, String buildNumber) {
     this.rootDir = rootDir;
+    this.buildNumber = buildNumber;
     sctmHost = serviceURL.substring(0, serviceURL.indexOf("/", "http://".length())) + "/silk/DEF"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 
   public void write(ExecutionResult result) {
     int done = 3;
-    String resultFileName = "TEST-" + result.getExecDefName(); //$NON-NLS-1$
+    String resultFileName = MessageFormat.format("TEST-{0}-{1}.xml",result.getExecDefName(), buildNumber); //$NON-NLS-1$
     while (done > 0) {
       try {
-        FilePath resultFile = rootDir.child(resultFileName+".xml"); //$NON-NLS-1$
+        FilePath resultFile = rootDir.child(resultFileName); //$NON-NLS-1$
         OutputStream fos = resultFile.write();
         XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLStreamWriter(fos);
         writer.writeStartDocument();

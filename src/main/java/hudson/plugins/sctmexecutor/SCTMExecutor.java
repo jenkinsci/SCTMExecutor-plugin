@@ -12,6 +12,8 @@ import hudson.plugins.sctmexecutor.service.SCTMReRunProxy;
 import hudson.plugins.sctmexecutor.service.SCTMService;
 import hudson.tasks.Builder;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -24,6 +26,9 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.oro.io.RegexFilenameFilter;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -114,7 +119,7 @@ public final class SCTMExecutor extends Builder {
       for (Integer execDefId : ids) {        
         StdXMLResultWriter resultWriter = null;
         if (collectResults)
-          resultWriter = new StdXMLResultWriter(rootDir, descriptor.getServiceURL());
+          resultWriter = new StdXMLResultWriter(rootDir, descriptor.getServiceURL(), String.valueOf(build.number));
         Runnable resultCollector = new ExecutionRunnable(service, execDefId, getBuildNumber(build, listener),
             resultWriter, listener.getLogger());
         results.add(descriptor.getExecutorPool().submit(resultCollector));
@@ -165,12 +170,18 @@ public final class SCTMExecutor extends Builder {
     }
     
     rootDir = new FilePath(rootDir, "SCTMResults"); //$NON-NLS-1$
-    if (resultNoForLastBuild != currentBuildNo) {
-      if (rootDir.exists())
-        rootDir.deleteRecursive();
+    if (rootDir.exists()) {
+      final String buildNo = String.valueOf(currentBuildNo);
+      List<FilePath> list = rootDir.list(new FileFilter() {
+        @Override
+        public boolean accept(File pathname) {
+          return pathname.getName().matches("TEST-(\\p{Print}*)-"+buildNo+".xml");
+        }
+      });
+      if (list.size() <= 0)
+        rootDir.deleteContents();
+    } else
       rootDir.mkdirs();
-      resultNoForLastBuild = currentBuildNo;
-    }
     return rootDir;
   }
 

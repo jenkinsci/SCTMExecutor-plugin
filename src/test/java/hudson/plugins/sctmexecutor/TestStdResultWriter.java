@@ -34,7 +34,7 @@ public class TestStdResultWriter {
 
   @Test
   public void testWrite() {
-    StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(root), "http://localhost:19120/Service1.0/services");
+    StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(root), "http://localhost:19120/Service1.0/services", null);
     ExecutionResult result = new ExecutionResult();
     result.setExecDefName("TestExecDef");
     result.setExecServerName("MyVirtualExecSrv");
@@ -46,7 +46,7 @@ public class TestStdResultWriter {
   
   @Test
   public void testParallelWrite() throws Exception {
-    final StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(root), "http://localhost:19120/Service1.0/services");
+    final StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(root), "http://localhost:19120/Service1.0/services", null);
     
     Runnable run = new Runnable() {
       @Override
