@@ -1,12 +1,10 @@
 package hudson.plugins.sctmexecutor;
 
 import static org.junit.Assert.assertTrue;
-
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 import hudson.plugins.sctmexecutor.service.ISCTMService;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -17,7 +15,6 @@ import org.junit.Test;
 
 import com.borland.tm.webservices.tmexecution.ExecutionHandle;
 import com.borland.tm.webservices.tmexecution.ExecutionResult;
-import com.borland.tm.webservices.tmexecution.ExecutionWebService;
 import com.borland.tm.webservices.tmexecution.TestDefinitionResult;
 
 public class TestResultCollector {

@@ -26,9 +26,6 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.filefilter.FileFileFilter;
-import org.apache.commons.io.filefilter.NameFileFilter;
-import org.apache.oro.io.RegexFilenameFilter;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -42,8 +39,6 @@ public final class SCTMExecutor extends Builder {
   static final int OPT_USE_THIS_BUILD_NUMBER = 2;
   static final int OPT_USE_UPSTREAMJOB_BUILDNUMBER = 3;
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
-
-  private static int resultNoForLastBuild = 0;
 
   private final int projectId;
   private final String execDefIds;
@@ -132,12 +127,12 @@ public final class SCTMExecutor extends Builder {
       }
       succeed = true;
     } catch (SCTMException e) {
-      LOGGER.log(Level.SEVERE, MessageFormat.format("Creating a remote connection to SCTM host ({0}) failed. Check the global hudson settings!", serviceURL), e);
+      LOGGER.log(Level.SEVERE, MessageFormat.format("Creating a remote connection to SCTM host ({0}) failed.", serviceURL), e); //$NON-NLS-1$
       listener.fatalError(e.getMessage());
       succeed = false;
     } catch (ExecutionException e) {
-      LOGGER.log(Level.SEVERE, "Starting or collection a SCTM execution failed.", e);
-      listener.fatalError(e.getMessage());
+      LOGGER.log(Level.SEVERE, "Starting or collecting for a SCTM execution failed.", e); //$NON-NLS-1$
+      listener.fatalError(MessageFormat.format(Messages.getString("SCTMExecutor.err.noResponseFromSCTM"), e.getMessage())); //$NON-NLS-1$
       succeed = false;
     } 
     return continueOnError || succeed;
@@ -157,14 +152,14 @@ public final class SCTMExecutor extends Builder {
       if (project.getName().equals(projectName))
         return upstreamBuilds.get(project);
     }
-    listener.error(MessageFormat.format("The configured job {0} ist not found as Upstreamjob. Check your configuration!", projectName));
+    listener.error(MessageFormat.format(Messages.getString("SCTMExecutor.err.notAUpstreamJob"), projectName)); //$NON-NLS-1$
     return -1;
   }
 
   private static FilePath createResultDir(int currentBuildNo, AbstractBuild<?,?> build, BuildListener listener) throws IOException, InterruptedException {
     FilePath rootDir = build.getProject().getWorkspace();
     if (rootDir == null) {
-      LOGGER.severe("Cannot write the result file because slave is not connected.");
+      LOGGER.severe("Cannot write the result file because slave is not connected."); //$NON-NLS-1$
       listener.error(Messages.getString("SCTMExecutor.log.slaveNotConnected")); //$NON-NLS-1$
       throw new RuntimeException();
     }
@@ -175,7 +170,7 @@ public final class SCTMExecutor extends Builder {
       List<FilePath> list = rootDir.list(new FileFilter() {
         @Override
         public boolean accept(File pathname) {
-          return pathname.getName().matches("TEST-(\\p{Print}*)-"+buildNo+".xml");
+          return pathname.getName().matches("TEST-(\\p{Print}*)-"+buildNo+".xml"); //$NON-NLS-1$ //$NON-NLS-2$
         }
       });
       if (list.size() <= 0)

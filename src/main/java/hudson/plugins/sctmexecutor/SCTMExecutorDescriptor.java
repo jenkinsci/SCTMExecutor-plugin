@@ -14,7 +14,6 @@ import hudson.util.FormValidation;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
-import java.text.NumberFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -52,15 +51,15 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
     String execDefIds = formData.getString("execDefIds"); //$NON-NLS-1$
     int projectId = formData.getInt("projectId"); //$NON-NLS-1$
-    int delay = getOptionalIntValue(formData.getString("delay"), 0);
+    int delay = getOptionalIntValue(formData.getString("delay"), 0); //$NON-NLS-1$
 //    JSONObject buildNumberUsageOption = (JSONObject)formData.get("buildNumberUsageOption");
     int optValue = SCTMExecutor.OPT_NO_BUILD_NUMBER;// buildNumberUsageOption.getInt("value");
-    String upStreamJobName = "";
+    String upStreamJobName = ""; //$NON-NLS-1$
 //    if (optValue == SCTMExecutor.OPT_USE_UPSTREAMJOB_BUILDNUMBER) {
 //      upStreamJobName = buildNumberUsageOption.getString("upStreamJobName");
 //    }
-    boolean contOnErr = formData.getBoolean("continueOnError");
-    boolean collectResults = formData.getBoolean("collectResults");
+    boolean contOnErr = formData.getBoolean("continueOnError"); //$NON-NLS-1$
+    boolean collectResults = formData.getBoolean("collectResults"); //$NON-NLS-1$
     
     return new SCTMExecutor(projectId, execDefIds, delay, optValue, upStreamJobName, contOnErr, collectResults);
   }
@@ -96,10 +95,10 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   }
 
   public String getPassword() {
-    if (password != null && !password.equals(""))
+    if (password != null && !password.equals("")) //$NON-NLS-1$
       return PwdCrypt.decode(password, Hudson.getInstance().getSecretKey());
     else
-      return "";
+      return ""; //$NON-NLS-1$
   }
 
   public void setUser(String user) {
@@ -119,19 +118,19 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
       protected FormValidation check() throws IOException, ServletException {
         if (value == null ||
             (value != null && !value.matches("http(s)?://(((\\d{1,3}.){3}\\d{1,3})?|([\\p{Alnum}-_.])*)(:\\d{0,5})?(/([\\p{Alnum}-_.])*)?/services"))) { //$NON-NLS-1$
-          return FormValidation.error(Messages.getString("SCTMUrlValidator.msg.noValidURL")); //$NON-NLS-1$
+          return FormValidation.error(Messages.getString("SCTMExecutorDescriptor.validate.msg.noValidURL")); //$NON-NLS-1$
         }
         try {
           URL url = new URL(value);
           BufferedReader reader = open(url);
-          if (findText(reader, "tmexecution"))
+          if (findText(reader, "tmexecution")) //$NON-NLS-1$
             return FormValidation.ok();
           else
-            return FormValidation.warning(Messages.getString("SCTMURL.Validator.msg.noServiceFound"));
+            return FormValidation.warning(Messages.getString("SCTMExecutorDescriptor.validate.msg.noServiceFound")); //$NON-NLS-1$
         } catch (IOException e) {
           return handleIOException(value, e);
         } catch (IllegalArgumentException e) {
-          return FormValidation.error(Messages.getString("SCTMUrlValidator.msg.noValidURL")); //$NON-NLS-1$
+          return FormValidation.error(Messages.getString("SCTMExecutorDescriptor.validate.msg.noValidURL")); //$NON-NLS-1$
         }
       }
     }.check();

@@ -1,6 +1,6 @@
 package hudson.plugins.sctmexecutor.validators;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import hudson.util.FormValidation;
 
 import org.junit.Test;

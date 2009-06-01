@@ -1,10 +1,10 @@
 package hudson.plugins.sctmexecutor.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 
 import java.util.ArrayList;
-
-import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 
 import org.easymock.EasyMock;
 import org.junit.After;

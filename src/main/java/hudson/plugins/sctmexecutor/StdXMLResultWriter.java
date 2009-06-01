@@ -146,7 +146,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
 
   private void writeError(XMLStreamWriter writer, String resultURL) throws XMLStreamException {
     writer.writeStartElement("error"); //$NON-NLS-1$
-    writer.writeAttribute("message", MessageFormat.format("{0}{1}", sctmHost, resultURL)); //$NON-NLS-1$
+    writer.writeAttribute("message", MessageFormat.format("{0}{1}", sctmHost, resultURL)); //$NON-NLS-1$ //$NON-NLS-2$
     writer.writeAttribute("type", "SCTMError"); //$NON-NLS-1$ //$NON-NLS-2$
     writer.writeEndElement();
   }

@@ -48,7 +48,7 @@ final class ExecutionRunnable implements Runnable {
   @Override
   public void run() {
     Collection<ExecutionHandle> handles;
-    this.consolenLogger.println(MessageFormat.format("INFO: Start execution definiton {0}.", this.execDefId));
+    this.consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.msg.startExecDef"), this.execDefId)); //$NON-NLS-1$
     try {
       if (this.buildNumber <= 0) // don't care about a build number
         handles = service.start(this.execDefId);
@@ -62,12 +62,12 @@ final class ExecutionRunnable implements Runnable {
       }
     } catch (SCTMException e) {
       this.consolenLogger.println(MessageFormat.format(
-          "ERROR: Cannot start execution defintion/folder {0}. SCTM reports: {1}", this.execDefId, e.getMessage()));
+          Messages.getString("ExecutionRunnable.err.startExecDefFailed"), this.execDefId, e.getMessage())); //$NON-NLS-1$
     }
   }
 
   private void collectExecutionResult(ExecutionHandle handle) {
-    consolenLogger.println(MessageFormat.format("INFO: Waiting for result of execution definition {0}.", handle
+    consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.msg.waitForResult"), handle //$NON-NLS-1$
         .getExecDefId()));
     ExecutionResult result = null;
     try {
@@ -77,7 +77,7 @@ final class ExecutionRunnable implements Runnable {
         if (service.isFinished(handle)) {
           result = service.getExecutionResult(handle);
           consolenLogger.println(MessageFormat.format(
-              Messages.getString("ResultCollectorThread.log.resultReceived"), handle.getExecDefId())); //$NON-NLS-1$
+              Messages.getString("ExecutionRunnable.log.resultReceived"), handle.getExecDefId())); //$NON-NLS-1$
         } else if (resultCollectingDelay < MAX_SLEEP) {
           resultCollectingDelay *= 2;
           if (resultCollectingDelay > MAX_SLEEP)
@@ -88,12 +88,12 @@ final class ExecutionRunnable implements Runnable {
       this.writer.write(result);
     } catch (SCTMException e) {
       LOGGER.log(Level.SEVERE, e.getMessage());
-      if (e.getMessage().contains("Logon failed."))
-        consolenLogger.println("ERROR: Session for SCTM call lost and cannot be restored. Execution aborted.");
+      if (e.getMessage().contains("Logon failed.")) //$NON-NLS-1$
+        consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.err.sessionLost"), e.getMessage())); //$NON-NLS-1$
       else
-        consolenLogger.println(MessageFormat.format("ERROR: Execution definition {0} failed.", handle.getExecDefId()));
+        consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.err.collectingResultsFailed"), handle.getExecDefId(), e.getMessage())); //$NON-NLS-1$
     } catch (InterruptedException e) {
-      consolenLogger.println(MessageFormat.format("INFO: Collecting results for execution definition {0} aborted.",
+      consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.warn.abortCollectingResults"), //$NON-NLS-1$
           handle.getExecDefId()));
       LOGGER.log(Level.INFO, e.getMessage());
     }

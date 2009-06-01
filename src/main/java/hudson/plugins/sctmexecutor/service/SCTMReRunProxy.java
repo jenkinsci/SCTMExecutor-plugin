@@ -29,9 +29,9 @@ public class SCTMReRunProxy implements ISCTMService {
       return target.getExecutionResult(handle);
     } catch (SCTMException e) {
       if (tryCount > 0) {
-        String tryMore = "";
+        String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
-          tryMore = "Try once more.";
+          tryMore = "Try once more."; //$NON-NLS-1$
         LOGGER.log(Level.WARNING, MessageFormat.format("Fetch result for execution definition {0} failed. {1}", handle.getExecDefId(), tryMore));
         return doGetExecutionResult(handle, --tryCount);
       } else
@@ -49,9 +49,9 @@ public class SCTMReRunProxy implements ISCTMService {
       return this.target.isFinished(handle);
     } catch (SCTMException e) {
       if (tryCount > 0) {
-        String tryMore = "";
+        String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
-          tryMore = "Try once more.";
+          tryMore = "Try once more."; //$NON-NLS-1$
         LOGGER.log(Level.WARNING, MessageFormat.format("Fetch state of execution for execution definition {0} failed. {1}", handle.getExecDefId(), tryMore));
         return doIsFinished(handle, --tryCount);
       } else
@@ -69,9 +69,9 @@ public class SCTMReRunProxy implements ISCTMService {
       return this.target.start(executionId);
     } catch (SCTMException e) {
       if (tryCount > 0) {
-        String tryMore = "";
+        String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
-          tryMore = "Try once more.";
+          tryMore = "Try once more."; //$NON-NLS-1$
         LOGGER.log(Level.WARNING, MessageFormat.format("Start execution for execution definition {0} failed. {1}", executionId, tryMore));
         return doStart(executionId, --tryCount);
       } else
@@ -89,9 +89,9 @@ public class SCTMReRunProxy implements ISCTMService {
       return this.target.start(executionId, buildNumber);
     } catch (SCTMException e) {
       if (tryCount > 0) {
-        String tryMore = "";
+        String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
-          tryMore = "Try once more.";
+          tryMore = "Try once more."; //$NON-NLS-1$
         LOGGER.log(Level.WARNING, MessageFormat.format("Start execution for execution definition {0} failed. {1}", executionId, tryMore));
         return doStart(executionId, buildNumber, --tryCount);
       } else
