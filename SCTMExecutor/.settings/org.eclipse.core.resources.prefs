@@ -1,0 +1,21 @@
+#Fri Apr 10 22:10:47 CEST 2009
+eclipse.preferences.version=1
+encoding//src/main/java/com/borland/scc/AppModule.java=UTF-8
+encoding//src/main/java/com/borland/scc/ExtendedAppModule.java=UTF-8
+encoding//src/main/java/com/borland/scc/sccsystem/SccsystemSoapBindingStub.java=UTF-8
+encoding//src/main/java/com/borland/scc/sccsystem/SystemService.java=UTF-8
+encoding//src/main/java/com/borland/scc/sccsystem/SystemServiceService.java=UTF-8
+encoding//src/main/java/com/borland/scc/sccsystem/SystemServiceServiceLocator.java=UTF-8
+encoding//src/main/java/com/borland/scc/webservice/Entity.java=UTF-8
+encoding//src/main/java/com/borland/scc/webservice/NamedEntity.java=UTF-8
+encoding//src/main/java/com/borland/tm/webservices/tmexecution/ExecutionHandle.java=UTF-8
+encoding//src/main/java/com/borland/tm/webservices/tmexecution/ExecutionNode.java=UTF-8
+encoding//src/main/java/com/borland/tm/webservices/tmexecution/ExecutionResult.java=UTF-8
+encoding//src/main/java/com/borland/tm/webservices/tmexecution/ExecutionWebService.java=UTF-8
+encoding//src/main/java/com/borland/tm/webservices/tmexecution/ExecutionWebServiceService.java=UTF-8
+encoding//src/main/java/com/borland/tm/webservices/tmexecution/ExecutionWebServiceServiceLocator.java=UTF-8
+encoding//src/main/java/com/borland/tm/webservices/tmexecution/PropertyMetaInfo.java=UTF-8
+encoding//src/main/java/com/borland/tm/webservices/tmexecution/PropertyValue.java=UTF-8
+encoding//src/main/java/com/borland/tm/webservices/tmexecution/TestDefinitionResult.java=UTF-8
+encoding//src/main/java/com/borland/tm/webservices/tmexecution/TmexecutionSoapBindingStub.java=UTF-8
+encoding/<project>=UTF-8

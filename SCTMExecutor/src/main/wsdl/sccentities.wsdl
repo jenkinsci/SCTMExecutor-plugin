@@ -1,0 +1,4269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://atlis-tm//axislegacy/sccentities" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://atlis-tm//axislegacy/sccentities" xmlns:intf="http://atlis-tm//axislegacy/sccentities" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://scc.segue.com" xmlns:tns2="http://exceptions.webservice.scc.segue.com" xmlns:tns3="http://vision.segue.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.3
+Built on Oct 05, 2005 (05:23:37 EDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://scc.segue.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://exceptions.webservice.scc.segue.com"/>
+   <import namespace="http://vision.segue.com"/>
+   <import namespace="http://atlis-tm//axislegacy/sccentities"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Role">
+    <sequence>
+     <element name="id" type="xsd:int"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfRole">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:Role[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="Entity">
+    <sequence>
+     <element name="id" type="xsd:int"/>
+    </sequence>
+   </complexType>
+   <complexType name="NamedEntity">
+    <complexContent>
+     <extension base="tns1:Entity">
+      <sequence>
+       <element name="name" nillable="true" type="xsd:string"/>
+       <element name="description" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="Location">
+    <complexContent>
+     <extension base="tns1:NamedEntity">
+      <sequence>
+       <element name="isActive" type="xsd:boolean"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="LocationDetails">
+    <complexContent>
+     <extension base="tns1:Location">
+      <sequence>
+       <element name="useCentralProxy" type="xsd:boolean"/>
+       <element name="proxyType" type="xsd:int"/>
+       <element name="proxyHostName" nillable="true" type="xsd:string"/>
+       <element name="proxyPort" type="xsd:int"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfLocation">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:Location[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfLocationDetails">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:LocationDetails[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="User">
+    <complexContent>
+     <extension base="tns1:NamedEntity">
+      <sequence>
+       <element name="isLocked" type="xsd:boolean"/>
+       <element name="firstName" nillable="true" type="xsd:string"/>
+       <element name="login" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfUser">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:User[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="UserDetails">
+    <complexContent>
+     <extension base="tns1:User">
+      <sequence>
+       <element name="assignedProjects" nillable="true" type="impl:ArrayOf_xsd_int"/>
+       <element name="roleId" type="xsd:int"/>
+       <element name="eMail" nillable="true" type="xsd:string"/>
+       <element name="timeZoneId" nillable="true" type="xsd:string"/>
+       <element name="dateFormat" nillable="true" type="xsd:string"/>
+       <element name="shortDateFormat" nillable="true" type="xsd:string"/>
+       <element name="firstDayOfWeek" type="xsd:int"/>
+       <element name="pageRefreshTime" type="xsd:int"/>
+       <element name="separatorString" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfUserDetails">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:UserDetails[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ExecServer">
+    <complexContent>
+     <extension base="tns1:NamedEntity">
+      <sequence>
+       <element name="locationId" type="xsd:int"/>
+       <element name="execServerHostName" nillable="true" type="xsd:string"/>
+       <element name="rmiProxyPort" type="xsd:int"/>
+       <element name="rmiProxyPortSSL" type="xsd:int"/>
+       <element name="useSSL" type="xsd:boolean"/>
+       <element name="appModuleID" type="xsd:int"/>
+       <element name="state" type="xsd:int"/>
+       <element name="problemAlertTimeout" type="xsd:int"/>
+       <element name="maxConcurrentExecutions" type="xsd:int"/>
+       <element name="maxBandwidth" type="xsd:int"/>
+       <element name="active" type="xsd:boolean"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="Project">
+    <complexContent>
+     <extension base="tns1:NamedEntity">
+      <sequence>
+       <element name="active" type="xsd:boolean"/>
+       <element name="appModuleIds" nillable="true" type="impl:ArrayOf_xsd_int"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfProject">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:Project[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="UserGroup">
+    <sequence>
+     <element name="createdAt" type="xsd:long"/>
+     <element name="createdBy" nillable="true" type="xsd:string"/>
+     <element name="description" nillable="true" type="xsd:string"/>
+     <element name="id" type="xsd:int"/>
+     <element name="locked" type="xsd:boolean"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="projectAssignments" nillable="true" type="impl:ArrayOf_xsd_int"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfExecServer">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:ExecServer[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="EssentialDescription">
+    <complexContent>
+     <extension base="tns1:NamedEntity">
+      <sequence>
+       <element name="fullPathName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfEssentialDescriptions">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:EssentialDescription[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="EssentialGroup">
+    <complexContent>
+     <extension base="tns1:NamedEntity">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfEssentialGroups">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:EssentialGroup[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="EssentialSubGroup">
+    <complexContent>
+     <extension base="tns1:NamedEntity">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfEssentialSubGroups">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:EssentialSubGroup[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="FilePoolEntry">
+    <complexContent>
+     <extension base="tns1:NamedEntity">
+      <sequence>
+       <element name="fullPathName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfUserGroup">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:UserGroup[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="UserGroupMembership">
+    <sequence>
+     <element name="groupId" type="xsd:int"/>
+     <element name="groupName" nillable="true" type="xsd:string"/>
+     <element name="roleId" type="xsd:int"/>
+     <element name="roleName" nillable="true" type="xsd:string"/>
+     <element name="userId" type="xsd:int"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfUserGroupMembership">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:UserGroupMembership[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://exceptions.webservice.scc.segue.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://vision.segue.com"/>
+   <import namespace="http://scc.segue.com"/>
+   <import namespace="http://atlis-tm//axislegacy/sccentities"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="InternalException">
+    <sequence/>
+   </complexType>
+   <complexType name="InvalidIdException">
+    <sequence/>
+   </complexType>
+   <complexType name="MissingValueException">
+    <sequence/>
+   </complexType>
+   <complexType name="LoginException">
+    <sequence/>
+   </complexType>
+   <complexType name="NotExistingValueException">
+    <sequence/>
+   </complexType>
+   <complexType name="ExistingKeyException">
+    <sequence/>
+   </complexType>
+   <complexType name="InvalidStateException">
+    <sequence/>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://atlis-tm//axislegacy/sccentities" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://exceptions.webservice.scc.segue.com"/>
+   <import namespace="http://vision.segue.com"/>
+   <import namespace="http://scc.segue.com"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_int">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:int[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://vision.segue.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://exceptions.webservice.scc.segue.com"/>
+   <import namespace="http://scc.segue.com"/>
+   <import namespace="http://atlis-tm//axislegacy/sccentities"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOfFilePoolEntries">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:FilePoolEntry[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="createProjectResponse">
+
+      <wsdl:part name="createProjectReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEssentialGroupsResponse">
+
+      <wsdl:part name="getEssentialGroupsReturn" type="tns1:ArrayOfEssentialGroups"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="activateProjectsResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getGroupByNameResponse">
+
+      <wsdl:part name="getGroupByNameReturn" type="tns1:UserGroup"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllEssentialsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllMembershipsResponse">
+
+      <wsdl:part name="getAllMembershipsReturn" type="tns1:ArrayOfUserGroupMembership"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateUserResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getFilePoolEntriesRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProductsResponse">
+
+      <wsdl:part name="getProductsReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidStateException">
+
+      <wsdl:part name="fault" type="tns2:InvalidStateException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setPasswordResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="isMixedModeAuthenticationRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateExecServerResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="deactivateProjectsResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="addLocationToProjectRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:int"/>
+
+      <wsdl:part name="locationId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getGroupByIdResponse">
+
+      <wsdl:part name="getGroupByIdReturn" type="tns1:UserGroup"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getLocationsForProjectRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllResourceTagsResponse">
+
+      <wsdl:part name="getAllResourceTagsReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addBuildResponse">
+
+      <wsdl:part name="addBuildReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setProxyUsernameAndPasswordForLocationResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getVersionsResponse">
+
+      <wsdl:part name="getVersionsReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUsersResponse">
+
+      <wsdl:part name="getUsersReturn" type="tns1:ArrayOfUser"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeLocationFromProjectResponse">
+
+      <wsdl:part name="removeLocationFromProjectReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getExecServersOfLocationRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="locationId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getExecServersOfLocationResponse">
+
+      <wsdl:part name="getExecServersOfLocationReturn" type="tns1:ArrayOfExecServer"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllEssentialsResponse">
+
+      <wsdl:part name="getAllEssentialsReturn" type="tns1:ArrayOfEssentialDescriptions"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createExecServerRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="execServer" type="tns1:ExecServer"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateProjectResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getExecServerByIdResponse">
+
+      <wsdl:part name="getExecServerByIdReturn" type="tns1:ExecServer"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getGroupByNameRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="groupName" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getLocationDetailsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="locationId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProjectsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateUserRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userDetails" type="tns1:UserDetails"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUserGroupRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="groupId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addLocationToProjectResponse">
+
+      <wsdl:part name="addLocationToProjectReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProjectByIdResponse">
+
+      <wsdl:part name="getProjectByIdReturn" type="tns1:Project"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="LoginException">
+
+      <wsdl:part name="fault" type="tns2:LoginException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteProjectsResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllResourceTagsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="locationId" type="xsd:int"/>
+
+      <wsdl:part name="execServerId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getFilePoolEntriesResponse">
+
+      <wsdl:part name="getFilePoolEntriesReturn" type="tns3:ArrayOfFilePoolEntries"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateLocationRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="locationDetails" type="tns1:LocationDetails"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="encryptAndSetPasswordRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userId" type="xsd:int"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateMembershipsOfGroupResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getVersionsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="product" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidIdException">
+
+      <wsdl:part name="fault" type="tns2:InvalidIdException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMembershipsOfUserRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProjectsForUserResponse">
+
+      <wsdl:part name="getProjectsForUserReturn" type="tns1:ArrayOfProject"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createUserRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userDetails" type="tns1:UserDetails"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createLocationRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="locationDetails" type="tns1:LocationDetails"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllRolesResponse">
+
+      <wsdl:part name="getAllRolesReturn" type="tns1:ArrayOfRole"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllUserGroupsResponse">
+
+      <wsdl:part name="getAllUserGroupsReturn" type="tns1:ArrayOfUserGroup"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="activateExecServerRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="execServerId" type="xsd:int"/>
+
+      <wsdl:part name="locationId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="InternalException">
+
+      <wsdl:part name="fault" type="tns2:InternalException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getBuildsResponse">
+
+      <wsdl:part name="getBuildsReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEssentialsResponse">
+
+      <wsdl:part name="getEssentialsReturn" type="tns1:ArrayOfEssentialDescriptions"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deactivateExecServerRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="execServerId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setProxyUsernameAndPasswordForLocationRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="locationId" type="xsd:int"/>
+
+      <wsdl:part name="proxyUsername" type="xsd:string"/>
+
+      <wsdl:part name="proxyPassword" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createUserResponse">
+
+      <wsdl:part name="createUserReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllMembershipsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeResourceTagResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="updateUserGroupRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userGroup" type="tns1:UserGroup"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserDetailsResponse">
+
+      <wsdl:part name="getUserDetailsReturn" type="tns1:UserDetails"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeResourceTagRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="locationId" type="xsd:int"/>
+
+      <wsdl:part name="execServerId" type="xsd:int"/>
+
+      <wsdl:part name="resourceTag" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllUserGroupsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProjectByIdRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUsersResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setMixedModeAuthenticationRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userId" type="xsd:int"/>
+
+      <wsdl:part name="useMixedMode" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ExistingKeyException">
+
+      <wsdl:part name="fault" type="tns2:ExistingKeyException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getRoleByIdRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="roleId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getRoleByIdResponse">
+
+      <wsdl:part name="getRoleByIdReturn" type="tns1:Role"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createProjectRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="project" type="tns1:Project"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getExecServerByIdRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="execServerId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getBuildsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="product" type="xsd:string"/>
+
+      <wsdl:part name="version" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deactivateExecServerResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getProjectNamesRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEssentialSubGroupsResponse">
+
+      <wsdl:part name="getEssentialSubGroupsReturn" type="tns1:ArrayOfEssentialSubGroups"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createLocationResponse">
+
+      <wsdl:part name="createLocationReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="MissingValueException">
+
+      <wsdl:part name="fault" type="tns2:MissingValueException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateLocationResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="activateProjectsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectIds" type="impl:ArrayOf_xsd_int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="encryptAndSetPasswordResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getMembershipsOfGroupRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="groupId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateMembershipsOfUserRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userId" type="xsd:int"/>
+
+      <wsdl:part name="memberships" type="tns1:ArrayOfUserGroupMembership"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeLocationFromProjectRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:int"/>
+
+      <wsdl:part name="locationId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createUsergroupResponse">
+
+      <wsdl:part name="createUsergroupReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteProjectsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectIds" type="impl:ArrayOf_xsd_int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="activateExecServerResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getEssentialGroupsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateMembershipsOfUserResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="updateUserGroupResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteExecServerResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setPasswordRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userId" type="xsd:int"/>
+
+      <wsdl:part name="password" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteLocationsResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getUserDetailsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEssentialsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="parentId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllProjectsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectName" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getComponentsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="product" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getLocationsForProjectResponse">
+
+      <wsdl:part name="getLocationsForProjectReturn" type="tns1:ArrayOfLocation"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateProjectRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="project" type="tns1:Project"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEssentialSubGroupsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="essentialGroupId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createExecServerResponse">
+
+      <wsdl:part name="createExecServerReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getUsersRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="login" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getLocationsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getLocationDetailsResponse">
+
+      <wsdl:part name="getLocationDetailsReturn" type="tns1:LocationDetails"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addResourceTagRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="locationId" type="xsd:int"/>
+
+      <wsdl:part name="execServerId" type="xsd:int"/>
+
+      <wsdl:part name="resourceTag" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMembershipsOfGroupResponse">
+
+      <wsdl:part name="getMembershipsOfGroupReturn" type="tns1:ArrayOfUserGroupMembership"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addResourceTagResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="createUsergroupRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userGroup" type="tns1:UserGroup"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteExecServerRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="execServerId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProjectsForUserRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userId" type="xsd:int"/>
+
+      <wsdl:part name="appModuleId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setMixedModeAuthenticationResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUserGroupResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getPlatformsResponse">
+
+      <wsdl:part name="getPlatformsReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUsersRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="userIdsToDelete" type="impl:ArrayOf_xsd_int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getGroupByIdRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="groupId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProjectNamesResponse">
+
+      <wsdl:part name="getProjectNamesReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProjectsResponse">
+
+      <wsdl:part name="getProjectsReturn" type="tns1:ArrayOfProject"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllProjectsResponse">
+
+      <wsdl:part name="getAllProjectsReturn" type="tns1:ArrayOfProject"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="isMixedModeAuthenticationResponse">
+
+      <wsdl:part name="isMixedModeAuthenticationReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateExecServerRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="execServer" type="tns1:ExecServer"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAllRolesRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProductsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getComponentsResponse">
+
+      <wsdl:part name="getComponentsReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getLocationsResponse">
+
+      <wsdl:part name="getLocationsReturn" type="tns1:ArrayOfLocation"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateMembershipsOfGroupRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="groupId" type="xsd:int"/>
+
+      <wsdl:part name="memberships" type="tns1:ArrayOfUserGroupMembership"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getMembershipsOfUserResponse">
+
+      <wsdl:part name="getMembershipsOfUserReturn" type="tns1:ArrayOfUserGroupMembership"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NotExistingValueException">
+
+      <wsdl:part name="fault" type="tns2:NotExistingValueException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteLocationsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="locationIds" type="impl:ArrayOf_xsd_int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPlatformsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addBuildRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="product" type="xsd:string"/>
+
+      <wsdl:part name="version" type="xsd:string"/>
+
+      <wsdl:part name="build" type="xsd:string"/>
+
+      <wsdl:part name="descr" type="xsd:string"/>
+
+      <wsdl:part name="isActive" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deactivateProjectsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectIds" type="impl:ArrayOf_xsd_int"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="MainEntities">
+
+      <wsdl:operation name="getAllRoles" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getAllRolesRequest" name="getAllRolesRequest"/>
+
+         <wsdl:output message="impl:getAllRolesResponse" name="getAllRolesResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setPassword" parameterOrder="sessionId userId password">
+
+         <wsdl:input message="impl:setPasswordRequest" name="setPasswordRequest"/>
+
+         <wsdl:output message="impl:setPasswordResponse" name="setPasswordResponse"/>
+
+         <wsdl:fault message="impl:MissingValueException" name="MissingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createLocation" parameterOrder="sessionId locationDetails">
+
+         <wsdl:input message="impl:createLocationRequest" name="createLocationRequest"/>
+
+         <wsdl:output message="impl:createLocationResponse" name="createLocationResponse"/>
+
+         <wsdl:fault message="impl:MissingValueException" name="MissingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getLocations" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getLocationsRequest" name="getLocationsRequest"/>
+
+         <wsdl:output message="impl:getLocationsResponse" name="getLocationsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUsers" parameterOrder="sessionId login">
+
+         <wsdl:input message="impl:getUsersRequest" name="getUsersRequest"/>
+
+         <wsdl:output message="impl:getUsersResponse" name="getUsersResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProducts" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getProductsRequest" name="getProductsRequest"/>
+
+         <wsdl:output message="impl:getProductsResponse" name="getProductsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getComponents" parameterOrder="sessionId product">
+
+         <wsdl:input message="impl:getComponentsRequest" name="getComponentsRequest"/>
+
+         <wsdl:output message="impl:getComponentsResponse" name="getComponentsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="encryptAndSetPassword" parameterOrder="sessionId userId password">
+
+         <wsdl:input message="impl:encryptAndSetPasswordRequest" name="encryptAndSetPasswordRequest"/>
+
+         <wsdl:output message="impl:encryptAndSetPasswordResponse" name="encryptAndSetPasswordResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:MissingValueException" name="MissingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteExecServer" parameterOrder="sessionId execServerId">
+
+         <wsdl:input message="impl:deleteExecServerRequest" name="deleteExecServerRequest"/>
+
+         <wsdl:output message="impl:deleteExecServerResponse" name="deleteExecServerResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateExecServer" parameterOrder="sessionId execServer">
+
+         <wsdl:input message="impl:updateExecServerRequest" name="updateExecServerRequest"/>
+
+         <wsdl:output message="impl:updateExecServerResponse" name="updateExecServerResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deactivateExecServer" parameterOrder="sessionId execServerId">
+
+         <wsdl:input message="impl:deactivateExecServerRequest" name="deactivateExecServerRequest"/>
+
+         <wsdl:output message="impl:deactivateExecServerResponse" name="deactivateExecServerResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateUser" parameterOrder="sessionId userDetails">
+
+         <wsdl:input message="impl:updateUserRequest" name="updateUserRequest"/>
+
+         <wsdl:output message="impl:updateUserResponse" name="updateUserResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:ExistingKeyException" name="ExistingKeyException"/>
+
+         <wsdl:fault message="impl:MissingValueException" name="MissingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateProject" parameterOrder="sessionId project">
+
+         <wsdl:input message="impl:updateProjectRequest" name="updateProjectRequest"/>
+
+         <wsdl:output message="impl:updateProjectResponse" name="updateProjectResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidStateException" name="InvalidStateException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProjects" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getProjectsRequest" name="getProjectsRequest"/>
+
+         <wsdl:output message="impl:getProjectsResponse" name="getProjectsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProjectById" parameterOrder="sessionId projectId">
+
+         <wsdl:input message="impl:getProjectByIdRequest" name="getProjectByIdRequest"/>
+
+         <wsdl:output message="impl:getProjectByIdResponse" name="getProjectByIdResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateLocation" parameterOrder="sessionId locationDetails">
+
+         <wsdl:input message="impl:updateLocationRequest" name="updateLocationRequest"/>
+
+         <wsdl:output message="impl:updateLocationResponse" name="updateLocationResponse"/>
+
+         <wsdl:fault message="impl:MissingValueException" name="MissingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getBuilds" parameterOrder="sessionId product version">
+
+         <wsdl:input message="impl:getBuildsRequest" name="getBuildsRequest"/>
+
+         <wsdl:output message="impl:getBuildsResponse" name="getBuildsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProjectNames" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getProjectNamesRequest" name="getProjectNamesRequest"/>
+
+         <wsdl:output message="impl:getProjectNamesResponse" name="getProjectNamesResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getVersions" parameterOrder="sessionId product">
+
+         <wsdl:input message="impl:getVersionsRequest" name="getVersionsRequest"/>
+
+         <wsdl:output message="impl:getVersionsResponse" name="getVersionsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createExecServer" parameterOrder="sessionId execServer">
+
+         <wsdl:input message="impl:createExecServerRequest" name="createExecServerRequest"/>
+
+         <wsdl:output message="impl:createExecServerResponse" name="createExecServerResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateUserGroup" parameterOrder="sessionId userGroup">
+
+         <wsdl:input message="impl:updateUserGroupRequest" name="updateUserGroupRequest"/>
+
+         <wsdl:output message="impl:updateUserGroupResponse" name="updateUserGroupResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPlatforms" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getPlatformsRequest" name="getPlatformsRequest"/>
+
+         <wsdl:output message="impl:getPlatformsResponse" name="getPlatformsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProjectsForUser" parameterOrder="sessionId userId appModuleId">
+
+         <wsdl:input message="impl:getProjectsForUserRequest" name="getProjectsForUserRequest"/>
+
+         <wsdl:output message="impl:getProjectsForUserResponse" name="getProjectsForUserResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getLocationsForProject" parameterOrder="sessionId projectId">
+
+         <wsdl:input message="impl:getLocationsForProjectRequest" name="getLocationsForProjectRequest"/>
+
+         <wsdl:output message="impl:getLocationsForProjectResponse" name="getLocationsForProjectResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getLocationDetails" parameterOrder="sessionId locationId">
+
+         <wsdl:input message="impl:getLocationDetailsRequest" name="getLocationDetailsRequest"/>
+
+         <wsdl:output message="impl:getLocationDetailsResponse" name="getLocationDetailsResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteLocations" parameterOrder="sessionId locationIds">
+
+         <wsdl:input message="impl:deleteLocationsRequest" name="deleteLocationsRequest"/>
+
+         <wsdl:output message="impl:deleteLocationsResponse" name="deleteLocationsResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setProxyUsernameAndPasswordForLocation" parameterOrder="sessionId locationId proxyUsername proxyPassword">
+
+         <wsdl:input message="impl:setProxyUsernameAndPasswordForLocationRequest" name="setProxyUsernameAndPasswordForLocationRequest"/>
+
+         <wsdl:output message="impl:setProxyUsernameAndPasswordForLocationResponse" name="setProxyUsernameAndPasswordForLocationResponse"/>
+
+         <wsdl:fault message="impl:InvalidStateException" name="InvalidStateException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUsers" parameterOrder="sessionId userIdsToDelete">
+
+         <wsdl:input message="impl:deleteUsersRequest" name="deleteUsersRequest"/>
+
+         <wsdl:output message="impl:deleteUsersResponse" name="deleteUsersResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserDetails" parameterOrder="sessionId userId">
+
+         <wsdl:input message="impl:getUserDetailsRequest" name="getUserDetailsRequest"/>
+
+         <wsdl:output message="impl:getUserDetailsResponse" name="getUserDetailsResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createUser" parameterOrder="sessionId userDetails">
+
+         <wsdl:input message="impl:createUserRequest" name="createUserRequest"/>
+
+         <wsdl:output message="impl:createUserResponse" name="createUserResponse"/>
+
+         <wsdl:fault message="impl:MissingValueException" name="MissingValueException"/>
+
+         <wsdl:fault message="impl:ExistingKeyException" name="ExistingKeyException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllProjects" parameterOrder="sessionId projectName">
+
+         <wsdl:input message="impl:getAllProjectsRequest" name="getAllProjectsRequest"/>
+
+         <wsdl:output message="impl:getAllProjectsResponse" name="getAllProjectsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createProject" parameterOrder="sessionId project">
+
+         <wsdl:input message="impl:createProjectRequest" name="createProjectRequest"/>
+
+         <wsdl:output message="impl:createProjectResponse" name="createProjectResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteProjects" parameterOrder="sessionId projectIds">
+
+         <wsdl:input message="impl:deleteProjectsRequest" name="deleteProjectsRequest"/>
+
+         <wsdl:output message="impl:deleteProjectsResponse" name="deleteProjectsResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="activateProjects" parameterOrder="sessionId projectIds">
+
+         <wsdl:input message="impl:activateProjectsRequest" name="activateProjectsRequest"/>
+
+         <wsdl:output message="impl:activateProjectsResponse" name="activateProjectsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deactivateProjects" parameterOrder="sessionId projectIds">
+
+         <wsdl:input message="impl:deactivateProjectsRequest" name="deactivateProjectsRequest"/>
+
+         <wsdl:output message="impl:deactivateProjectsResponse" name="deactivateProjectsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getExecServerById" parameterOrder="sessionId execServerId">
+
+         <wsdl:input message="impl:getExecServerByIdRequest" name="getExecServerByIdRequest"/>
+
+         <wsdl:output message="impl:getExecServerByIdResponse" name="getExecServerByIdResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getExecServersOfLocation" parameterOrder="sessionId locationId">
+
+         <wsdl:input message="impl:getExecServersOfLocationRequest" name="getExecServersOfLocationRequest"/>
+
+         <wsdl:output message="impl:getExecServersOfLocationResponse" name="getExecServersOfLocationResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="activateExecServer" parameterOrder="sessionId execServerId locationId">
+
+         <wsdl:input message="impl:activateExecServerRequest" name="activateExecServerRequest"/>
+
+         <wsdl:output message="impl:activateExecServerResponse" name="activateExecServerResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeResourceTag" parameterOrder="sessionId locationId execServerId resourceTag">
+
+         <wsdl:input message="impl:removeResourceTagRequest" name="removeResourceTagRequest"/>
+
+         <wsdl:output message="impl:removeResourceTagResponse" name="removeResourceTagResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addResourceTag" parameterOrder="sessionId locationId execServerId resourceTag">
+
+         <wsdl:input message="impl:addResourceTagRequest" name="addResourceTagRequest"/>
+
+         <wsdl:output message="impl:addResourceTagResponse" name="addResourceTagResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllResourceTags" parameterOrder="sessionId locationId execServerId">
+
+         <wsdl:input message="impl:getAllResourceTagsRequest" name="getAllResourceTagsRequest"/>
+
+         <wsdl:output message="impl:getAllResourceTagsResponse" name="getAllResourceTagsResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addLocationToProject" parameterOrder="sessionId projectId locationId">
+
+         <wsdl:input message="impl:addLocationToProjectRequest" name="addLocationToProjectRequest"/>
+
+         <wsdl:output message="impl:addLocationToProjectResponse" name="addLocationToProjectResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidStateException" name="InvalidStateException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeLocationFromProject" parameterOrder="sessionId projectId locationId">
+
+         <wsdl:input message="impl:removeLocationFromProjectRequest" name="removeLocationFromProjectRequest"/>
+
+         <wsdl:output message="impl:removeLocationFromProjectResponse" name="removeLocationFromProjectResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidStateException" name="InvalidStateException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+         <wsdl:fault message="impl:LoginException" name="LoginException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllEssentials" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getAllEssentialsRequest" name="getAllEssentialsRequest"/>
+
+         <wsdl:output message="impl:getAllEssentialsResponse" name="getAllEssentialsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getEssentialGroups" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getEssentialGroupsRequest" name="getEssentialGroupsRequest"/>
+
+         <wsdl:output message="impl:getEssentialGroupsResponse" name="getEssentialGroupsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getEssentialSubGroups" parameterOrder="sessionId essentialGroupId">
+
+         <wsdl:input message="impl:getEssentialSubGroupsRequest" name="getEssentialSubGroupsRequest"/>
+
+         <wsdl:output message="impl:getEssentialSubGroupsResponse" name="getEssentialSubGroupsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getEssentials" parameterOrder="sessionId parentId">
+
+         <wsdl:input message="impl:getEssentialsRequest" name="getEssentialsRequest"/>
+
+         <wsdl:output message="impl:getEssentialsResponse" name="getEssentialsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getFilePoolEntries" parameterOrder="sessionId projectId">
+
+         <wsdl:input message="impl:getFilePoolEntriesRequest" name="getFilePoolEntriesRequest"/>
+
+         <wsdl:output message="impl:getFilePoolEntriesResponse" name="getFilePoolEntriesResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createUsergroup" parameterOrder="sessionId userGroup">
+
+         <wsdl:input message="impl:createUsergroupRequest" name="createUsergroupRequest"/>
+
+         <wsdl:output message="impl:createUsergroupResponse" name="createUsergroupResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getGroupByName" parameterOrder="sessionId groupName">
+
+         <wsdl:input message="impl:getGroupByNameRequest" name="getGroupByNameRequest"/>
+
+         <wsdl:output message="impl:getGroupByNameResponse" name="getGroupByNameResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getGroupById" parameterOrder="sessionId groupId">
+
+         <wsdl:input message="impl:getGroupByIdRequest" name="getGroupByIdRequest"/>
+
+         <wsdl:output message="impl:getGroupByIdResponse" name="getGroupByIdResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllUserGroups" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getAllUserGroupsRequest" name="getAllUserGroupsRequest"/>
+
+         <wsdl:output message="impl:getAllUserGroupsResponse" name="getAllUserGroupsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUserGroup" parameterOrder="sessionId groupId">
+
+         <wsdl:input message="impl:deleteUserGroupRequest" name="deleteUserGroupRequest"/>
+
+         <wsdl:output message="impl:deleteUserGroupResponse" name="deleteUserGroupResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMembershipsOfGroup" parameterOrder="sessionId groupId">
+
+         <wsdl:input message="impl:getMembershipsOfGroupRequest" name="getMembershipsOfGroupRequest"/>
+
+         <wsdl:output message="impl:getMembershipsOfGroupResponse" name="getMembershipsOfGroupResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMembershipsOfUser" parameterOrder="sessionId userId">
+
+         <wsdl:input message="impl:getMembershipsOfUserRequest" name="getMembershipsOfUserRequest"/>
+
+         <wsdl:output message="impl:getMembershipsOfUserResponse" name="getMembershipsOfUserResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllMemberships" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getAllMembershipsRequest" name="getAllMembershipsRequest"/>
+
+         <wsdl:output message="impl:getAllMembershipsResponse" name="getAllMembershipsResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateMembershipsOfGroup" parameterOrder="sessionId groupId memberships">
+
+         <wsdl:input message="impl:updateMembershipsOfGroupRequest" name="updateMembershipsOfGroupRequest"/>
+
+         <wsdl:output message="impl:updateMembershipsOfGroupResponse" name="updateMembershipsOfGroupResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateMembershipsOfUser" parameterOrder="sessionId userId memberships">
+
+         <wsdl:input message="impl:updateMembershipsOfUserRequest" name="updateMembershipsOfUserRequest"/>
+
+         <wsdl:output message="impl:updateMembershipsOfUserResponse" name="updateMembershipsOfUserResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getRoleById" parameterOrder="sessionId roleId">
+
+         <wsdl:input message="impl:getRoleByIdRequest" name="getRoleByIdRequest"/>
+
+         <wsdl:output message="impl:getRoleByIdResponse" name="getRoleByIdResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addBuild" parameterOrder="sessionId product version build descr isActive">
+
+         <wsdl:input message="impl:addBuildRequest" name="addBuildRequest"/>
+
+         <wsdl:output message="impl:addBuildResponse" name="addBuildResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="isMixedModeAuthentication" parameterOrder="sessionId userId">
+
+         <wsdl:input message="impl:isMixedModeAuthenticationRequest" name="isMixedModeAuthenticationRequest"/>
+
+         <wsdl:output message="impl:isMixedModeAuthenticationResponse" name="isMixedModeAuthenticationResponse"/>
+
+         <wsdl:fault message="impl:NotExistingValueException" name="NotExistingValueException"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setMixedModeAuthentication" parameterOrder="sessionId userId useMixedMode">
+
+         <wsdl:input message="impl:setMixedModeAuthenticationRequest" name="setMixedModeAuthenticationRequest"/>
+
+         <wsdl:output message="impl:setMixedModeAuthenticationResponse" name="setMixedModeAuthenticationResponse"/>
+
+         <wsdl:fault message="impl:InvalidIdException" name="InvalidIdException"/>
+
+         <wsdl:fault message="impl:InternalException" name="InternalException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="sccentitiesSoapBinding" type="impl:MainEntities">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getAllRoles">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAllRolesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAllRolesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setPassword">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setPasswordRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setPasswordResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="MissingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="MissingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createLocation">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createLocationRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createLocationResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="MissingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="MissingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getLocations">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getLocationsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getLocationsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUsers">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getUsersRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getUsersResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProducts">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getProductsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getProductsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getComponents">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getComponentsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getComponentsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="encryptAndSetPassword">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="encryptAndSetPasswordRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="encryptAndSetPasswordResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="MissingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="MissingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteExecServer">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteExecServerRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteExecServerResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateExecServer">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateExecServerRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateExecServerResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deactivateExecServer">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deactivateExecServerRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deactivateExecServerResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateUserRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateUserResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ExistingKeyException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ExistingKeyException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="MissingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="MissingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateProject">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateProjectRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateProjectResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidStateException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidStateException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProjects">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getProjectsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getProjectsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProjectById">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getProjectByIdRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getProjectByIdResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateLocation">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateLocationRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateLocationResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="MissingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="MissingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getBuilds">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getBuildsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getBuildsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProjectNames">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getProjectNamesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getProjectNamesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getVersions">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getVersionsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getVersionsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createExecServer">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createExecServerRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createExecServerResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateUserGroup">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateUserGroupRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateUserGroupResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPlatforms">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPlatformsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPlatformsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProjectsForUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getProjectsForUserRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getProjectsForUserResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getLocationsForProject">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getLocationsForProjectRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getLocationsForProjectResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getLocationDetails">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getLocationDetailsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getLocationDetailsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteLocations">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteLocationsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteLocationsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setProxyUsernameAndPasswordForLocation">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setProxyUsernameAndPasswordForLocationRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setProxyUsernameAndPasswordForLocationResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidStateException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidStateException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUsers">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteUsersRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteUsersResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getUserDetails">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getUserDetailsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getUserDetailsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createUserRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createUserResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="MissingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="MissingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ExistingKeyException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ExistingKeyException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllProjects">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAllProjectsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAllProjectsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createProject">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createProjectRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createProjectResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteProjects">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteProjectsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteProjectsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="activateProjects">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="activateProjectsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="activateProjectsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deactivateProjects">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deactivateProjectsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deactivateProjectsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getExecServerById">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getExecServerByIdRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getExecServerByIdResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getExecServersOfLocation">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getExecServersOfLocationRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getExecServersOfLocationResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="activateExecServer">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="activateExecServerRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="activateExecServerResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeResourceTag">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeResourceTagRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeResourceTagResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addResourceTag">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addResourceTagRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addResourceTagResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllResourceTags">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAllResourceTagsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAllResourceTagsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addLocationToProject">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addLocationToProjectRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addLocationToProjectResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidStateException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidStateException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeLocationFromProject">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeLocationFromProjectRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeLocationFromProjectResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidStateException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidStateException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="LoginException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LoginException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllEssentials">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAllEssentialsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAllEssentialsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getEssentialGroups">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getEssentialGroupsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getEssentialGroupsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getEssentialSubGroups">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getEssentialSubGroupsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getEssentialSubGroupsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getEssentials">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getEssentialsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getEssentialsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getFilePoolEntries">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getFilePoolEntriesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getFilePoolEntriesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createUsergroup">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createUsergroupRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createUsergroupResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getGroupByName">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getGroupByNameRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getGroupByNameResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getGroupById">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getGroupByIdRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getGroupByIdResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllUserGroups">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAllUserGroupsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAllUserGroupsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUserGroup">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteUserGroupRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteUserGroupResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMembershipsOfGroup">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getMembershipsOfGroupRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getMembershipsOfGroupResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getMembershipsOfUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getMembershipsOfUserRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getMembershipsOfUserResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAllMemberships">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAllMembershipsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAllMembershipsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateMembershipsOfGroup">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateMembershipsOfGroupRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateMembershipsOfGroupResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateMembershipsOfUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateMembershipsOfUserRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateMembershipsOfUserResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getRoleById">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getRoleByIdRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getRoleByIdResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addBuild">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addBuildRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addBuildResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="isMixedModeAuthentication">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="isMixedModeAuthenticationRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="isMixedModeAuthenticationResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="NotExistingValueException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NotExistingValueException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setMixedModeAuthentication">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setMixedModeAuthenticationRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://impl.webservice.scc.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setMixedModeAuthenticationResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidIdException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidIdException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InternalException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InternalException" namespace="http://atlis-tm//axislegacy/sccentities" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="MainEntitiesService">
+
+      <wsdl:port binding="impl:sccentitiesSoapBinding" name="sccentities">
+
+         <wsdlsoap:address location="http://10.5.2.218//axislegacy/sccentities"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

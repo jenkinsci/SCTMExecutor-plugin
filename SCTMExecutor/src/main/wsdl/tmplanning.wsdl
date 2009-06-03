@@ -1,0 +1,1955 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://10.5.2.218/Services1.0/services/tmplanning" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://10.5.2.218/Services1.0/services/tmplanning" xmlns:intf="http://10.5.2.218/Services1.0/services/tmplanning" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://tm.segue.com" xmlns:tns2="http://scc.segue.com" xmlns:tns3="http://webservice.scc.segue.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.3
+Built on Oct 05, 2005 (05:23:37 EDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://tm.segue.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://10.5.2.218/Services1.0/services/tmplanning"/>
+   <import namespace="http://webservice.scc.segue.com"/>
+   <import namespace="http://xml.apache.org/xml-soap"/>
+   <import namespace="http://scc.segue.com"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOfPropertyValue">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:PropertyValue[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="PropertyValue">
+    <sequence>
+     <element name="children" nillable="true" type="tns1:ArrayOfPropertyValue"/>
+     <element name="modifyCount" type="xsd:int"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="nodeID" nillable="true" type="xsd:string"/>
+     <element name="propertyID" nillable="true" type="xsd:string"/>
+     <element name="propertyTypeID" nillable="true" type="xsd:string"/>
+     <element name="type" type="xsd:int"/>
+     <element name="value" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="NodeFilter">
+    <sequence>
+     <element name="testPlanningFilterId" type="xsd:int"/>
+     <element name="createdBy" nillable="true" type="xsd:string"/>
+     <element name="testDefinitionType" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="TestPlanningNode">
+    <complexContent>
+     <extension base="tns2:NamedEntity">
+      <sequence>
+       <element name="propertyValues" nillable="true" type="tns1:ArrayOfPropertyValue"/>
+       <element name="kind" type="xsd:int"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfTestPlanningNodes">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:TestPlanningNode[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="NodeProperty">
+    <complexContent>
+     <extension base="tns2:NamedEntity">
+      <sequence>
+       <element name="value" nillable="true" type="xsd:string"/>
+       <element name="inheretedFrom" type="xsd:int"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfNodeProperties">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:NodeProperty[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="SuccessMeasure">
+    <complexContent>
+     <extension base="tns2:NamedEntity">
+      <sequence>
+       <element name="mCondWasActive" type="xsd:boolean"/>
+       <element name="mCondMaxValue" type="xsd:float"/>
+       <element name="mValue" type="xsd:float"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfSuccessMeasures">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:SuccessMeasure[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="NodeParameter">
+    <complexContent>
+     <extension base="tns2:NamedEntity">
+      <sequence>
+       <element name="value" nillable="true" type="xsd:string"/>
+       <element name="isInherited" type="xsd:boolean"/>
+       <element name="type" type="xsd:int"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfNodeParameter">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:NodeParameter[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="Project">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+     <element name="id" nillable="true" type="xsd:string"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="PropertyMetaInfo">
+    <sequence>
+     <element name="allListValues" nillable="true" type="impl:ArrayOf_xsd_string"/>
+     <element name="defaultValue" nillable="true" type="xsd:string"/>
+     <element name="description" nillable="true" type="xsd:string"/>
+     <element name="formatString" nillable="true" type="xsd:string"/>
+     <element name="id" nillable="true" type="xsd:string"/>
+     <element name="isEditable" type="xsd:boolean"/>
+     <element name="isMultiSelect" type="xsd:boolean"/>
+     <element name="isOptional" type="xsd:boolean"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="propertyTypeId" nillable="true" type="xsd:string"/>
+     <element name="type" type="xsd:int"/>
+     <element name="typeLabel" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfProject">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:Project[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="TestDefinitionResult">
+    <sequence>
+     <element name="duration" type="xsd:int"/>
+     <element name="errors" type="xsd:int"/>
+     <element name="id" type="xsd:int"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="status" type="xsd:int"/>
+     <element name="testRunId" type="xsd:int"/>
+     <element name="type" nillable="true" type="xsd:string"/>
+     <element name="typeId" type="xsd:int"/>
+     <element name="warnings" type="xsd:int"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfTestDefinitionResult">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:TestDefinitionResult[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="CustomStepProperty">
+    <sequence>
+     <element name="id" type="xsd:int"/>
+     <element name="sequence" type="xsd:int"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="value" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfCustomStepProperty">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:CustomStepProperty[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ManualTestStep">
+    <sequence>
+     <element name="stepPos" type="xsd:int"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="description" nillable="true" type="xsd:string"/>
+     <element name="expectedResult" nillable="true" type="xsd:string"/>
+     <element name="properties" nillable="true" type="tns1:ArrayOfCustomStepProperty"/>
+    </sequence>
+   </complexType>
+   <complexType name="DataSet">
+    <sequence>
+     <element name="name" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="DataSource">
+    <sequence>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="id" type="xsd:int"/>
+     <element name="description" nillable="true" type="xsd:string"/>
+     <element name="typeName" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://10.5.2.218/Services1.0/services/tmplanning"/>
+   <import namespace="http://webservice.scc.segue.com"/>
+   <import namespace="http://scc.segue.com"/>
+   <import namespace="http://tm.segue.com"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="mapItem">
+    <sequence>
+     <element name="key" nillable="true" type="xsd:anyType"/>
+     <element name="value" nillable="true" type="xsd:anyType"/>
+    </sequence>
+   </complexType>
+   <complexType name="Map">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="item" type="apachesoap:mapItem"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://webservice.scc.segue.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://10.5.2.218/Services1.0/services/tmplanning"/>
+   <import namespace="http://xml.apache.org/xml-soap"/>
+   <import namespace="http://scc.segue.com"/>
+   <import namespace="http://tm.segue.com"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Entity">
+    <sequence>
+     <element name="id" type="xsd:int"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://scc.segue.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://10.5.2.218/Services1.0/services/tmplanning"/>
+   <import namespace="http://webservice.scc.segue.com"/>
+   <import namespace="http://xml.apache.org/xml-soap"/>
+   <import namespace="http://tm.segue.com"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="NamedEntity">
+    <complexContent>
+     <extension base="tns3:Entity">
+      <sequence>
+       <element name="name" nillable="true" type="xsd:string"/>
+       <element name="description" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfNamedEntities">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:NamedEntity[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://10.5.2.218/Services1.0/services/tmplanning" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://webservice.scc.segue.com"/>
+   <import namespace="http://xml.apache.org/xml-soap"/>
+   <import namespace="http://scc.segue.com"/>
+   <import namespace="http://tm.segue.com"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns1_ManualTestStep">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:ManualTestStep[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns1_DataSet">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:DataSet[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns1_DataSource">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:DataSource[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="getIntegrationDefaultFolderIdRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getManualTestStepsResponse">
+
+      <wsdl:part name="getManualTestStepsReturn" type="impl:ArrayOf_tns1_ManualTestStep"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCurrentProjectRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProjectsResponse">
+
+      <wsdl:part name="getProjectsReturn" type="tns1:ArrayOfProject"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addManualTestRequest">
+
+      <wsdl:part name="id" type="xsd:long"/>
+
+      <wsdl:part name="testContainerId" type="xsd:int"/>
+
+      <wsdl:part name="name" type="xsd:string"/>
+
+      <wsdl:part name="description" type="xsd:string"/>
+
+      <wsdl:part name="steps" type="impl:ArrayOf_tns1_ManualTestStep"/>
+
+      <wsdl:part name="params" type="tns1:ArrayOfNodeParameter"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteManualTestStepResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteNodeRequest">
+
+      <wsdl:part name="id" type="xsd:long"/>
+
+      <wsdl:part name="nodeId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPropertyInfoResponse">
+
+      <wsdl:part name="getPropertyInfoReturn" type="tns1:PropertyMetaInfo"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="uploadTestPackageResultRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="packageNodeId" type="xsd:int"/>
+
+      <wsdl:part name="xmlPackage" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDataSetForDataSourceResponse">
+
+      <wsdl:part name="getDataSetForDataSourceReturn" type="impl:ArrayOf_tns1_DataSet"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDataSetForDataSourceRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="dataSourceId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updatePropertiesRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="properties" type="tns1:ArrayOfPropertyValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateManualTestStepRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="testId" type="xsd:int"/>
+
+      <wsdl:part name="step" type="tns1:ManualTestStep"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPropertyIdsRequest1">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="nodeTypeId" type="xsd:string"/>
+
+      <wsdl:part name="propertyTypeId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="loginRequest">
+
+      <wsdl:part name="loginProperties" type="apachesoap:Map"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updatePropertyResponse">
+
+      <wsdl:part name="updatePropertyReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getNodeRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addManualTestResponse">
+
+      <wsdl:part name="addManualTestReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getExecutionResultRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="executionDefId" type="xsd:int"/>
+
+      <wsdl:part name="executionTimestamp" type="xsd:long"/>
+
+      <wsdl:part name="execServerHostName" type="xsd:string"/>
+
+      <wsdl:part name="execServerPort" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDataSourcesForProjectRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPropertyTypeIdsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="nodeTypeId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPropertyRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+      <wsdl:part name="propertyId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProjectResponse">
+
+      <wsdl:part name="getProjectReturn" type="tns1:Project"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createTestPackageResponse">
+
+      <wsdl:part name="createTestPackageReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="startExecutionRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="executionDefId" type="xsd:int"/>
+
+      <wsdl:part name="version" type="xsd:string"/>
+
+      <wsdl:part name="build" type="xsd:string"/>
+
+      <wsdl:part name="execServerHostName" type="xsd:string"/>
+
+      <wsdl:part name="execServerPort" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getManualTestStepsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="testId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getNodeIdsResponse">
+
+      <wsdl:part name="getNodeIdsReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setCurrentProjectRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="startExecutionResponse">
+
+      <wsdl:part name="startExecutionReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addManualTestStepResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="addNodeRequest">
+
+      <wsdl:part name="id" type="xsd:long"/>
+
+      <wsdl:part name="parentNodeId" type="xsd:int"/>
+
+      <wsdl:part name="node" type="tns1:TestPlanningNode"/>
+
+      <wsdl:part name="throwErrorOnDuplicate" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDataSourcesForProjectResponse">
+
+      <wsdl:part name="getDataSourcesForProjectReturn" type="impl:ArrayOf_tns1_DataSource"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPropertyTypeIdsResponse">
+
+      <wsdl:part name="getPropertyTypeIdsReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getExecutionResultURLResponse">
+
+      <wsdl:part name="getExecutionResultURLReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getTestContainersRequest">
+
+      <wsdl:part name="id" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getNodeTypeIdsResponse">
+
+      <wsdl:part name="getNodeTypeIdsReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteNodeResponse">
+
+      <wsdl:part name="deleteNodeReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getIntegrationDefaultFolderIdResponse">
+
+      <wsdl:part name="getIntegrationDefaultFolderIdReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getChildNodesRequest">
+
+      <wsdl:part name="id" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:int"/>
+
+      <wsdl:part name="parentNodeId" type="xsd:int"/>
+
+      <wsdl:part name="filter" type="tns1:NodeFilter"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getNodeResponse">
+
+      <wsdl:part name="getNodeReturn" type="tns1:TestPlanningNode"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deletePropertyResponse">
+
+      <wsdl:part name="deletePropertyReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updatePropertyRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="property" type="tns1:PropertyValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProjectRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getChildNodesResponse">
+
+      <wsdl:part name="getChildNodesReturn" type="tns1:ArrayOfTestPlanningNodes"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="queueExecutionResponse">
+
+      <wsdl:part name="queueExecutionReturn" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="queueExecutionRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="executionDefId" type="xsd:int"/>
+
+      <wsdl:part name="version" type="xsd:string"/>
+
+      <wsdl:part name="build" type="xsd:string"/>
+
+      <wsdl:part name="execServerHostName" type="xsd:string"/>
+
+      <wsdl:part name="execServerPort" type="xsd:int"/>
+
+      <wsdl:part name="runProperties" type="apachesoap:Map"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateNodeResponse">
+
+      <wsdl:part name="updateNodeReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPropertyIdsResponse">
+
+      <wsdl:part name="getPropertyIdsReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCurrentProjectResponse">
+
+      <wsdl:part name="getCurrentProjectReturn" type="tns1:Project"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPropertyInfoRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="nodeTypeId" type="xsd:string"/>
+
+      <wsdl:part name="propertyId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updatePropertiesResponse">
+
+      <wsdl:part name="updatePropertiesReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createTestPackageRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="packageParentNodeId" type="xsd:int"/>
+
+      <wsdl:part name="xmlPackage" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="uploadTestPlanRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:int"/>
+
+      <wsdl:part name="content" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPropertyIdsResponse1">
+
+      <wsdl:part name="getPropertyIdsReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateManualTestStepResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="deletePropertyRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="property" type="tns1:PropertyValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getExecutionResultURLRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="executionDefId" type="xsd:int"/>
+
+      <wsdl:part name="executionTimestamp" type="xsd:long"/>
+
+      <wsdl:part name="execServerHostName" type="xsd:string"/>
+
+      <wsdl:part name="execServerPort" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProjectsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="uploadTestPlanResponse">
+
+      <wsdl:part name="uploadTestPlanReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addManualTestStepRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="testId" type="xsd:int"/>
+
+      <wsdl:part name="step" type="tns1:ManualTestStep"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getExecutionResultResponse">
+
+      <wsdl:part name="getExecutionResultReturn" type="tns1:ArrayOfTestDefinitionResult"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getNodeTypeIdsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateNodeRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="node" type="tns1:TestPlanningNode"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getNodeIdsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="property" type="tns1:PropertyValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addNodeResponse">
+
+      <wsdl:part name="addNodeReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setIntegrationDefaultFolderResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getPropertyResponse">
+
+      <wsdl:part name="getPropertyReturn" type="tns1:PropertyValue"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCustomStepPropertyNamesRequest">
+
+      <wsdl:part name="id" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="loginResponse">
+
+      <wsdl:part name="loginReturn" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateTestPackageResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="updatePropertyValueRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="nodeId" type="xsd:int"/>
+
+      <wsdl:part name="propertyName" type="xsd:string"/>
+
+      <wsdl:part name="propertyValue" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getTestContainersResponse">
+
+      <wsdl:part name="getTestContainersReturn" type="tns2:ArrayOfNamedEntities"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteManualTestStepRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="testId" type="xsd:int"/>
+
+      <wsdl:part name="stepPos" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updatePropertyValueResponse">
+
+      <wsdl:part name="updatePropertyValueReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="uploadTestPackageResultResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setCurrentProjectResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getCustomStepPropertyNamesResponse">
+
+      <wsdl:part name="getCustomStepPropertyNamesReturn" type="tns1:ArrayOfCustomStepProperty"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setIntegrationDefaultFolderRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:int"/>
+
+      <wsdl:part name="folderId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getPropertyIdsRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateTestPackageRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="packageNodeId" type="xsd:int"/>
+
+      <wsdl:part name="xmlPackage" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="PlanningService">
+
+      <wsdl:operation name="getProperty" parameterOrder="sessionId nodeId propertyId">
+
+         <wsdl:input message="impl:getPropertyRequest" name="getPropertyRequest"/>
+
+         <wsdl:output message="impl:getPropertyResponse" name="getPropertyResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="login" parameterOrder="loginProperties">
+
+         <wsdl:input message="impl:loginRequest" name="loginRequest"/>
+
+         <wsdl:output message="impl:loginResponse" name="loginResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getChildNodes" parameterOrder="id projectId parentNodeId filter">
+
+         <wsdl:input message="impl:getChildNodesRequest" name="getChildNodesRequest"/>
+
+         <wsdl:output message="impl:getChildNodesResponse" name="getChildNodesResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getNode" parameterOrder="sessionId nodeId">
+
+         <wsdl:input message="impl:getNodeRequest" name="getNodeRequest"/>
+
+         <wsdl:output message="impl:getNodeResponse" name="getNodeResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addNode" parameterOrder="id parentNodeId node throwErrorOnDuplicate">
+
+         <wsdl:input message="impl:addNodeRequest" name="addNodeRequest"/>
+
+         <wsdl:output message="impl:addNodeResponse" name="addNodeResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getTestContainers" parameterOrder="id projectId">
+
+         <wsdl:input message="impl:getTestContainersRequest" name="getTestContainersRequest"/>
+
+         <wsdl:output message="impl:getTestContainersResponse" name="getTestContainersResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateProperties" parameterOrder="sessionId properties">
+
+         <wsdl:input message="impl:updatePropertiesRequest" name="updatePropertiesRequest"/>
+
+         <wsdl:output message="impl:updatePropertiesResponse" name="updatePropertiesResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProject" parameterOrder="sessionId projectId">
+
+         <wsdl:input message="impl:getProjectRequest" name="getProjectRequest"/>
+
+         <wsdl:output message="impl:getProjectResponse" name="getProjectResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPropertyInfo" parameterOrder="sessionId nodeTypeId propertyId">
+
+         <wsdl:input message="impl:getPropertyInfoRequest" name="getPropertyInfoRequest"/>
+
+         <wsdl:output message="impl:getPropertyInfoResponse" name="getPropertyInfoResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProjects" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getProjectsRequest" name="getProjectsRequest"/>
+
+         <wsdl:output message="impl:getProjectsResponse" name="getProjectsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createTestPackage" parameterOrder="sessionId packageParentNodeId xmlPackage">
+
+         <wsdl:input message="impl:createTestPackageRequest" name="createTestPackageRequest"/>
+
+         <wsdl:output message="impl:createTestPackageResponse" name="createTestPackageResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateTestPackage" parameterOrder="sessionId packageNodeId xmlPackage">
+
+         <wsdl:input message="impl:updateTestPackageRequest" name="updateTestPackageRequest"/>
+
+         <wsdl:output message="impl:updateTestPackageResponse" name="updateTestPackageResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="uploadTestPackageResult" parameterOrder="sessionId packageNodeId xmlPackage">
+
+         <wsdl:input message="impl:uploadTestPackageResultRequest" name="uploadTestPackageResultRequest"/>
+
+         <wsdl:output message="impl:uploadTestPackageResultResponse" name="uploadTestPackageResultResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getExecutionResult" parameterOrder="sessionId executionDefId executionTimestamp execServerHostName execServerPort">
+
+         <wsdl:input message="impl:getExecutionResultRequest" name="getExecutionResultRequest"/>
+
+         <wsdl:output message="impl:getExecutionResultResponse" name="getExecutionResultResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteNode" parameterOrder="id nodeId">
+
+         <wsdl:input message="impl:deleteNodeRequest" name="deleteNodeRequest"/>
+
+         <wsdl:output message="impl:deleteNodeResponse" name="deleteNodeResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteProperty" parameterOrder="sessionId property">
+
+         <wsdl:input message="impl:deletePropertyRequest" name="deletePropertyRequest"/>
+
+         <wsdl:output message="impl:deletePropertyResponse" name="deletePropertyResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getManualTestSteps" parameterOrder="sessionId testId">
+
+         <wsdl:input message="impl:getManualTestStepsRequest" name="getManualTestStepsRequest"/>
+
+         <wsdl:output message="impl:getManualTestStepsResponse" name="getManualTestStepsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getIntegrationDefaultFolderId" parameterOrder="sessionId projectId">
+
+         <wsdl:input message="impl:getIntegrationDefaultFolderIdRequest" name="getIntegrationDefaultFolderIdRequest"/>
+
+         <wsdl:output message="impl:getIntegrationDefaultFolderIdResponse" name="getIntegrationDefaultFolderIdResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateNode" parameterOrder="sessionId node">
+
+         <wsdl:input message="impl:updateNodeRequest" name="updateNodeRequest"/>
+
+         <wsdl:output message="impl:updateNodeResponse" name="updateNodeResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCurrentProject" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getCurrentProjectRequest" name="getCurrentProjectRequest"/>
+
+         <wsdl:output message="impl:getCurrentProjectResponse" name="getCurrentProjectResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setCurrentProject" parameterOrder="sessionId projectId">
+
+         <wsdl:input message="impl:setCurrentProjectRequest" name="setCurrentProjectRequest"/>
+
+         <wsdl:output message="impl:setCurrentProjectResponse" name="setCurrentProjectResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="uploadTestPlan" parameterOrder="sessionId projectId content">
+
+         <wsdl:input message="impl:uploadTestPlanRequest" name="uploadTestPlanRequest"/>
+
+         <wsdl:output message="impl:uploadTestPlanResponse" name="uploadTestPlanResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addManualTest" parameterOrder="id testContainerId name description steps params">
+
+         <wsdl:input message="impl:addManualTestRequest" name="addManualTestRequest"/>
+
+         <wsdl:output message="impl:addManualTestResponse" name="addManualTestResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteManualTestStep" parameterOrder="sessionId testId stepPos">
+
+         <wsdl:input message="impl:deleteManualTestStepRequest" name="deleteManualTestStepRequest"/>
+
+         <wsdl:output message="impl:deleteManualTestStepResponse" name="deleteManualTestStepResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addManualTestStep" parameterOrder="sessionId testId step">
+
+         <wsdl:input message="impl:addManualTestStepRequest" name="addManualTestStepRequest"/>
+
+         <wsdl:output message="impl:addManualTestStepResponse" name="addManualTestStepResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateManualTestStep" parameterOrder="sessionId testId step">
+
+         <wsdl:input message="impl:updateManualTestStepRequest" name="updateManualTestStepRequest"/>
+
+         <wsdl:output message="impl:updateManualTestStepResponse" name="updateManualTestStepResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCustomStepPropertyNames" parameterOrder="id projectId">
+
+         <wsdl:input message="impl:getCustomStepPropertyNamesRequest" name="getCustomStepPropertyNamesRequest"/>
+
+         <wsdl:output message="impl:getCustomStepPropertyNamesResponse" name="getCustomStepPropertyNamesResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getExecutionResultURL" parameterOrder="sessionId executionDefId executionTimestamp execServerHostName execServerPort">
+
+         <wsdl:input message="impl:getExecutionResultURLRequest" name="getExecutionResultURLRequest"/>
+
+         <wsdl:output message="impl:getExecutionResultURLResponse" name="getExecutionResultURLResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="queueExecution" parameterOrder="sessionId executionDefId version build execServerHostName execServerPort runProperties">
+
+         <wsdl:input message="impl:queueExecutionRequest" name="queueExecutionRequest"/>
+
+         <wsdl:output message="impl:queueExecutionResponse" name="queueExecutionResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="startExecution" parameterOrder="sessionId executionDefId version build execServerHostName execServerPort">
+
+         <wsdl:input message="impl:startExecutionRequest" name="startExecutionRequest"/>
+
+         <wsdl:output message="impl:startExecutionResponse" name="startExecutionResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPropertyIds" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getPropertyIdsRequest" name="getPropertyIdsRequest"/>
+
+         <wsdl:output message="impl:getPropertyIdsResponse" name="getPropertyIdsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPropertyIds" parameterOrder="sessionId nodeTypeId propertyTypeId">
+
+         <wsdl:input message="impl:getPropertyIdsRequest1" name="getPropertyIdsRequest1"/>
+
+         <wsdl:output message="impl:getPropertyIdsResponse1" name="getPropertyIdsResponse1"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updatePropertyValue" parameterOrder="sessionId nodeId propertyName propertyValue">
+
+         <wsdl:input message="impl:updatePropertyValueRequest" name="updatePropertyValueRequest"/>
+
+         <wsdl:output message="impl:updatePropertyValueResponse" name="updatePropertyValueResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateProperty" parameterOrder="sessionId property">
+
+         <wsdl:input message="impl:updatePropertyRequest" name="updatePropertyRequest"/>
+
+         <wsdl:output message="impl:updatePropertyResponse" name="updatePropertyResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getNodeTypeIds" parameterOrder="sessionId">
+
+         <wsdl:input message="impl:getNodeTypeIdsRequest" name="getNodeTypeIdsRequest"/>
+
+         <wsdl:output message="impl:getNodeTypeIdsResponse" name="getNodeTypeIdsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getNodeIds" parameterOrder="sessionId property">
+
+         <wsdl:input message="impl:getNodeIdsRequest" name="getNodeIdsRequest"/>
+
+         <wsdl:output message="impl:getNodeIdsResponse" name="getNodeIdsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPropertyTypeIds" parameterOrder="sessionId nodeTypeId">
+
+         <wsdl:input message="impl:getPropertyTypeIdsRequest" name="getPropertyTypeIdsRequest"/>
+
+         <wsdl:output message="impl:getPropertyTypeIdsResponse" name="getPropertyTypeIdsResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDataSetForDataSource" parameterOrder="sessionId dataSourceId">
+
+         <wsdl:input message="impl:getDataSetForDataSourceRequest" name="getDataSetForDataSourceRequest"/>
+
+         <wsdl:output message="impl:getDataSetForDataSourceResponse" name="getDataSetForDataSourceResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDataSourcesForProject" parameterOrder="sessionId projectId">
+
+         <wsdl:input message="impl:getDataSourcesForProjectRequest" name="getDataSourcesForProjectRequest"/>
+
+         <wsdl:output message="impl:getDataSourcesForProjectResponse" name="getDataSourcesForProjectResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setIntegrationDefaultFolder" parameterOrder="sessionId projectId folderId">
+
+         <wsdl:input message="impl:setIntegrationDefaultFolderRequest" name="setIntegrationDefaultFolderRequest"/>
+
+         <wsdl:output message="impl:setIntegrationDefaultFolderResponse" name="setIntegrationDefaultFolderResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="tmplanningSoapBinding" type="impl:PlanningService">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getProperty">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPropertyRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPropertyResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="login">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="loginRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="loginResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getChildNodes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getChildNodesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getChildNodesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getNode">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getNodeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getNodeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addNode">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addNodeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addNodeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getTestContainers">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getTestContainersRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getTestContainersResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateProperties">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updatePropertiesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updatePropertiesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProject">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getProjectRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getProjectResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPropertyInfo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPropertyInfoRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPropertyInfoResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getProjects">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getProjectsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getProjectsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createTestPackage">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createTestPackageRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createTestPackageResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateTestPackage">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateTestPackageRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateTestPackageResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="uploadTestPackageResult">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="uploadTestPackageResultRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="uploadTestPackageResultResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getExecutionResult">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getExecutionResultRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getExecutionResultResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteNode">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteNodeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteNodeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteProperty">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deletePropertyRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deletePropertyResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getManualTestSteps">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getManualTestStepsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getManualTestStepsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getIntegrationDefaultFolderId">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getIntegrationDefaultFolderIdRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getIntegrationDefaultFolderIdResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateNode">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateNodeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateNodeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCurrentProject">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getCurrentProjectRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getCurrentProjectResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setCurrentProject">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setCurrentProjectRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setCurrentProjectResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="uploadTestPlan">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="uploadTestPlanRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="uploadTestPlanResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addManualTest">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addManualTestRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addManualTestResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteManualTestStep">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteManualTestStepRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteManualTestStepResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addManualTestStep">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addManualTestStepRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addManualTestStepResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateManualTestStep">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateManualTestStepRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateManualTestStepResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCustomStepPropertyNames">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getCustomStepPropertyNamesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getCustomStepPropertyNamesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getExecutionResultURL">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getExecutionResultURLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getExecutionResultURLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="queueExecution">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="queueExecutionRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="queueExecutionResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="startExecution">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="startExecutionRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="startExecutionResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPropertyIds">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPropertyIdsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPropertyIdsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPropertyIds">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPropertyIdsRequest1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPropertyIdsResponse1">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updatePropertyValue">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updatePropertyValueRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updatePropertyValueResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateProperty">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updatePropertyRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updatePropertyResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getNodeTypeIds">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getNodeTypeIdsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getNodeTypeIdsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getNodeIds">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getNodeIdsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getNodeIdsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getPropertyTypeIds">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPropertyTypeIdsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPropertyTypeIdsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDataSetForDataSource">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDataSetForDataSourceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDataSetForDataSourceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getDataSourcesForProject">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getDataSourcesForProjectRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getDataSourcesForProjectResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setIntegrationDefaultFolder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setIntegrationDefaultFolderRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.planning.frontendserver.tm.segue.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setIntegrationDefaultFolderResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/tmplanning" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="PlanningServiceService">
+
+      <wsdl:port binding="impl:tmplanningSoapBinding" name="tmplanning">
+
+         <wsdlsoap:address location="http://10.5.2.218/Services1.0/services/tmplanning"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

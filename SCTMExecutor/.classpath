@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="hudson/plugins/sctmexecutor/RerunServiceCallAspect.aj" kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry excluding="hudson/plugins/sctmexecutor/SCTMExecutor/" kind="src" path="src/main/resources"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/eclipse/plugins/org.apache.axis_1.4.0.v200807230600/lib/axis.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/eclipse/plugins/org.apache.commons.discovery_0.2.0.v200806030120/lib/commons-discovery-0.2.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/eclipse/plugins/javax.xml.rpc_1.1.0.v200806030420/lib/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/eclipse/plugins/javax.xml.soap_1.2.0.v200806030421/lib/saaj.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/eclipse/plugins/javax.wsdl_1.5.1.v200806030408.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/eclipse/plugins/org.apache.commons.logging_1.0.4.v20080605-1930.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
