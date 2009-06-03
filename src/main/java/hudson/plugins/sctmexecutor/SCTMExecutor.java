@@ -167,14 +167,14 @@ public final class SCTMExecutor extends Builder {
     rootDir = new FilePath(rootDir, "SCTMResults"); //$NON-NLS-1$
     if (rootDir.exists()) {
       final String buildNo = String.valueOf(currentBuildNo);
-      List<FilePath> list = rootDir.list(new FileFilter() {
-        @Override
-        public boolean accept(File pathname) {
-          return pathname.getName().matches("TEST-(\\p{Print}*)-"+buildNo+".xml"); //$NON-NLS-1$ //$NON-NLS-2$
+      List<FilePath> list = rootDir.list();//new TestFileFilter(buildNo));
+      if (list.size() > 0) {
+        for (FilePath filePath : list) {
+          if (filePath.getName().matches("TEST-(\\p{Print}*)-"+buildNo+".xml"))
+            return rootDir; //test results of the current run available, do not clean the results directory
         }
-      });
-      if (list.size() <= 0)
-        rootDir.deleteContents();
+        rootDir.deleteContents(); // clean old results
+      }
     } else
       rootDir.mkdirs();
     return rootDir;
