@@ -35,7 +35,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   private String serviceURL;
   private String user;
   private String password;
-  private ExecutorService threadPool;
+  private transient ExecutorService threadPool;
 
   public SCTMExecutorDescriptor() {
     super(SCTMExecutor.class);
