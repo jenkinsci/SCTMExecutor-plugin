@@ -102,7 +102,7 @@ public final class SCTMExecutor extends Builder {
   
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-    SCTMExecutorDescriptor descriptor = (SCTMExecutorDescriptor)Hudson.getInstance().getDescriptor(getClass());
+    SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
     try {
       ISCTMService service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor.getPassword()));
