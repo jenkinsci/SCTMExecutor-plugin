@@ -7,7 +7,7 @@
   </f:entry>
   <f:advanced>
     <f:entry title="${%SCTMExecutor.projectConf.property.label.startDelay}" help="/plugin/SCTMExecutor/help-startDelay.html">
-      <f:textbox field="delay" value="${instance.delay}" />
+      <f:textbox field="delay" value="${h.defaulted(instance.delay, 0)}" />
     </f:entry>
     <f:entry title="${%SCTMExecutor.projectConf.property.label.contOnErr}" help="/plugin/SCTMExecutor/help-contAfterErr.html">
       <f:checkbox field="continueOnError" value="${instance.continueOnError}" />
