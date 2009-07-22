@@ -32,7 +32,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
   public StdXMLResultWriter(FilePath rootDir, String serviceURL, String buildNumber) {
     this.rootDir = rootDir;
     this.buildNumber = buildNumber;
-    sctmHost = serviceURL.substring(0, serviceURL.indexOf("/", "http://".length())) + "/silk/DEF"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    this.sctmHost = serviceURL.substring(0, serviceURL.indexOf("/", "http://".length())) + "/silk/DEF"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 
   public void write(ExecutionResult result) {

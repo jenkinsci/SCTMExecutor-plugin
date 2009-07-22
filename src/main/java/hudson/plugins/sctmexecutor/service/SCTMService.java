@@ -137,4 +137,16 @@ public class SCTMService implements ISCTMService {
       throw new SCTMException(MessageFormat.format(Messages.getString("SCTMService.err.commonFatalError"), e.getMessage())); //$NON-NLS-1$
     }
   }
+
+  @Override
+  public void addBuildNumber(int buildNumber) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public boolean buildNumberExists(int buildNumber) {
+    // TODO Auto-generated method stub
+    return false;
+  }
 }

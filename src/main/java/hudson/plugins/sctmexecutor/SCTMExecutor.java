@@ -47,11 +47,12 @@ public final class SCTMExecutor extends Builder {
   private final String upStreamJobName;
   private final boolean continueOnError;
   private final boolean collectResults;
+  private final boolean ignoreNotExecuted;
   
   private boolean succeed;
 
   @DataBoundConstructor
-  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption, final String upStreamJobName, final boolean contOnErr, final boolean collectResults) {
+  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption, final String upStreamJobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreNotExecuted) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
     this.delay = delay;
@@ -59,6 +60,7 @@ public final class SCTMExecutor extends Builder {
     this.upStreamJobName = upStreamJobName;
     this.continueOnError = contOnErr;
     this.collectResults = collectResults;
+    this.ignoreNotExecuted = ignoreNotExecuted;
   }
 
   @Override
@@ -90,6 +92,10 @@ public final class SCTMExecutor extends Builder {
     return this.continueOnError;
   }
   
+  public boolean isIgnoreNotExecuted() {
+    return this.ignoreNotExecuted;
+  }
+  
   public String[] getUpStreamProjects() {
     Collection<String> jobNames = Hudson.getInstance().getJobNames(); // TODO filter real upstream projects
     
@@ -116,7 +122,7 @@ public final class SCTMExecutor extends Builder {
         if (collectResults)
           resultWriter = new StdXMLResultWriter(rootDir, descriptor.getServiceURL(), String.valueOf(build.number));
         Runnable resultCollector = new ExecutionRunnable(service, execDefId, getBuildNumber(build, listener),
-            resultWriter, listener.getLogger());
+            resultWriter, listener.getLogger(), this.ignoreNotExecuted);
         results.add(descriptor.getExecutorPool().submit(resultCollector));
         if (delay > 0 && ids.size() > 1)
           Thread.sleep(delay*1000);

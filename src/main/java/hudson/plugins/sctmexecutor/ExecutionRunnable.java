@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import com.borland.tm.webservices.tmexecution.ExecutionHandle;
 import com.borland.tm.webservices.tmexecution.ExecutionResult;
+import com.borland.tm.webservices.tmexecution.TestDefinitionResult;
 
 final class ExecutionRunnable implements Runnable {
   private static final int MAX_SLEEP = 60;
@@ -22,16 +23,18 @@ final class ExecutionRunnable implements Runnable {
   private final ISCTMService service;
   private final ITestResultWriter writer;
   private final PrintStream consolenLogger;
+  private final boolean ignoreNotExecutedResults;
   private long resultCollectingDelay;
   private int retries;
 
-  ExecutionRunnable(final ISCTMService service, final int execDefId, final int buildNumber, final ITestResultWriter writer, final PrintStream logger) {
+  ExecutionRunnable(final ISCTMService service, final int execDefId, final int buildNumber, final ITestResultWriter writer, final PrintStream logger, final boolean ignoreNotExecutedResults) {
     this.resultCollectingDelay = 5; // in seconds
     this.consolenLogger = logger;
     this.execDefId = execDefId;
     this.writer = writer;
     this.service = service;
     this.buildNumber = buildNumber;
+    this.ignoreNotExecutedResults = ignoreNotExecutedResults;
 
     this.retries = MAX_RETRY_COUNT;
   }
@@ -52,8 +55,11 @@ final class ExecutionRunnable implements Runnable {
     try {
       if (this.buildNumber <= 0) // don't care about a build number
         handles = service.start(this.execDefId);
-      else
+      else {
+        if (!this.service.buildNumberExists(this.buildNumber))
+          this.service.addBuildNumber(this.buildNumber);
         handles = service.start(this.execDefId, String.valueOf(this.buildNumber));
+      }
 
       if (writer != null) { // continue without collecting results
         for (ExecutionHandle executionHandle : handles) {
@@ -65,7 +71,7 @@ final class ExecutionRunnable implements Runnable {
           Messages.getString("ExecutionRunnable.err.startExecDefFailed"), this.execDefId, e.getMessage())); //$NON-NLS-1$
     }
   }
-
+  
   private void collectExecutionResult(ExecutionHandle handle) {
     consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.msg.waitForResult"), handle //$NON-NLS-1$
         .getExecDefId()));
@@ -85,7 +91,10 @@ final class ExecutionRunnable implements Runnable {
         }
       } while (result == null);
 
-      this.writer.write(result);
+      if (!(this.ignoreNotExecutedResults && isRunNotExecuted(result)))
+        this.writer.write(result);
+      else
+        consolenLogger.println(MessageFormat.format("INFO: Ignore test run for execution definition '{0}'({1}).", result.getExecDefName(), result.getExecDefId()));
     } catch (SCTMException e) {
       LOGGER.log(Level.SEVERE, e.getMessage());
       if (e.getMessage().contains("Logon failed.")) //$NON-NLS-1$
@@ -97,5 +106,13 @@ final class ExecutionRunnable implements Runnable {
           handle.getExecDefId()));
       LOGGER.log(Level.INFO, e.getMessage());
     }
+  }
+
+  private boolean isRunNotExecuted(ExecutionResult result) {
+    for (TestDefinitionResult testResult : result.getTestDefResult()) {
+      if (testResult.getStatus() != 3)
+        return false;
+    }
+    return true;
   }
 }

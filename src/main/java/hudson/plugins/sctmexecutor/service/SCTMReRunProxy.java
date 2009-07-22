@@ -99,4 +99,16 @@ public class SCTMReRunProxy implements ISCTMService {
     }
   }
 
+  @Override
+  public void addBuildNumber(int buildNumber) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public boolean buildNumberExists(int buildNumber) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
 }

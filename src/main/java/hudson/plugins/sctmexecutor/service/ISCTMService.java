@@ -17,4 +17,8 @@ public interface ISCTMService {
 
   public abstract ExecutionResult getExecutionResult(ExecutionHandle handle) throws SCTMException;
 
+  public abstract boolean buildNumberExists(int buildNumber);
+
+  public abstract void addBuildNumber(int buildNumber);
+
 }

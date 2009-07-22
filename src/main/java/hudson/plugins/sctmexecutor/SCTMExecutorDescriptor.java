@@ -52,16 +52,17 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     String execDefIds = formData.getString("execDefIds"); //$NON-NLS-1$
     int projectId = formData.getInt("projectId"); //$NON-NLS-1$
     int delay = getOptionalIntValue(formData.getString("delay"), 0); //$NON-NLS-1$
-//    JSONObject buildNumberUsageOption = (JSONObject)formData.get("buildNumberUsageOption");
-    int optValue = SCTMExecutor.OPT_NO_BUILD_NUMBER;// buildNumberUsageOption.getInt("value");
+    JSONObject buildNumberUsageOption = (JSONObject)formData.get("buildNumberUsageOption");
+    int optValue = buildNumberUsageOption.getInt("value"); // SCTMExecutor.OPT_NO_BUILD_NUMBER;
     String upStreamJobName = ""; //$NON-NLS-1$
-//    if (optValue == SCTMExecutor.OPT_USE_UPSTREAMJOB_BUILDNUMBER) {
-//      upStreamJobName = buildNumberUsageOption.getString("upStreamJobName");
-//    }
+    if (optValue == SCTMExecutor.OPT_USE_UPSTREAMJOB_BUILDNUMBER) {
+      upStreamJobName = buildNumberUsageOption.getString("");
+    }
     boolean contOnErr = formData.getBoolean("continueOnError"); //$NON-NLS-1$
     boolean collectResults = formData.getBoolean("collectResults"); //$NON-NLS-1$
+    boolean ignoreNotExecuted = formData.getBoolean("ignoreNotExecuted"); //$NON-NLS-1$
     
-    return new SCTMExecutor(projectId, execDefIds, delay, optValue, upStreamJobName, contOnErr, collectResults);
+    return new SCTMExecutor(projectId, execDefIds, delay, optValue, upStreamJobName, contOnErr, collectResults, ignoreNotExecuted);
   }
   
   private int getOptionalIntValue(String value, int defaultValue) {
