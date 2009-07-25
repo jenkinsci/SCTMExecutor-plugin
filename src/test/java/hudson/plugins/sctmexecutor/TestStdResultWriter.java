@@ -34,19 +34,35 @@ public class TestStdResultWriter {
 
   @Test
   public void testWrite() {
-    StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(root), "http://localhost:19120/Service1.0/services", null, this.ignoreNotExecuted);
+    StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(root), "http://localhost:19120/Service1.0/services", null, true);
     ExecutionResult result = new ExecutionResult();
     result.setExecDefName("TestExecDef");
     result.setExecServerName("MyVirtualExecSrv");
+    result.setSetupTestDef(new TestDefinitionResult(5, 0, 41, "Setup", "http://www.borland.com", 0, 3, 66, 1, 0));
     TestDefinitionResult goodTestDefResult = new TestDefinitionResult(5, 0, 42, "GoodTestDef", "http://www.borland.com", 0, 17, 1234, 1, 0);
     TestDefinitionResult badTestDefResult = new TestDefinitionResult(5, 1, 43, "BadTestDef", "http://www.borland.com", 1, 4, 1235, 1, 0);
+    result.setCleanupTestDef(new TestDefinitionResult(5, 0, 44, "Cleanup", "http://borland.com", 0, 21, 99, 1, 0));
+    result.setTestDefResult(new TestDefinitionResult[] {goodTestDefResult, badTestDefResult});
+    w.write(result);
+  }
+  
+  @Test
+  public void testIgnoreSetupCleanup() throws Exception {
+    StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(root), "http://localhost:19120/Service1.0/services", null, false);
+    ExecutionResult result = new ExecutionResult();
+    result.setExecDefName("TestExecDef");
+    result.setExecServerName("MyVirtualExecSrv");
+    result.setSetupTestDef(new TestDefinitionResult(5, 0, 41, "Setup", "http://www.borland.com", 0, 3, 66, 1, 0));
+    TestDefinitionResult goodTestDefResult = new TestDefinitionResult(5, 0, 42, "GoodTestDef", "http://www.borland.com", 0, 17, 1234, 1, 0);
+    TestDefinitionResult badTestDefResult = new TestDefinitionResult(5, 1, 43, "BadTestDef", "http://www.borland.com", 1, 4, 1235, 1, 0);
+    result.setCleanupTestDef(new TestDefinitionResult(5, 0, 44, "Cleanup", "http://borland.com", 0, 21, 99, 1, 0));
     result.setTestDefResult(new TestDefinitionResult[] {goodTestDefResult, badTestDefResult});
     w.write(result);
   }
   
   @Test
   public void testParallelWrite() throws Exception {
-    final StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(root), "http://localhost:19120/Service1.0/services", null, this.ignoreNotExecuted);
+    final StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(root), "http://localhost:19120/Service1.0/services", null, true);
     
     Runnable run = new Runnable() {
       @Override

@@ -60,9 +60,9 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     }
     boolean contOnErr = formData.getBoolean("continueOnError"); //$NON-NLS-1$
     boolean collectResults = formData.getBoolean("collectResults"); //$NON-NLS-1$
-    boolean ignoreNotExecuted = formData.getBoolean("ignoreNotExecuted"); //$NON-NLS-1$
+    boolean ignoreSetupCleanup = formData.getBoolean("ignoreSetupCleanup"); //$NON-NLS-1$
     
-    return new SCTMExecutor(projectId, execDefIds, delay, optValue, upStreamJobName, contOnErr, collectResults, ignoreNotExecuted);
+    return new SCTMExecutor(projectId, execDefIds, delay, optValue, upStreamJobName, contOnErr, collectResults, ignoreSetupCleanup);
   }
   
   private int getOptionalIntValue(String value, int defaultValue) {

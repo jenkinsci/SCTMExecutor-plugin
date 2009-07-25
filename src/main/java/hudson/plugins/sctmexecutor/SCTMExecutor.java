@@ -47,12 +47,12 @@ public final class SCTMExecutor extends Builder {
   private final String upStreamJobName;
   private final boolean continueOnError;
   private final boolean collectResults;
-  private final boolean ignoreNotExecuted;
+  private final boolean ignoreSetupCleanup;
   
   private boolean succeed;
 
   @DataBoundConstructor
-  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption, final String upStreamJobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreNotExecuted) {
+  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption, final String upStreamJobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
     this.delay = delay;
@@ -60,7 +60,7 @@ public final class SCTMExecutor extends Builder {
     this.upStreamJobName = upStreamJobName;
     this.continueOnError = contOnErr;
     this.collectResults = collectResults;
-    this.ignoreNotExecuted = ignoreNotExecuted;
+    this.ignoreSetupCleanup = ignoreSetupCleanup;
   }
 
   @Override
@@ -92,8 +92,8 @@ public final class SCTMExecutor extends Builder {
     return this.continueOnError;
   }
   
-  public boolean isIgnoreNotExecuted() {
-    return this.ignoreNotExecuted;
+  public boolean isignoreSetupCleanup() {
+    return this.ignoreSetupCleanup;
   }
   
   public String[] getUpStreamProjects() {
@@ -120,9 +120,9 @@ public final class SCTMExecutor extends Builder {
       for (Integer execDefId : ids) {        
         StdXMLResultWriter resultWriter = null;
         if (collectResults)
-          resultWriter = new StdXMLResultWriter(rootDir, descriptor.getServiceURL(), String.valueOf(build.number));
+          resultWriter = new StdXMLResultWriter(rootDir, descriptor.getServiceURL(), String.valueOf(build.number), this.ignoreSetupCleanup);
         Runnable resultCollector = new ExecutionRunnable(service, execDefId, getBuildNumber(build, listener),
-            resultWriter, listener.getLogger(), this.ignoreNotExecuted);
+            resultWriter, listener.getLogger());
         results.add(descriptor.getExecutorPool().submit(resultCollector));
         if (delay > 0 && ids.size() > 1)
           Thread.sleep(delay*1000);

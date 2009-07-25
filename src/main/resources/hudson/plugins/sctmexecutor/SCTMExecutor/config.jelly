@@ -20,8 +20,8 @@
     <f:entry title="${%SCTMExecutor.projectConf.property.label.colResult}" help="/plugin/SCTMExecutor/help-collectResults.html">
       <f:checkbox field="collectResults" value="${instance.collectResults}" />
     </f:entry>
-    <f:entry title="${%SCTMExecutor.projectConf.property.label.ignoreNotExecuted}" help="/plugin/SCTMExecutor/help-ignoreNotExecuted.html">
-      <f:checkbox field="ignoreNotExecuted" value="${instance.ignoreNotExecuted}" />
+    <f:entry title="${%SCTMExecutor.projectConf.property.label.ignoreSetupCleanup}" help="/plugin/SCTMExecutor/help-ignoreSetupCleanup.html">
+      <f:checkbox field="ignoreSetupCleanup" value="${instance.ignoreSetupCleanup}" />
     </f:entry>
     <f:radioBlock name="buildNumberUsageOption" value="1" checked="${instance.buildNumberUsageOption=='1'}" title="Don't care about a build number" />
     <f:radioBlock name="buildNumberUsageOption" value="2" checked="${instance.buildNumberUsageOption=='2'}" title="Use build number from this job" />

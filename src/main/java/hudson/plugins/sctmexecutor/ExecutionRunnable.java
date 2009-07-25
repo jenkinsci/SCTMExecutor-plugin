@@ -11,32 +11,25 @@ import java.util.logging.Logger;
 
 import com.borland.tm.webservices.tmexecution.ExecutionHandle;
 import com.borland.tm.webservices.tmexecution.ExecutionResult;
-import com.borland.tm.webservices.tmexecution.TestDefinitionResult;
 
 final class ExecutionRunnable implements Runnable {
   private static final int MAX_SLEEP = 60;
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
-  private static final int MAX_RETRY_COUNT = 2;
 
   private final int buildNumber;
   private final int execDefId;
   private final ISCTMService service;
   private final ITestResultWriter writer;
   private final PrintStream consolenLogger;
-  private final boolean ignoreNotExecutedResults;
   private long resultCollectingDelay;
-  private int retries;
 
-  ExecutionRunnable(final ISCTMService service, final int execDefId, final int buildNumber, final ITestResultWriter writer, final PrintStream logger, final boolean ignoreNotExecutedResults) {
+  ExecutionRunnable(final ISCTMService service, final int execDefId, final int buildNumber, final ITestResultWriter writer, final PrintStream logger) {
     this.resultCollectingDelay = 5; // in seconds
     this.consolenLogger = logger;
     this.execDefId = execDefId;
     this.writer = writer;
     this.service = service;
     this.buildNumber = buildNumber;
-    this.ignoreNotExecutedResults = ignoreNotExecutedResults;
-
-    this.retries = MAX_RETRY_COUNT;
   }
 
   /**
@@ -91,10 +84,7 @@ final class ExecutionRunnable implements Runnable {
         }
       } while (result == null);
 
-      if (!(this.ignoreNotExecutedResults && isRunNotExecuted(result)))
-        this.writer.write(result);
-      else
-        consolenLogger.println(MessageFormat.format("INFO: Ignore test run for execution definition '{0}'({1}).", result.getExecDefName(), result.getExecDefId()));
+      this.writer.write(result);
     } catch (SCTMException e) {
       LOGGER.log(Level.SEVERE, e.getMessage());
       if (e.getMessage().contains("Logon failed.")) //$NON-NLS-1$
@@ -106,13 +96,5 @@ final class ExecutionRunnable implements Runnable {
           handle.getExecDefId()));
       LOGGER.log(Level.INFO, e.getMessage());
     }
-  }
-
-  private boolean isRunNotExecuted(ExecutionResult result) {
-    for (TestDefinitionResult testResult : result.getTestDefResult()) {
-      if (testResult.getStatus() != 3)
-        return false;
-    }
-    return true;
   }
 }

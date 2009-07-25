@@ -28,11 +28,13 @@ final class StdXMLResultWriter implements ITestResultWriter {
 
   private FilePath rootDir;
   private String buildNumber;
+  private boolean ignoreSetupCleanup;
 
-  public StdXMLResultWriter(FilePath rootDir, String serviceURL, String buildNumber) {
+  public StdXMLResultWriter(FilePath rootDir, String serviceURL, String buildNumber, boolean ignoreSetupCleanup) {
     this.rootDir = rootDir;
     this.buildNumber = buildNumber;
     this.sctmHost = serviceURL.substring(0, serviceURL.indexOf("/", "http://".length())) + "/silk/DEF"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    this.ignoreSetupCleanup = ignoreSetupCleanup;
   }
 
   public void write(ExecutionResult result) {
@@ -75,15 +77,18 @@ final class StdXMLResultWriter implements ITestResultWriter {
     writer.writeAttribute("timestamp", DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format( //$NON-NLS-1$
         new Date(System.currentTimeMillis())));
     
-    TestDefinitionResult setupTestDef = result.getSetupTestDef();
-    TestDefinitionResult cleanupTestDef = result.getCleanupTestDef();
-    if (setupTestDef != null)
-      writeTestResult(writer, setupTestDef, execDefName);
+    if (!this.ignoreSetupCleanup) {
+      TestDefinitionResult setupTestDef = result.getSetupTestDef();
+      TestDefinitionResult cleanupTestDef = result.getCleanupTestDef();
+      if (setupTestDef != null)
+        writeTestResult(writer, setupTestDef, execDefName);
+      if (cleanupTestDef != null)
+        writeTestResult(writer, cleanupTestDef, execDefName);
+    }
+    
     for (TestDefinitionResult testResult : result.getTestDefResult()) {
       writeTestResult(writer, testResult, execDefName);
     }
-    if (cleanupTestDef != null)
-      writeTestResult(writer, cleanupTestDef, execDefName);
     
     writer.writeEndElement();
   }
