@@ -23,19 +23,19 @@
     <f:entry title="${%SCTMExecutor.projectConf.property.label.ignoreSetupCleanup}" help="/plugin/SCTMExecutor/help-ignoreSetupCleanup.html">
       <f:checkbox field="ignoreSetupCleanup" value="${instance.ignoreSetupCleanup}" />
     </f:entry>
-    <f:radioBlock name="buildNumberUsageOption" value="1" checked="${instance.buildNumberUsageOption=='1'}" title="Don't care about a build number" />
-    <f:radioBlock name="buildNumberUsageOption" value="2" checked="${instance.buildNumberUsageOption=='2'}" title="Use build number from this job" />
-    <f:radioBlock name="buildNumberUsageOption" value="3" checked="${instance.buildNumberUsageOption=='3'}" title="Use build number from upstream job">
-      <!--f:dropdownList name="upStreamJobName" title="Name of upstream job">
-        <j:forEach var="d" items="${instance.getUpStreamProjects()}" varStatus="loop">
-          <f:dropdownListBlock value="${d}" selected="${instance.upStreamJobName==d}" title="${d}">
-          </f:dropdownListBlock>
-        </j:forEach>
-      </f:dropdownList-->
-      <f:entry title="Name of upstream job">
-        <f:textbox field="upStreamJobName" value="${instance.upStreamJobName}">
-        </f:textbox>
-      </f:entry>
-    </f:radioBlock>
+    <!--f:entry title="Build number usage:" help="/plugin/SCTMExecutor/help-buildnumberusage.html">
+		    <f:radioBlock title="Don't care about a build number" name="buildNumberUsageOption" value="1" checked="${instance.buildNumberUsageOption=='1'}"/>
+		    <f:radioBlock title="Use build number from this job" name="buildNumberUsageOption" value="2" checked="${instance.buildNumberUsageOption=='2'}"/>
+		    <f:radioBlock title="Use build number from upstream job" name="buildNumberUsageOption" value="3" checked="${instance.buildNumberUsageOption=='3'}">
+		      <f:dropdownList name="jobName">
+		        <j:forEach var="d" items="${instance.getAlljobs()}" varStatus="loop">
+		          <f:dropdownListBlock value="${d}" selected="${instance.jobName==d}" title="${d}"/>
+		        </j:forEach>
+		      </f:dropdownList>
+		      <f:entry title="Name of hudson job">
+		        <f:textbox field="jobName" value="${instance.jobName}"/>
+		      </f:entry>
+		    </f:radioBlock>
+    </f:entry-->
   </f:advanced>
 </j:jelly>

@@ -1,0 +1,9 @@
+<div>
+<p>Choose on option how the build number should be provided to SilkCentral Testmanager:
+<ul>
+ <li><b>Don't care about a build number:</b> No buildnumber is used to start the test execution. It depends how SCTM is configured, but typically the execution definition are configured with a build number, which is used for the execution. Form more information read the documentation of SCTM. This option should also be used if you write a 'buildinfo-file' by your own.</li>
+ <li><b>Use build number from this job:</b> Simply execute the test execution on SCTM with the current build number of the hudson job.</li>
+ <li><b>Use build number from top upstream job:</b> For this option the build number of the top level upstream job is taken for the test execution on SCTM.</li>
+</ul>
+</p>
+</div>

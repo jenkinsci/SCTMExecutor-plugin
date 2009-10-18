@@ -12,8 +12,6 @@ import hudson.plugins.sctmexecutor.service.SCTMReRunProxy;
 import hudson.plugins.sctmexecutor.service.SCTMService;
 import hudson.tasks.Builder;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -37,14 +35,14 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public final class SCTMExecutor extends Builder {
   static final int OPT_NO_BUILD_NUMBER = 1;
   static final int OPT_USE_THIS_BUILD_NUMBER = 2;
-  static final int OPT_USE_UPSTREAMJOB_BUILDNUMBER = 3;
+  static final int OPT_USE_SPECIFICJOB_BUILDNUMBER = 3;
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
 
   private final int projectId;
   private final String execDefIds;
   private final int delay;
   private final int buildNumberUsageOption;
-  private final String upStreamJobName;
+  private final String jobName;
   private final boolean continueOnError;
   private final boolean collectResults;
   private final boolean ignoreSetupCleanup;
@@ -52,12 +50,12 @@ public final class SCTMExecutor extends Builder {
   private boolean succeed;
 
   @DataBoundConstructor
-  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption, final String upStreamJobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup) {
+  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption, final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
     this.delay = delay;
     this.buildNumberUsageOption = buildNumberUsageOption;
-    this.upStreamJobName = upStreamJobName;
+    this.jobName = jobName;
     this.continueOnError = contOnErr;
     this.collectResults = collectResults;
     this.ignoreSetupCleanup = ignoreSetupCleanup;
@@ -84,8 +82,8 @@ public final class SCTMExecutor extends Builder {
     return this.buildNumberUsageOption;
   }
   
-  public String getUpStreamJobName() {
-    return this.upStreamJobName;
+  public String getJobName() {
+    return this.jobName;
   }
   
   public boolean isContinueOnError() {
@@ -96,9 +94,8 @@ public final class SCTMExecutor extends Builder {
     return this.ignoreSetupCleanup;
   }
   
-  public String[] getUpStreamProjects() {
-    Collection<String> jobNames = Hudson.getInstance().getJobNames(); // TODO filter real upstream projects
-    
+  public String[] getAllJobs() {
+    Collection<String> jobNames = Hudson.getInstance().getJobNames();
     return jobNames.toArray(new String[jobNames.size()]);
   }
 
@@ -145,8 +142,8 @@ public final class SCTMExecutor extends Builder {
   }
 
   private int getBuildNumber(AbstractBuild<?, ?> build, BuildListener listener) {
-    if (OPT_USE_UPSTREAMJOB_BUILDNUMBER == buildNumberUsageOption)
-      return getBuildNumberFromUpStreamProject(upStreamJobName, build.getUpstreamBuilds(), listener);
+    if (OPT_USE_SPECIFICJOB_BUILDNUMBER == buildNumberUsageOption)
+      return getBuildNumberFromUpStreamProject(jobName, build.getUpstreamBuilds(), listener);
     else if (OPT_USE_THIS_BUILD_NUMBER == buildNumberUsageOption)
       return build.number;
     else
@@ -163,7 +160,7 @@ public final class SCTMExecutor extends Builder {
   }
 
   private static FilePath createResultDir(int currentBuildNo, AbstractBuild<?,?> build, BuildListener listener) throws IOException, InterruptedException {
-    FilePath rootDir = build.getProject().getWorkspace();
+    FilePath rootDir = build.getWorkspace();
     if (rootDir == null) {
       LOGGER.severe("Cannot write the result file because slave is not connected."); //$NON-NLS-1$
       listener.error(Messages.getString("SCTMExecutor.log.slaveNotConnected")); //$NON-NLS-1$

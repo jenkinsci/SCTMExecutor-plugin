@@ -19,6 +19,8 @@ import com.borland.tm.webservices.tmexecution.TestDefinitionResult;
 
 public class TestResultCollector {
   
+  private static final int DEFAULT_BUILDNUMBER = -1;
+
   @Test
   public void collectingResults() throws SCTMException, FileNotFoundException {
     ISCTMService serviceMock = createServiceMock();
@@ -28,7 +30,7 @@ public class TestResultCollector {
     ITestResultWriter resultWriterMock = EasyMock.createStrictMock(ITestResultWriter.class);
     resultWriterMock.write(result);
     
-    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, 1234, resultWriterMock, new PrintStream("test.log"));
+    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, DEFAULT_BUILDNUMBER, resultWriterMock, new PrintStream("test.log"));
     aut.setResultCollectingDelay(1);
     
     EasyMock.replay(serviceMock);
@@ -43,6 +45,8 @@ public class TestResultCollector {
     ISCTMService serviceMock = EasyMock.createStrictMock(ISCTMService.class);
     Collection<ExecutionHandle> handles = new ArrayList<ExecutionHandle>();
     handles.add(new ExecutionHandle(1, System.currentTimeMillis()));
+    EasyMock.expect(serviceMock.buildNumberExists(1234)).andReturn(false);
+    serviceMock.addBuildNumber(1234);
     EasyMock.expect(serviceMock.start(EasyMock.eq(1), (String)EasyMock.notNull())).andReturn(handles);
     EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(false);
     EasyMock.expectLastCall().times(2).andReturn(false);
@@ -71,7 +75,7 @@ public class TestResultCollector {
     ISCTMService serviceMock = EasyMock.createStrictMock(ISCTMService.class);
     EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andThrow(new RemoteException());
     
-    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, 1234, null, new PrintStream("test.log"));
+    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, DEFAULT_BUILDNUMBER, null, new PrintStream("test.log"));
     aut.setResultCollectingDelay(1);
     
     EasyMock.replay(serviceMock);
@@ -88,7 +92,7 @@ public class TestResultCollector {
     EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(true);
     EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andThrow(new RemoteException());
     
-    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, 1234, null, new PrintStream("test.log"));
+    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, DEFAULT_BUILDNUMBER, null, new PrintStream("test.log"));
     aut.setResultCollectingDelay(1);
     
     EasyMock.replay(serviceMock);
@@ -111,7 +115,10 @@ public class TestResultCollector {
     ISCTMService serviceMock = EasyMock.createStrictMock(ISCTMService.class);
     Collection<ExecutionHandle> handles = new ArrayList<ExecutionHandle>();
     handles.add(new ExecutionHandle(1, System.currentTimeMillis()));
-    EasyMock.expect(serviceMock.start(EasyMock.gt(0), (String)EasyMock.notNull())).andReturn(handles );
+    
+//    EasyMock.expect(serviceMock.buildNumberExists(EasyMock.eq(DEFAULT_BUILDNUMBER))).andReturn(false);
+//    serviceMock.addBuildNumber(EasyMock.eq(DEFAULT_BUILDNUMBER));
+    EasyMock.expect(serviceMock.start(EasyMock.gt(0))).andReturn(handles );
     EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(false);
     EasyMock.expectLastCall().andReturn(true);
     return serviceMock;
