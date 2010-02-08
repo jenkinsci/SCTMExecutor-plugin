@@ -14,12 +14,12 @@ import java.util.logging.Logger;
 
 import javax.xml.rpc.ServiceException;
 
-import com.borland.scc.sccsystem.SystemService;
-import com.borland.scc.sccsystem.SystemServiceServiceLocator;
-import com.borland.tm.webservices.tmexecution.ExecutionHandle;
-import com.borland.tm.webservices.tmexecution.ExecutionResult;
-import com.borland.tm.webservices.tmexecution.ExecutionWebService;
-import com.borland.tm.webservices.tmexecution.ExecutionWebServiceServiceLocator;
+import com.borland.sctm.ws.execution.ExecutionWebService;
+import com.borland.sctm.ws.execution.ExecutionWebServiceServiceLocator;
+import com.borland.sctm.ws.execution.entities.ExecutionHandle;
+import com.borland.sctm.ws.execution.entities.ExecutionResult;
+import com.borland.sctm.ws.logon.SystemService;
+import com.borland.sctm.ws.logon.SystemServiceServiceLocator;
 
 public class SCTMService implements ISCTMService {
   private static final int MAX_LOGONRETRYCOUNT = 3;

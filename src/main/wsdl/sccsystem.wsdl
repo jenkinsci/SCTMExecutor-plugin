@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="http://10.5.2.218/Services1.0/services/sccsystem" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://10.5.2.218/Services1.0/services/sccsystem" xmlns:intf="http://10.5.2.218/Services1.0/services/sccsystem" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://scc.segue.com" xmlns:tns2="http://webservice.scc.segue.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<wsdl:definitions targetNamespace="http://10.5.2.6/Services1.0/services/sccsystem" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://10.5.2.6/Services1.0/services/sccsystem" xmlns:intf="http://10.5.2.6/Services1.0/services/sccsystem" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://scc.segue.com" xmlns:tns2="http://webservice.scc.segue.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 <!--WSDL created by Apache Axis version: 1.3
 Built on Oct 05, 2005 (05:23:37 EDT)-->
  <wsdl:types>
@@ -58,12 +58,6 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
   </schema>
  </wsdl:types>
 
-   <wsdl:message name="convertToReadableTimeRequest">
-
-      <wsdl:part name="time" type="xsd:long"/>
-
-   </wsdl:message>
-
    <wsdl:message name="encryptPasswordRequest">
 
       <wsdl:part name="sessionId" type="xsd:long"/>
@@ -72,9 +66,15 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="convertToReadableTimeResponse">
+   <wsdl:message name="convertToReadableTimeRequest">
 
-      <wsdl:part name="convertToReadableTimeReturn" type="xsd:string"/>
+      <wsdl:part name="time" type="xsd:long"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getExtendedApplicationModulesResponse">
+
+      <wsdl:part name="getExtendedApplicationModulesReturn" type="tns1:ExtendedArrayOfAppModule"/>
 
    </wsdl:message>
 
@@ -84,9 +84,23 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getExtendedApplicationModulesResponse">
+   <wsdl:message name="convertToReadableTimeResponse">
 
-      <wsdl:part name="getExtendedApplicationModulesReturn" type="tns1:ExtendedArrayOfAppModule"/>
+      <wsdl:part name="convertToReadableTimeReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="logonUserRequest">
+
+      <wsdl:part name="username" type="xsd:string"/>
+
+      <wsdl:part name="plainPwd" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getRepositoryInstanceIDResponse">
+
+      <wsdl:part name="getRepositoryInstanceIDReturn" type="xsd:string"/>
 
    </wsdl:message>
 
@@ -102,27 +116,13 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getRepositoryInstanceIDResponse">
+   <wsdl:message name="getRepositoryInstanceIDRequest">
 
-      <wsdl:part name="getRepositoryInstanceIDReturn" type="xsd:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="logonUserRequest">
-
-      <wsdl:part name="username" type="xsd:string"/>
-
-      <wsdl:part name="plainPwd" type="xsd:string"/>
+      <wsdl:part name="sessionId" type="xsd:long"/>
 
    </wsdl:message>
 
-   <wsdl:message name="logonUserResponse">
-
-      <wsdl:part name="logonUserReturn" type="xsd:long"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="getExtendedApplicationModulesRequest">
+   <wsdl:message name="getApplicationModulesRequest">
 
       <wsdl:part name="sessionId" type="xsd:long"/>
 
@@ -134,15 +134,15 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getApplicationModulesRequest">
+   <wsdl:message name="getExtendedApplicationModulesRequest">
 
       <wsdl:part name="sessionId" type="xsd:long"/>
 
    </wsdl:message>
 
-   <wsdl:message name="getRepositoryInstanceIDRequest">
+   <wsdl:message name="logonUserResponse">
 
-      <wsdl:part name="sessionId" type="xsd:long"/>
+      <wsdl:part name="logonUserReturn" type="xsd:long"/>
 
    </wsdl:message>
 
@@ -222,7 +222,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
          <wsdl:output name="logonUserResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/sccsystem" use="encoded"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.6/Services1.0/services/sccsystem" use="encoded"/>
 
          </wsdl:output>
 
@@ -240,7 +240,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
          <wsdl:output name="convertToReadableTimeResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/sccsystem" use="encoded"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.6/Services1.0/services/sccsystem" use="encoded"/>
 
          </wsdl:output>
 
@@ -258,7 +258,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
          <wsdl:output name="convertFromReadableTimeResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/sccsystem" use="encoded"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.6/Services1.0/services/sccsystem" use="encoded"/>
 
          </wsdl:output>
 
@@ -276,7 +276,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
          <wsdl:output name="getApplicationModulesResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/sccsystem" use="encoded"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.6/Services1.0/services/sccsystem" use="encoded"/>
 
          </wsdl:output>
 
@@ -294,7 +294,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
          <wsdl:output name="getExtendedApplicationModulesResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/sccsystem" use="encoded"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.6/Services1.0/services/sccsystem" use="encoded"/>
 
          </wsdl:output>
 
@@ -312,7 +312,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
          <wsdl:output name="encryptPasswordResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/sccsystem" use="encoded"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.6/Services1.0/services/sccsystem" use="encoded"/>
 
          </wsdl:output>
 
@@ -330,7 +330,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
          <wsdl:output name="getRepositoryInstanceIDResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.218/Services1.0/services/sccsystem" use="encoded"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://10.5.2.6/Services1.0/services/sccsystem" use="encoded"/>
 
          </wsdl:output>
 
@@ -342,7 +342,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       <wsdl:port binding="impl:sccsystemSoapBinding" name="sccsystem">
 
-         <wsdlsoap:address location="http://10.5.2.218/Services1.0/services/sccsystem"/>
+         <wsdlsoap:address location="http://10.5.2.6/Services1.0/services/sccsystem"/>
 
       </wsdl:port>
 

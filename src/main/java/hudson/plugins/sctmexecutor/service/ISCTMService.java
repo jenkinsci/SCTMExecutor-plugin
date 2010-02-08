@@ -4,8 +4,8 @@ import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 
 import java.util.Collection;
 
-import com.borland.tm.webservices.tmexecution.ExecutionHandle;
-import com.borland.tm.webservices.tmexecution.ExecutionResult;
+import com.borland.sctm.ws.execution.entities.ExecutionHandle;
+import com.borland.sctm.ws.execution.entities.ExecutionResult;
 
 public interface ISCTMService {
 

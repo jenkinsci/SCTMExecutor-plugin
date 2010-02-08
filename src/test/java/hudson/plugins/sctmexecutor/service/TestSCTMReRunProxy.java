@@ -11,8 +11,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.borland.tm.webservices.tmexecution.ExecutionHandle;
-import com.borland.tm.webservices.tmexecution.ExecutionResult;
+import com.borland.sctm.ws.execution.entities.ExecutionHandle;
+import com.borland.sctm.ws.execution.entities.ExecutionResult;
 
 public class TestSCTMReRunProxy {
   

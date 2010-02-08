@@ -9,8 +9,8 @@ import java.rmi.RemoteException;
 
 import javax.servlet.ServletException;
 
-import com.borland.scc.sccsystem.SystemService;
-import com.borland.scc.sccsystem.SystemServiceServiceLocator;
+import com.borland.sctm.ws.logon.SystemService;
+import com.borland.sctm.ws.logon.SystemServiceServiceLocator;
 
 public class TestConnectionValidator {
   public FormValidation check(String serviceURL, String user, String password) throws IOException, ServletException {

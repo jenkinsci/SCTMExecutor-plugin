@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="http://tm.segue.com/webservices/tmexecution   " xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://tm.segue.com/webservices/tmexecution   " xmlns:intf="http://tm.segue.com/webservices/tmexecution   " xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://tm.segue.com/webservices/tmexecution" xmlns:tns2="http://tm.segue.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-<!--WSDL created by Apache Axis version: 1.3
+<wsdl:definitions targetNamespace="http://tm.segue.com/webservices/tmexecution   " 
+  xmlns:apachesoap="http://xml.apache.org/xml-soap" 
+  xmlns:impl="http://tm.segue.com/webservices/tmexecution   " 
+  xmlns:intf="http://tm.segue.com/webservices/tmexecution   " 
+  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+  xmlns:tns1="http://tm.segue.com/webservices/tmexecution" 
+  xmlns:tns2="http://tm.segue.com" 
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <!--WSDL created by Apache Axis version: 1.3
 Built on Oct 05, 2005 (05:23:37 EDT)-->
  <wsdl:types>
   <schema targetNamespace="http://tm.segue.com/webservices/tmexecution" xmlns="http://www.w3.org/2001/XMLSchema">
@@ -88,6 +97,21 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
      <element name="testDefResult" nillable="true" type="tns1:ArrayOfTestDefinitionResult"/>
     </sequence>
    </complexType>
+   <complexType name="ManualTester">
+    <sequence>
+     <element name="firstname" nillable="true" type="xsd:string"/>
+     <element name="lastName" nillable="true" type="xsd:string"/>
+     <element name="login" nillable="true" type="xsd:string"/>
+     <element name="userId" type="xsd:int"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfManualTester">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:ManualTester[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
    <complexType name="ArrayOfExecutionHandle">
     <complexContent>
      <restriction base="soapenc:Array">
@@ -152,6 +176,12 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="getSetupTestDefinitionResponse">
+
+      <wsdl:part name="getSetupTestDefinitionReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
    <wsdl:message name="setCurrentProjectRequest">
 
       <wsdl:part name="sessionId" type="xsd:long"/>
@@ -188,11 +218,27 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="deleteNodeResponse">
+   <wsdl:message name="getSetupTestDefinitionRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="execDefnId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCleanupTestDefinitionRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="execDefnId" type="xsd:int"/>
 
    </wsdl:message>
 
    <wsdl:message name="setCurrentProjectResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteNodeResponse">
 
    </wsdl:message>
 
@@ -204,9 +250,23 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="setSetupTestDefinitionRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="execDefnId" type="xsd:int"/>
+
+      <wsdl:part name="testDefnId" type="xsd:int"/>
+
+   </wsdl:message>
+
    <wsdl:message name="addNodeResponse">
 
       <wsdl:part name="addNodeReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setSetupTestDefinitionResponse">
 
    </wsdl:message>
 
@@ -215,6 +275,12 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
       <wsdl:part name="sessionId" type="xsd:long"/>
 
       <wsdl:part name="node" type="tns1:ExecutionNode"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getManualTestersResponse">
+
+      <wsdl:part name="getManualTestersReturn" type="tns1:ArrayOfManualTester"/>
 
    </wsdl:message>
 
@@ -276,6 +342,12 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="getCleanupTestDefinitionResponse">
+
+      <wsdl:part name="getCleanupTestDefinitionReturn" type="xsd:int"/>
+
+   </wsdl:message>
+
    <wsdl:message name="getCurrentProjectResponse">
 
       <wsdl:part name="getCurrentProjectReturn" type="xsd:int"/>
@@ -288,19 +360,29 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="updateNodeResponse">
-
-   </wsdl:message>
-
    <wsdl:message name="getCurrentProjectRequest">
 
       <wsdl:part name="sessionId" type="xsd:long"/>
 
    </wsdl:message>
 
+   <wsdl:message name="updateNodeResponse">
+
+   </wsdl:message>
+
    <wsdl:message name="getExecutionRootNodeResponse">
 
       <wsdl:part name="getExecutionRootNodeReturn" type="tns1:ExecutionNode"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setCleanupTestDefinitionRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="execDefnId" type="xsd:int"/>
+
+      <wsdl:part name="testDefnId" type="xsd:int"/>
 
    </wsdl:message>
 
@@ -311,6 +393,18 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
    </wsdl:message>
 
    <wsdl:message name="getExecutionRootNodeRequest">
+
+      <wsdl:part name="sessionId" type="xsd:long"/>
+
+      <wsdl:part name="projectId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setCleanupTestDefinitionResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getManualTestersRequest">
 
       <wsdl:part name="sessionId" type="xsd:long"/>
 
@@ -338,6 +432,14 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="getPropertyInfo" parameterOrder="sessionId kind id">
+
+         <wsdl:input message="impl:getPropertyInfoRequest" name="getPropertyInfoRequest"/>
+
+         <wsdl:output message="impl:getPropertyInfoResponse" name="getPropertyInfoResponse"/>
+
+      </wsdl:operation>
+
       <wsdl:operation name="getNode" parameterOrder="sessionId nodeId">
 
          <wsdl:input message="impl:getNodeRequest" name="getNodeRequest"/>
@@ -362,14 +464,6 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="getPropertyInfo" parameterOrder="sessionId kind id">
-
-         <wsdl:input message="impl:getPropertyInfoRequest" name="getPropertyInfoRequest"/>
-
-         <wsdl:output message="impl:getPropertyInfoResponse" name="getPropertyInfoResponse"/>
-
-      </wsdl:operation>
-
       <wsdl:operation name="getExecutionResult" parameterOrder="sessionId handle">
 
          <wsdl:input message="impl:getExecutionResultRequest" name="getExecutionResultRequest"/>
@@ -378,11 +472,51 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="getManualTesters" parameterOrder="sessionId projectId">
+
+         <wsdl:input message="impl:getManualTestersRequest" name="getManualTestersRequest"/>
+
+         <wsdl:output message="impl:getManualTestersResponse" name="getManualTestersResponse"/>
+
+      </wsdl:operation>
+
       <wsdl:operation name="deleteNode" parameterOrder="sessionId nodeId">
 
          <wsdl:input message="impl:deleteNodeRequest" name="deleteNodeRequest"/>
 
          <wsdl:output message="impl:deleteNodeResponse" name="deleteNodeResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSetupTestDefinition" parameterOrder="sessionId execDefnId">
+
+         <wsdl:input message="impl:getSetupTestDefinitionRequest" name="getSetupTestDefinitionRequest"/>
+
+         <wsdl:output message="impl:getSetupTestDefinitionResponse" name="getSetupTestDefinitionResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setSetupTestDefinition" parameterOrder="sessionId execDefnId testDefnId">
+
+         <wsdl:input message="impl:setSetupTestDefinitionRequest" name="setSetupTestDefinitionRequest"/>
+
+         <wsdl:output message="impl:setSetupTestDefinitionResponse" name="setSetupTestDefinitionResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCleanupTestDefinition" parameterOrder="sessionId execDefnId">
+
+         <wsdl:input message="impl:getCleanupTestDefinitionRequest" name="getCleanupTestDefinitionRequest"/>
+
+         <wsdl:output message="impl:getCleanupTestDefinitionResponse" name="getCleanupTestDefinitionResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setCleanupTestDefinition" parameterOrder="sessionId execDefnId testDefnId">
+
+         <wsdl:input message="impl:setCleanupTestDefinitionRequest" name="setCleanupTestDefinitionRequest"/>
+
+         <wsdl:output message="impl:setCleanupTestDefinitionResponse" name="setCleanupTestDefinitionResponse"/>
 
       </wsdl:operation>
 
@@ -474,6 +608,24 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="getPropertyInfo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getPropertyInfoRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getPropertyInfoResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="getNode">
 
          <wsdlsoap:operation soapAction=""/>
@@ -528,24 +680,6 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="getPropertyInfo">
-
-         <wsdlsoap:operation soapAction=""/>
-
-         <wsdl:input name="getPropertyInfoRequest">
-
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
-
-         </wsdl:input>
-
-         <wsdl:output name="getPropertyInfoResponse">
-
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
-
-         </wsdl:output>
-
-      </wsdl:operation>
-
       <wsdl:operation name="getExecutionResult">
 
          <wsdlsoap:operation soapAction=""/>
@@ -564,6 +698,24 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="getManualTesters">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getManualTestersRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getManualTestersResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
       <wsdl:operation name="deleteNode">
 
          <wsdlsoap:operation soapAction=""/>
@@ -575,6 +727,78 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
          </wsdl:input>
 
          <wsdl:output name="deleteNodeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSetupTestDefinition">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSetupTestDefinitionRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSetupTestDefinitionResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setSetupTestDefinition">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setSetupTestDefinitionRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setSetupTestDefinitionResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCleanupTestDefinition">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getCleanupTestDefinitionRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getCleanupTestDefinitionResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setCleanupTestDefinition">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setCleanupTestDefinitionRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setCleanupTestDefinitionResponse">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://tm.segue.com/webservices/tmexecution   " use="encoded"/>
 
@@ -732,7 +956,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
 
       <wsdl:port binding="impl:tmexecutionSoapBinding" name="tmexecution">
 
-         <wsdlsoap:address location="http://10.5.2.218/Services1.0/services/tmexecution"/>
+         <wsdlsoap:address location="http://10.5.2.6/Services1.0/services/tmexecution"/>
 
       </wsdl:port>
 

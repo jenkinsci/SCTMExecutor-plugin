@@ -13,9 +13,9 @@ import java.util.Collection;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
-import com.borland.tm.webservices.tmexecution.ExecutionHandle;
-import com.borland.tm.webservices.tmexecution.ExecutionResult;
-import com.borland.tm.webservices.tmexecution.TestDefinitionResult;
+import com.borland.sctm.ws.execution.entities.ExecutionHandle;
+import com.borland.sctm.ws.execution.entities.ExecutionResult;
+import com.borland.sctm.ws.execution.entities.TestDefinitionResult;
 
 public class TestResultCollector {
   

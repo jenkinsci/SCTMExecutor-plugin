@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.borland.tm.webservices.tmexecution.ExecutionHandle;
-import com.borland.tm.webservices.tmexecution.ExecutionResult;
+import com.borland.sctm.ws.execution.entities.ExecutionHandle;
+import com.borland.sctm.ws.execution.entities.ExecutionResult;
 
 public class SCTMReRunProxy implements ISCTMService {
   static final int MAXRERUN = 2;

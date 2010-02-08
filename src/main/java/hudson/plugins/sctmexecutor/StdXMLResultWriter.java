@@ -15,8 +15,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.borland.tm.webservices.tmexecution.ExecutionResult;
-import com.borland.tm.webservices.tmexecution.TestDefinitionResult;
+import com.borland.sctm.ws.execution.entities.ExecutionResult;
+import com.borland.sctm.ws.execution.entities.TestDefinitionResult;
 
 final class StdXMLResultWriter implements ITestResultWriter {
   private static final int NOT_EXECUTED = 3;
