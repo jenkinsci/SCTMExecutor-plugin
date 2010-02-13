@@ -69,7 +69,7 @@ public class SCTMService implements ISCTMService {
   }
 
   private boolean handleLostSessionException(int executionId, RemoteException e) throws SCTMException {
-    if (e.getMessage().contains("Not logged in.") && logonRetryCount < MAX_LOGONRETRYCOUNT) { //$NON-NLS-1$
+    if (lostSessionExceptionThrown(e) && logonRetryCount < MAX_LOGONRETRYCOUNT) { //$NON-NLS-1$
       logonRetryCount++;
       LOGGER.warning(Messages.getString("SCTMService.warn.SessionLostReconnect")); //$NON-NLS-1$
       try {
@@ -84,6 +84,12 @@ public class SCTMService implements ISCTMService {
       }
     }
     return false;
+  }
+
+  private boolean lostSessionExceptionThrown(RemoteException e) {
+    String message = e.getMessage();
+    return message.contains("Not logged in.") ||
+           (message.contains("InvalidSidException: sid") && message.contains("is invalid or expired")); // InvalidSidException is not exposed as class in the wsdl
   }
 
   private Collection<ExecutionHandle> convertToList(ExecutionHandle[] handles) {
