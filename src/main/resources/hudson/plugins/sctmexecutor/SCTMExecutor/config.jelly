@@ -23,19 +23,18 @@
     <f:entry title="${%SCTMExecutor.projectConf.property.label.ignoreSetupCleanup}" help="/plugin/SCTMExecutor/help-ignoreSetupCleanup.html">
       <f:checkbox field="ignoreSetupCleanup" value="${instance.ignoreSetupCleanup}" />
     </f:entry>
-    <!--f:entry title="Build number usage:" help="/plugin/SCTMExecutor/help-buildnumberusage.html">
 		    <f:radioBlock title="Don't care about a build number" name="buildNumberUsageOption" value="1" checked="${instance.buildNumberUsageOption=='1'}"/>
 		    <f:radioBlock title="Use build number from this job" name="buildNumberUsageOption" value="2" checked="${instance.buildNumberUsageOption=='2'}"/>
 		    <f:radioBlock title="Use build number from upstream job" name="buildNumberUsageOption" value="3" checked="${instance.buildNumberUsageOption=='3'}">
-		      <f:dropdownList name="jobName">
-		        <j:forEach var="d" items="${instance.getAlljobs()}" varStatus="loop">
-		          <f:dropdownListBlock value="${d}" selected="${instance.jobName==d}" title="${d}"/>
-		        </j:forEach>
-		      </f:dropdownList>
-		      <f:entry title="Name of hudson job">
-		        <f:textbox field="jobName" value="${instance.jobName}"/>
+		      <f:entry name="jobName" field="jobName" title="Choose a job in you upstream chain:">
+		        <j:set var="allJobNames" value="${descriptor.getAllJobs()}"/>
+		        <select name="jobName" >
+		          <j:forEach var="job" items="${allJobNames}">
+		            <f:option selected="${instance.jobName==job}">${job}</f:option>
+		          </j:forEach>
+		        </select>
 		      </f:entry>
 		    </f:radioBlock>
-    </f:entry-->
+    
   </f:advanced>
 </j:jelly>

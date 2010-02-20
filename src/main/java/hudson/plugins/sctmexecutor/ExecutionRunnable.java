@@ -49,8 +49,8 @@ final class ExecutionRunnable implements Runnable {
       if (this.buildNumber <= 0) // don't care about a build number
         handles = service.start(this.execDefId);
       else {
-        if (!this.service.buildNumberExists(this.buildNumber))
-          this.service.addBuildNumber(this.buildNumber);
+        if (!this.service.buildNumberExists(this.buildNumber, this.execDefId))
+          this.service.addBuildNumber(this.buildNumber, this.execDefId);
         handles = service.start(this.execDefId, String.valueOf(this.buildNumber));
       }
 

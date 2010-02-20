@@ -19,8 +19,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -94,11 +92,6 @@ public final class SCTMExecutor extends Builder {
     return this.ignoreSetupCleanup;
   }
   
-  public String[] getAllJobs() {
-    Collection<String> jobNames = Hudson.getInstance().getJobNames();
-    return jobNames.toArray(new String[jobNames.size()]);
-  }
-
   public boolean isCollectResults() {
     return this.collectResults;
   }
@@ -108,36 +101,34 @@ public final class SCTMExecutor extends Builder {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
     try {
-      ISCTMService service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor.getPassword()));
+      ISCTMService service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor.getPassword(), projectId));
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
       FilePath rootDir = createResultDir(build.number, build, listener);
       Collection<Integer> ids = csvToIntList(execDefIds);
 
-      Collection<Future<?>> results = new ArrayList<Future<?>>(ids.size());
+      Collection<Thread> executions = new ArrayList<Thread>(ids.size());
       for (Integer execDefId : ids) {        
         StdXMLResultWriter resultWriter = null;
         if (collectResults)
           resultWriter = new StdXMLResultWriter(rootDir, descriptor.getServiceURL(), String.valueOf(build.number), this.ignoreSetupCleanup);
         Runnable resultCollector = new ExecutionRunnable(service, execDefId, getBuildNumber(build, listener),
             resultWriter, listener.getLogger());
-        results.add(descriptor.getExecutorPool().submit(resultCollector));
+        
+        Thread t = new Thread(resultCollector);
+        executions.add(t);
         if (delay > 0 && ids.size() > 1)
           Thread.sleep(delay*1000);
       }
       
-      for (Future<?> res : results) {
-        res.get();
+      for (Thread t : executions) {
+        t.join();
       }
       succeed = true;
     } catch (SCTMException e) {
       LOGGER.log(Level.SEVERE, MessageFormat.format("Creating a remote connection to SCTM host ({0}) failed.", serviceURL), e); //$NON-NLS-1$
       listener.fatalError(e.getMessage());
       succeed = false;
-    } catch (ExecutionException e) {
-      LOGGER.log(Level.SEVERE, "Starting or collecting for a SCTM execution failed.", e); //$NON-NLS-1$
-      listener.fatalError(MessageFormat.format(Messages.getString("SCTMExecutor.err.noResponseFromSCTM"), e.getMessage())); //$NON-NLS-1$
-      succeed = false;
-    } 
+    }
     return continueOnError || succeed;
   }
 

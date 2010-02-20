@@ -14,8 +14,7 @@ import hudson.util.FormValidation;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Collection;
 
 import javax.servlet.ServletException;
 
@@ -35,7 +34,6 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   private String serviceURL;
   private String user;
   private String password;
-  private transient ExecutorService threadPool;
 
   public SCTMExecutorDescriptor() {
     super(SCTMExecutor.class);
@@ -56,13 +54,13 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     boolean collectResults = formData.getBoolean("collectResults"); //$NON-NLS-1$
     boolean ignoreSetupCleanup = formData.getBoolean("ignoreSetupCleanup"); //$NON-NLS-1$
     String jobName = ""; //$NON-NLS-1$
-//    JSONObject buildNumberUsageOption = (JSONObject)formData.get("buildNumberUsageOption");
-//    int optValue = buildNumberUsageOption.getInt("value"); // SCTMExecutor.OPT_NO_BUILD_NUMBER;
-//    if (optValue == SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER) {
-//      jobName = buildNumberUsageOption.getString("");
-//    }
+    JSONObject buildNumberUsageOption = (JSONObject)formData.get("buildNumberUsageOption");
+    int optValue = buildNumberUsageOption.getInt("value"); // SCTMExecutor.OPT_NO_BUILD_NUMBER;
+    if (optValue == SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER) {
+      jobName = buildNumberUsageOption.getString("jobName");
+    }
     
-    return new SCTMExecutor(projectId, execDefIds, delay, 0, jobName, contOnErr, collectResults, ignoreSetupCleanup);
+    return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults, ignoreSetupCleanup);
   }
   
   private int getOptionalIntValue(String value, int defaultValue) {
@@ -136,6 +134,10 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
       }
     }.check();
   }
+  
+  public Collection<String> getAllJobs() {
+    return Hudson.getInstance().getJobNames();
+  }
 
   public FormValidation doCheckUser(StaplerRequest req, StaplerResponse rsp, 
       @QueryParameter("value") final String value) {
@@ -167,17 +169,6 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
       @QueryParameter("user") final String user,
       @QueryParameter("password") final String password) throws IOException, ServletException {
     return new TestConnectionValidator().check(serviceURL, user, password);
-  }
-
-  public ExecutorService getExecutorPool() {
-    if (threadPool == null || threadPool.isShutdown() || threadPool.isTerminated())
-      threadPool = Executors.newFixedThreadPool(8);
-    return threadPool;
-  }
-
-  public void shutdown() {
-    if (threadPool != null)
-      threadPool.shutdown();
   }
 
   @Override

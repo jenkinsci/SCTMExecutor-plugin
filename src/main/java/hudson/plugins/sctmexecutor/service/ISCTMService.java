@@ -2,6 +2,7 @@ package hudson.plugins.sctmexecutor.service;
 
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 
+import java.rmi.RemoteException;
 import java.util.Collection;
 
 import com.borland.sctm.ws.execution.entities.ExecutionHandle;
@@ -17,8 +18,8 @@ public interface ISCTMService {
 
   public abstract ExecutionResult getExecutionResult(ExecutionHandle handle) throws SCTMException;
 
-  public abstract boolean buildNumberExists(int buildNumber);
+  public abstract boolean buildNumberExists(int buildNumber, int nodeId) throws SCTMException;
 
-  public abstract void addBuildNumber(int buildNumber);
+  public abstract void addBuildNumber(int buildNumber, int nodeId) throws SCTMException;
 
 }

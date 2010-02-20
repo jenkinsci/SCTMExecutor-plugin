@@ -45,8 +45,8 @@ public class TestResultCollector {
     ISCTMService serviceMock = EasyMock.createStrictMock(ISCTMService.class);
     Collection<ExecutionHandle> handles = new ArrayList<ExecutionHandle>();
     handles.add(new ExecutionHandle(1, System.currentTimeMillis()));
-    EasyMock.expect(serviceMock.buildNumberExists(1234)).andReturn(false);
-    serviceMock.addBuildNumber(1234);
+    EasyMock.expect(serviceMock.buildNumberExists(1234, 1)).andReturn(false);
+    serviceMock.addBuildNumber(1234, 1);
     EasyMock.expect(serviceMock.start(EasyMock.eq(1), (String)EasyMock.notNull())).andReturn(handles);
     EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(false);
     EasyMock.expectLastCall().times(2).andReturn(false);
