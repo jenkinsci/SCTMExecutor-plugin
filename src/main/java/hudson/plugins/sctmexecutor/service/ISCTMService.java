@@ -20,6 +20,6 @@ public interface ISCTMService {
 
   public abstract boolean buildNumberExists(int buildNumber, int nodeId) throws SCTMException;
 
-  public abstract void addBuildNumber(int buildNumber, int nodeId) throws SCTMException;
+  public abstract boolean addBuildNumber(int buildNumber, int nodeId) throws SCTMException;
 
 }

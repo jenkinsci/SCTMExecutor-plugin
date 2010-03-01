@@ -49,9 +49,15 @@ final class ExecutionRunnable implements Runnable {
       if (this.buildNumber <= 0) // don't care about a build number
         handles = service.start(this.execDefId);
       else {
-        if (!this.service.buildNumberExists(this.buildNumber, this.execDefId))
-          this.service.addBuildNumber(this.buildNumber, this.execDefId);
-        handles = service.start(this.execDefId, String.valueOf(this.buildNumber));
+        if (!this.service.buildNumberExists(this.buildNumber, this.execDefId)) {
+          if (this.service.addBuildNumber(this.buildNumber, this.execDefId))
+            handles = service.start(this.execDefId, String.valueOf(this.buildNumber));
+          else {
+            LOGGER.warning(MessageFormat.format("Cannot add the new buildnumber ({0}). Ensure if the configured user ha enought rights. Go forward and start execution without explicit buildnumber.", buildNumber));
+            handles = service.start(this.execDefId);
+          }
+        } else
+          handles = service.start(this.execDefId, String.valueOf(this.buildNumber));
       }
 
       if (writer != null) { // continue without collecting results

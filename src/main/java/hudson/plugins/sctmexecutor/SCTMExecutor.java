@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -116,6 +117,7 @@ public final class SCTMExecutor extends Builder {
         
         Thread t = new Thread(resultCollector);
         executions.add(t);
+        t.start();
         if (delay > 0 && ids.size() > 1)
           Thread.sleep(delay*1000);
       }
@@ -123,6 +125,7 @@ public final class SCTMExecutor extends Builder {
       for (Thread t : executions) {
         t.join();
       }
+      
       succeed = true;
     } catch (SCTMException e) {
       LOGGER.log(Level.SEVERE, MessageFormat.format("Creating a remote connection to SCTM host ({0}) failed.", serviceURL), e); //$NON-NLS-1$
@@ -134,17 +137,17 @@ public final class SCTMExecutor extends Builder {
 
   private int getBuildNumber(AbstractBuild<?, ?> build, BuildListener listener) {
     if (OPT_USE_SPECIFICJOB_BUILDNUMBER == buildNumberUsageOption)
-      return getBuildNumberFromUpStreamProject(jobName, build.getUpstreamBuilds(), listener);
+      return getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
     else if (OPT_USE_THIS_BUILD_NUMBER == buildNumberUsageOption)
       return build.number;
     else
       return -1;
   }
 
-  private int getBuildNumberFromUpStreamProject(String projectName, Map<AbstractProject, Integer> upstreamBuilds, BuildListener listener) {
-    for (AbstractProject<?,?> project : upstreamBuilds.keySet()) {
+  private int getBuildNumberFromUpStreamProject(String projectName, Set<AbstractProject> upstreamProjects, BuildListener listener) {
+    for (AbstractProject<?,?> project : upstreamProjects) {
       if (project.getName().equals(projectName))
-        return upstreamBuilds.get(project);
+        return project.getLastSuccessfulBuild().getNumber();
     }
     listener.error(MessageFormat.format(Messages.getString("SCTMExecutor.err.notAUpstreamJob"), projectName)); //$NON-NLS-1$
     return -1;

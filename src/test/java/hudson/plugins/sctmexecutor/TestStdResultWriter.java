@@ -14,11 +14,10 @@ import com.borland.sctm.ws.execution.entities.TestDefinitionResult;
 
 public class TestStdResultWriter {
   
-  private static final String TMP_PATH = "C:\\tmp\\hudsontest";
+  private static final String TMP_PATH = System.getenv("tmp")+"/hudsontest";
   private static File root;
   private volatile int i = 0;
 
-  
   @BeforeClass
   public static void init() {
     root = new File(TMP_PATH);  

@@ -111,14 +111,14 @@ final class StdXMLResultWriter implements ITestResultWriter {
       if (setupTestDef.getStatus() == FAILED)
         failures++;
       else if (setupTestDef.getStatus() == NOT_EXECUTED)
-        failures++;
+        errors++;
       duration += setupTestDef.getDuration() / 1000;
     }
     if (cleanupTestDef != null) {
       if (cleanupTestDef.getStatus() == FAILED)
         failures++;
       else if (cleanupTestDef.getStatus() == NOT_EXECUTED)
-        failures++;
+        errors++;
       duration += cleanupTestDef.getDuration() / 1000;
     }
     
