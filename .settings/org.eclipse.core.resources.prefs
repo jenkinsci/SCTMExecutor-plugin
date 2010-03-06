@@ -1,4 +1,4 @@
-#Mon Feb 08 22:51:13 CET 2010
+#Sat Mar 06 17:23:01 CET 2010
 eclipse.preferences.version=1
 encoding//src/main/java/com/borland/sctm/ws/administration/MainEntities.java=UTF-8
 encoding//src/main/java/com/borland/sctm/ws/administration/MainEntitiesService.java=UTF-8
@@ -66,20 +66,25 @@ encoding//src/main/java/com/borland/sctm/ws/planning/entities/PropertyValue.java
 encoding//src/main/java/com/borland/sctm/ws/planning/entities/SuccessMeasure.java=UTF-8
 encoding//src/main/java/com/borland/sctm/ws/planning/entities/TestDefinitionResult.java=UTF-8
 encoding//src/main/java/com/borland/sctm/ws/planning/entities/TestPlanningNode.java=UTF-8
-encoding//src/main/webapp/help-collectResults.html=ISO-8859-1
-encoding//src/main/webapp/help-collectResults_de.html=ISO-8859-1
-encoding//src/main/webapp/help-contAfterErr.html=ISO-8859-1
-encoding//src/main/webapp/help-contAfterErr_de.html=ISO-8859-1
-encoding//src/main/webapp/help-execdefid.html=ISO-8859-1
+encoding//src/main/webapp/help-buildnumberusage.html=UTF-8
+encoding//src/main/webapp/help-buildnumberusage_de.html=UTF-8
+encoding//src/main/webapp/help-collectResults.html=UTF-8
+encoding//src/main/webapp/help-collectResults_de.html=UTF-8
+encoding//src/main/webapp/help-contAfterErr.html=UTF-8
+encoding//src/main/webapp/help-contAfterErr_de.html=UTF-8
+encoding//src/main/webapp/help-execdefid.html=UTF-8
 encoding//src/main/webapp/help-execdefid_de.html=UTF-8
-encoding//src/main/webapp/help-host.html=ISO-8859-1
-encoding//src/main/webapp/help-host_de.html=ISO-8859-1
-encoding//src/main/webapp/help-password.html=ISO-8859-1
-encoding//src/main/webapp/help-password_de.html=ISO-8859-1
-encoding//src/main/webapp/help-projectid.html=ISO-8859-1
-encoding//src/main/webapp/help-projectid_de.html=ISO-8859-1
-encoding//src/main/webapp/help-startDelay.html=ISO-8859-1
-encoding//src/main/webapp/help-startDelay_de.html=ISO-8859-1
-encoding//src/main/webapp/help-user.html=ISO-8859-1
-encoding//src/main/webapp/help-user_de.html=ISO-8859-1
+encoding//src/main/webapp/help-host.html=UTF-8
+encoding//src/main/webapp/help-host_de.html=UTF-8
+encoding//src/main/webapp/help-ignoreNotExecuted.html=UTF-8
+encoding//src/main/webapp/help-ignoreSetupCleanup.html=UTF-8
+encoding//src/main/webapp/help-ignoreSetupCleanup_de.html=UTF-8
+encoding//src/main/webapp/help-password.html=UTF-8
+encoding//src/main/webapp/help-password_de.html=UTF-8
+encoding//src/main/webapp/help-projectid.html=UTF-8
+encoding//src/main/webapp/help-projectid_de.html=UTF-8
+encoding//src/main/webapp/help-startDelay.html=UTF-8
+encoding//src/main/webapp/help-startDelay_de.html=UTF-8
+encoding//src/main/webapp/help-user.html=UTF-8
+encoding//src/main/webapp/help-user_de.html=UTF-8
 encoding/<project>=ISO-8859-1

@@ -139,4 +139,45 @@ public class SCTMReRunProxy implements ISCTMService {
     }
   }
 
+  @Override
+  public int getLatestSCTMBuildnumber(int nodeId) throws SCTMException {
+    return doGetLatestSCTMBuildnumber(nodeId, MAXRERUN);
+  }
+  
+  private int doGetLatestSCTMBuildnumber(int nodeId, int tryCount) throws SCTMException {
+    try {
+      return this.target.getLatestSCTMBuildnumber(nodeId);
+    } catch (SCTMException e) {
+      if (tryCount > 0) {
+        String tryMore = ""; //$NON-NLS-1$
+        if (tryCount > 1)
+          tryMore = "Try once more."; //$NON-NLS-1$
+        LOGGER.log(Level.WARNING, MessageFormat.format("No BuildNumber available on SCTM. {0}", tryMore));
+        return doGetLatestSCTMBuildnumber(nodeId, --tryCount);
+      } else
+        throw e;
+    }
+  }
+
+  @Override
+  public String getExecDefinitionName(int execDefId) throws SCTMException {
+    return doGetExecDefinitionName(execDefId, MAXRERUN);
+  }
+
+  private String doGetExecDefinitionName(int nodeId, int tryCount) throws SCTMException {
+    try {
+      return this.target.getExecDefinitionName(nodeId);
+    } catch (SCTMException e) {
+      if (tryCount > 0) {
+        String tryMore = ""; //$NON-NLS-1$
+        if (tryCount > 1)
+          tryMore = "Try once more."; //$NON-NLS-1$
+        LOGGER.log(Level.WARNING, MessageFormat.format("No BuildNumber available on SCTM. {0}", tryMore));
+        return doGetExecDefinitionName(nodeId, --tryCount);
+      } else
+        throw e;
+    }
+  }
+  
+
 }

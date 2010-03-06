@@ -6,6 +6,7 @@ import hudson.plugins.sctmexecutor.service.ISCTMService;
 import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +23,7 @@ final class ExecutionRunnable implements Runnable {
   private final ITestResultWriter writer;
   private final PrintStream consolenLogger;
   private long resultCollectingDelay;
+  private String execDefName;
 
   ExecutionRunnable(final ISCTMService service, final int execDefId, final int buildNumber, final ITestResultWriter writer, final PrintStream logger) {
     this.resultCollectingDelay = 5; // in seconds
@@ -44,8 +46,11 @@ final class ExecutionRunnable implements Runnable {
   @Override
   public void run() {
     Collection<ExecutionHandle> handles;
-    this.consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.msg.startExecDef"), this.execDefId)); //$NON-NLS-1$
+    String execDefinitionName = "";
     try {
+      execDefinitionName = service.getExecDefinitionName(execDefId);
+      this.consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.msg.startExecDef"), execDefinitionName, this.execDefId)); //$NON-NLS-1$
+      this.execDefName = service.getExecDefinitionName(this.execDefId);
       if (this.buildNumber <= 0) // don't care about a build number
         handles = service.start(this.execDefId);
       else {
@@ -67,22 +72,24 @@ final class ExecutionRunnable implements Runnable {
       }
     } catch (SCTMException e) {
       this.consolenLogger.println(MessageFormat.format(
-          Messages.getString("ExecutionRunnable.err.startExecDefFailed"), this.execDefId, e.getMessage())); //$NON-NLS-1$
+          Messages.getString("ExecutionRunnable.err.startExecDefFailed"), execDefinitionName, this.execDefId, e.getMessage())); //$NON-NLS-1$
     }
   }
   
   private void collectExecutionResult(ExecutionHandle handle) {
-    consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.msg.waitForResult"), handle //$NON-NLS-1$
-        .getExecDefId()));
     ExecutionResult result = null;
+    String execDefinitionName = "";
     try {
+      execDefinitionName = service.getExecDefinitionName(execDefId);
+      consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.msg.waitForResult"), execDefinitionName, handle //$NON-NLS-1$
+          .getExecDefId()));
       do {
         Thread.sleep(resultCollectingDelay * 1000);
-     // because sometime SCTM is too slow and the run is not created when we ask for a result
+     // because sometimes SCTM is too slow and the run is not created when we ask for a result
         if (service.isFinished(handle)) {
           result = service.getExecutionResult(handle);
           consolenLogger.println(MessageFormat.format(
-              Messages.getString("ExecutionRunnable.log.resultReceived"), handle.getExecDefId())); //$NON-NLS-1$
+              Messages.getString("ExecutionRunnable.log.resultReceived"), execDefinitionName, handle.getExecDefId())); //$NON-NLS-1$
         } else if (resultCollectingDelay < MAX_SLEEP) {
           resultCollectingDelay *= 2;
           if (resultCollectingDelay > MAX_SLEEP)
@@ -96,10 +103,10 @@ final class ExecutionRunnable implements Runnable {
       if (e.getMessage().contains("Logon failed.")) //$NON-NLS-1$
         consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.err.sessionLost"), e.getMessage())); //$NON-NLS-1$
       else
-        consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.err.collectingResultsFailed"), handle.getExecDefId(), e.getMessage())); //$NON-NLS-1$
+        consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.err.collectingResultsFailed"), execDefinitionName, handle.getExecDefId(), e.getMessage())); //$NON-NLS-1$
     } catch (InterruptedException e) {
       consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.warn.abortCollectingResults"), //$NON-NLS-1$
-          handle.getExecDefId()));
+          execDefinitionName, handle.getExecDefId()));
       LOGGER.log(Level.INFO, e.getMessage());
     }
   }

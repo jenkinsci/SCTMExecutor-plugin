@@ -23,10 +23,13 @@
     <f:entry title="${%SCTMExecutor.projectConf.property.label.ignoreSetupCleanup}" help="/plugin/SCTMExecutor/help-ignoreSetupCleanup.html">
       <f:checkbox field="ignoreSetupCleanup" value="${instance.ignoreSetupCleanup}" />
     </f:entry>
-		    <f:radioBlock title="Don't care about a build number" name="buildNumberUsageOption" value="1" checked="${instance.buildNumberUsageOption=='1'}"/>
-		    <f:radioBlock title="Use build number from this job" name="buildNumberUsageOption" value="2" checked="${instance.buildNumberUsageOption=='2'}"/>
-		    <f:radioBlock title="Use build number from upstream job" name="buildNumberUsageOption" value="3" checked="${instance.buildNumberUsageOption=='3'}">
-		      <f:entry name="jobName" field="jobName" title="Choose a job in you upstream chain:">
+    <f:entry title="${%SCTMExecutor.projectConf.property.label.bnusage.title}" help="/plugin/SCTMExecutor/help-buildnumberusage.html">
+    </f:entry>
+		    <f:radioBlock title="${%SCTMExecutor.projectConf.property.label.bnusage.dontcare}" name="buildNumberUsageOption" value="1" checked="${instance.buildNumberUsageOption=='1'}"/>
+		    <f:radioBlock title="${%SCTMExecutor.projectConf.property.label.bnusage.lastSctmBuild}" name="buildNumberUsageOption" value="4" checked="${instance.buildNumberUsageOption=='4'}"/>
+		    <f:radioBlock title="${%SCTMExecutor.projectConf.property.label.bnusage.usemynumber}" name="buildNumberUsageOption" value="2" checked="${instance.buildNumberUsageOption=='2'}"/>
+		    <f:radioBlock title="${%SCTMExecutor.projectConf.property.label.bnusage.upstream}" name="buildNumberUsageOption" value="3" checked="${instance.buildNumberUsageOption=='3'}">
+		      <f:entry name="jobName" field="jobName" title="${%SCTMExecutor.projectConf.property.label.bnusage.upstreamjob}">
 		        <j:set var="allJobNames" value="${descriptor.getAllJobs()}"/>
 		        <select name="jobName" >
 		          <j:forEach var="job" items="${allJobNames}">
@@ -35,6 +38,5 @@
 		        </select>
 		      </f:entry>
 		    </f:radioBlock>
-    
   </f:advanced>
 </j:jelly>

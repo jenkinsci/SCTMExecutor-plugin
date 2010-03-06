@@ -9,6 +9,8 @@ import java.rmi.RemoteException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +43,7 @@ public class SCTMService implements ISCTMService {
   private volatile int logonRetryCount;
   private String user;
   private String pwd;
+  private Map<Integer, String> execDefIdToName;
 
   public SCTMService(String serviceURL, String user, String pwd, int projectId) throws SCTMException {
     try {
@@ -55,6 +58,7 @@ public class SCTMService implements ISCTMService {
       this.sessionId = this.systemService.logonUser(this.user, this.pwd);;
       execService.setCurrentProject(sessionId, projectId);
       planningService.setCurrentProject(sessionId, String.valueOf(projectId));
+      this.execDefIdToName = new HashMap<Integer, String>();
     } catch (MalformedURLException e) {
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
       throw new SCTMException(Messages.getString("SCTMService.err.serviceUrlWrong")); //$NON-NLS-1$
@@ -181,7 +185,7 @@ public class SCTMService implements ISCTMService {
     return productName;
   }
 
-  private String getExecutionNodePropertyValue(ExecutionNode node, String propertyName) throws RemoteException {
+  private String getExecutionNodePropertyValue(ExecutionNode node, String propertyName) {
     PropertyValue[] propertyValues = node.getPropertyValues();
     for (PropertyValue propertyValue : propertyValues) {
       if (propertyName.equals(propertyValue.getName()))
@@ -193,12 +197,7 @@ public class SCTMService implements ISCTMService {
   @Override
   public boolean buildNumberExists(int buildNumber, int nodeId) throws SCTMException {
     try {
-      ExecutionNode node = execService.getNode(sessionId, nodeId);
-      if (node == null)
-        throw new SCTMException(MessageFormat.format("Execution definition ''{0}'' does not exist. Check the build configuration.", nodeId));
-      String version = getExecutionNodePropertyValue(node, "PROP_VERSIONNAME");
-      String productName = getProductName(node);
-      String[] builds = adminService.getBuilds(sessionId, productName, version);
+      String[] builds = getAllBuildNumbersForProductAndVersion(nodeId);
       String value = String.valueOf(buildNumber);
       for (String build : builds) {
         if (value.equals(build))
@@ -208,6 +207,64 @@ public class SCTMService implements ISCTMService {
     } catch (RemoteException e) {
       if (handleLostSessionException(e))
         return buildNumberExists(buildNumber, nodeId);
+      LOGGER.log(Level.SEVERE, e.getMessage(), e);
+      throw new SCTMException(MessageFormat.format(Messages.getString("SCTMService.err.commonFatalError"), e.getMessage())); //$NON-NLS-1$
+    }
+  }
+
+  private String[] getAllBuildNumbersForProductAndVersion(int nodeId) throws RemoteException, SCTMException,
+      InvalidIdException, InternalException {
+    ExecutionNode node = getExecDefNode(nodeId);
+    String version = getExecutionNodePropertyValue(node, "PROP_VERSIONNAME");
+    String productName = getProductName(node);
+    String[] builds = adminService.getBuilds(sessionId, productName, version);
+    return builds;
+  }
+
+  private ExecutionNode getExecDefNode(int nodeId) throws RemoteException, SCTMException {
+    ExecutionNode node = execService.getNode(sessionId, nodeId);
+    if (node == null)
+      throw new SCTMException(MessageFormat.format("Execution definition ''{0}'' does not exist. Check the build configuration.", nodeId));
+    return node;
+  }
+
+  @Override
+  public int getLatestSCTMBuildnumber(int nodeId) throws SCTMException {
+    try {
+      String[] builds = getAllBuildNumbersForProductAndVersion(nodeId);
+      int latestBuildnumber = -1;
+      for (String bn : builds) {
+        int buildnumber = 0;
+        try {
+          buildnumber = Integer.parseInt(bn);
+          if (buildnumber > latestBuildnumber)
+            latestBuildnumber = buildnumber;          
+        } catch (NumberFormatException e) {
+          LOGGER.warning(MessageFormat.format("Build number ({0}) is not a number. Ignoring it.", buildnumber));
+        }
+      }
+      return latestBuildnumber;
+    } catch (RemoteException e) {
+      if (handleLostSessionException(e))
+        return getLatestSCTMBuildnumber(nodeId);
+      LOGGER.log(Level.SEVERE, e.getMessage(), e);
+      throw new SCTMException(MessageFormat.format(Messages.getString("SCTMService.err.commonFatalError"), e.getMessage())); //$NON-NLS-1$
+    }
+  }
+
+  @Override
+  public String getExecDefinitionName(int execDefId) throws SCTMException {
+    try {
+      String name = execDefIdToName.get(execDefId);
+      if (name == null) {
+        ExecutionNode node = getExecDefNode(execDefId);
+        name = getExecutionNodePropertyValue(node, "PROP_NAME");
+        execDefIdToName.put(execDefId, name);
+      }
+      return name;  
+    } catch (RemoteException e) {
+      if (handleLostSessionException(e))
+        return getExecDefinitionName(execDefId);
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
       throw new SCTMException(MessageFormat.format(Messages.getString("SCTMService.err.commonFatalError"), e.getMessage())); //$NON-NLS-1$
     }

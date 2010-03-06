@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +34,7 @@ public final class SCTMExecutor extends Builder {
   static final int OPT_NO_BUILD_NUMBER = 1;
   static final int OPT_USE_THIS_BUILD_NUMBER = 2;
   static final int OPT_USE_SPECIFICJOB_BUILDNUMBER = 3;
+  static final int OPT_USE_LATEST_SCTM_BUILDNUMBER = 4;
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
 
   private final int projectId;
@@ -112,7 +112,7 @@ public final class SCTMExecutor extends Builder {
         StdXMLResultWriter resultWriter = null;
         if (collectResults)
           resultWriter = new StdXMLResultWriter(rootDir, descriptor.getServiceURL(), String.valueOf(build.number), this.ignoreSetupCleanup);
-        Runnable resultCollector = new ExecutionRunnable(service, execDefId, getBuildNumber(build, listener),
+        Runnable resultCollector = new ExecutionRunnable(service, execDefId, getBuildNumber(build, listener, service, execDefId),
             resultWriter, listener.getLogger());
         
         Thread t = new Thread(resultCollector);
@@ -135,11 +135,13 @@ public final class SCTMExecutor extends Builder {
     return continueOnError || succeed;
   }
 
-  private int getBuildNumber(AbstractBuild<?, ?> build, BuildListener listener) {
+  private int getBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, ISCTMService service, int nodeId) throws SCTMException {
     if (OPT_USE_SPECIFICJOB_BUILDNUMBER == buildNumberUsageOption)
       return getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
     else if (OPT_USE_THIS_BUILD_NUMBER == buildNumberUsageOption)
       return build.number;
+    else if (OPT_USE_LATEST_SCTM_BUILDNUMBER == buildNumberUsageOption)
+      return service.getLatestSCTMBuildnumber(nodeId);
     else
       return -1;
   }
