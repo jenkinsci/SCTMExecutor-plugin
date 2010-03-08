@@ -44,20 +44,20 @@ public class SCTMService implements ISCTMService {
   private String user;
   private String pwd;
   private Map<Integer, String> execDefIdToName;
+  private int projectId;
 
   public SCTMService(String serviceURL, String user, String pwd, int projectId) throws SCTMException {
     try {
       this.user = user;
       this.pwd = pwd;
+      this.projectId = projectId;
       
       systemService = new SystemServiceServiceLocator().getsccsystem(new URL(serviceURL + "/sccsystem?wsdl")); //$NON-NLS-1$
       execService = new ExecutionWebServiceServiceLocator().gettmexecution(new URL(serviceURL + "/tmexecution?wsdl")); //$NON-NLS-1$
       adminService = new MainEntitiesServiceLocator().getsccentities(new URL(serviceURL+"/sccentities?wsdl"));
       planningService = new PlanningServiceServiceLocator().gettmplanning(new URL(serviceURL+"/tmplanning?wsdl"));
       
-      this.sessionId = this.systemService.logonUser(this.user, this.pwd);;
-      execService.setCurrentProject(sessionId, projectId);
-      planningService.setCurrentProject(sessionId, String.valueOf(projectId));
+      logon();
       this.execDefIdToName = new HashMap<Integer, String>();
     } catch (MalformedURLException e) {
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -69,6 +69,12 @@ public class SCTMService implements ISCTMService {
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
       throw new SCTMException(MessageFormat.format(Messages.getString("SCTMService.err.commonFatalError"), e.getMessage())); //$NON-NLS-1$
     }
+  }
+
+  private void logon() throws RemoteException {
+    this.sessionId = this.systemService.logonUser(this.user, this.pwd);;
+    execService.setCurrentProject(sessionId, projectId);
+    planningService.setCurrentProject(sessionId, String.valueOf(projectId));
   }
   
   /* (non-Javadoc)
@@ -92,7 +98,7 @@ public class SCTMService implements ISCTMService {
       logonRetryCount++;
       LOGGER.warning(Messages.getString("SCTMService.warn.SessionLostReconnect")); //$NON-NLS-1$
       try {
-        this.sessionId = this.systemService.logonUser(this.user, this.pwd);
+        logon();
         return true;
       } catch (RemoteException e1) {
         LOGGER.log(Level.SEVERE, e.getMessage(), e);
