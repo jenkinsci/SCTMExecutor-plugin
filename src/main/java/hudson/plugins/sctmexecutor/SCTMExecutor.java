@@ -45,11 +45,12 @@ public final class SCTMExecutor extends Builder {
   private final boolean continueOnError;
   private final boolean collectResults;
   private final boolean ignoreSetupCleanup;
-  
+
   private boolean succeed;
 
   @DataBoundConstructor
-  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption, final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup) {
+  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption,
+      final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
     this.delay = delay;
@@ -62,7 +63,7 @@ public final class SCTMExecutor extends Builder {
 
   @Override
   public SCTMExecutorDescriptor getDescriptor() {
-    return (SCTMExecutorDescriptor)Hudson.getInstance().getDescriptor(getClass());
+    return (SCTMExecutorDescriptor) Hudson.getInstance().getDescriptor(getClass());
   }
 
   public String getExecDefIds() {
@@ -72,82 +73,102 @@ public final class SCTMExecutor extends Builder {
   public int getProjectId() {
     return projectId;
   }
-  
+
   public int getDelay() {
     return delay;
   }
-  
+
   public int getBuildNumberUsageOption() {
     return this.buildNumberUsageOption;
   }
-  
+
   public String getJobName() {
     return this.jobName;
   }
-  
+
   public boolean isContinueOnError() {
     return this.continueOnError;
   }
-  
+
   public boolean isignoreSetupCleanup() {
     return this.ignoreSetupCleanup;
   }
-  
+
   public boolean isCollectResults() {
     return this.collectResults;
   }
-  
+
   @Override
-  public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+  public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+      throws InterruptedException, IOException {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
     try {
-      ISCTMService service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor.getPassword(), projectId));
+      ISCTMService service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor
+          .getPassword(), projectId));
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
       FilePath rootDir = createResultDir(build.number, build, listener);
       Collection<Integer> ids = csvToIntList(execDefIds);
 
       Collection<Thread> executions = new ArrayList<Thread>(ids.size());
-      for (Integer execDefId : ids) {        
+      for (Integer execDefId : ids) {
         StdXMLResultWriter resultWriter = null;
         if (collectResults)
-          resultWriter = new StdXMLResultWriter(rootDir, descriptor.getServiceURL(), String.valueOf(build.number), this.ignoreSetupCleanup);
-        Runnable resultCollector = new ExecutionRunnable(service, execDefId, getBuildNumber(build, listener, service, execDefId),
-            resultWriter, listener.getLogger());
-        
+          resultWriter = new StdXMLResultWriter(rootDir, descriptor.getServiceURL(), String.valueOf(build.number),
+              this.ignoreSetupCleanup);
+        int buildNumber = -1;
+        buildNumber = getOrAddBuildNumber(build, listener, service, execDefId);
+        Runnable resultCollector = new ExecutionRunnable(service, execDefId, buildNumber, resultWriter, listener
+            .getLogger());
+
         Thread t = new Thread(resultCollector);
         executions.add(t);
         t.start();
         if (delay > 0 && ids.size() > 1)
-          Thread.sleep(delay*1000);
+          Thread.sleep(delay * 1000);
       }
-      
+
       for (Thread t : executions) {
         t.join();
       }
-      
+
       succeed = true;
     } catch (SCTMException e) {
-      LOGGER.log(Level.SEVERE, MessageFormat.format("Creating a remote connection to SCTM host ({0}) failed.", serviceURL), e); //$NON-NLS-1$
+      LOGGER.log(Level.SEVERE, MessageFormat.format(
+          "Creating a remote connection to SCTM host ({0}) failed.", serviceURL), e); //$NON-NLS-1$
       listener.fatalError(e.getMessage());
       succeed = false;
     }
     return continueOnError || succeed;
   }
 
-  private int getBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, ISCTMService service, int nodeId) throws SCTMException {
-    if (OPT_USE_SPECIFICJOB_BUILDNUMBER == buildNumberUsageOption)
-      return getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
-    else if (OPT_USE_THIS_BUILD_NUMBER == buildNumberUsageOption)
-      return build.number;
-    else if (OPT_USE_LATEST_SCTM_BUILDNUMBER == buildNumberUsageOption)
-      return service.getLatestSCTMBuildnumber(nodeId);
-    else
+  private int getOrAddBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, ISCTMService service, int nodeId) throws SCTMException {
+    switch (this.buildNumberUsageOption) {
+    case OPT_USE_THIS_BUILD_NUMBER:
+    case OPT_USE_SPECIFICJOB_BUILDNUMBER:
+      int buildnumber = -1;
+      if (this.buildNumberUsageOption == OPT_USE_THIS_BUILD_NUMBER)
+        buildnumber = build.number;
+      else if (this.buildNumberUsageOption == OPT_USE_SPECIFICJOB_BUILDNUMBER)
+        buildnumber = getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
+      
+      if (!service.buildNumberExists(buildnumber, nodeId)) {
+        listener.getLogger().println(MessageFormat.format("INFO: Add buidnumber ''{0}'' on SCTM.", buildnumber));
+        if (!service.addBuildNumber(buildnumber, nodeId))
+          buildnumber = -1;
+      } else
+        listener.getLogger().println(MessageFormat.format("INFO: Buildnumber ''{0}'' already exists on SCTM.", buildnumber));
+      return buildnumber;
+    case OPT_USE_LATEST_SCTM_BUILDNUMBER:
+      return service.getLatestSCTMBuildnumber(nodeId);      
+    default:
       return -1;
+    }
   }
 
-  private int getBuildNumberFromUpStreamProject(String projectName, Set<AbstractProject> upstreamProjects, BuildListener listener) {
-    for (AbstractProject<?,?> project : upstreamProjects) {
+  private int getBuildNumberFromUpStreamProject(String projectName, Set<AbstractProject> upstreamProjects,
+      BuildListener listener) {
+    for (AbstractProject<?, ?> project : upstreamProjects) {
       if (project.getName().equals(projectName))
         return project.getLastSuccessfulBuild().getNumber();
     }
@@ -155,22 +176,23 @@ public final class SCTMExecutor extends Builder {
     return -1;
   }
 
-  private static FilePath createResultDir(int currentBuildNo, AbstractBuild<?,?> build, BuildListener listener) throws IOException, InterruptedException {
+  private static FilePath createResultDir(int currentBuildNo, AbstractBuild<?, ?> build, BuildListener listener)
+      throws IOException, InterruptedException {
     FilePath rootDir = build.getWorkspace();
     if (rootDir == null) {
       LOGGER.severe("Cannot write the result file because slave is not connected."); //$NON-NLS-1$
       listener.error(Messages.getString("SCTMExecutor.log.slaveNotConnected")); //$NON-NLS-1$
       throw new RuntimeException();
     }
-    
+
     rootDir = new FilePath(rootDir, "SCTMResults"); //$NON-NLS-1$
     if (rootDir.exists()) {
       final String buildNo = String.valueOf(currentBuildNo);
-      List<FilePath> list = rootDir.list();//new TestFileFilter(buildNo));
+      List<FilePath> list = rootDir.list();// new TestFileFilter(buildNo));
       if (list.size() > 0) {
         for (FilePath filePath : list) {
-          if (filePath.getName().matches("TEST-(\\p{Print}*)-"+buildNo+".xml"))
-            return rootDir; //test results of the current run available, do not clean the results directory
+          if (filePath.getName().matches("TEST-(\\p{Print}*)-" + buildNo + ".xml"))
+            return rootDir; // test results of the current run available, do not clean the results directory
         }
         rootDir.deleteContents(); // clean old results
       }
