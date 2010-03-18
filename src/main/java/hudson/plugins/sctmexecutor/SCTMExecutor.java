@@ -152,12 +152,17 @@ public final class SCTMExecutor extends Builder {
       else if (this.buildNumberUsageOption == OPT_USE_SPECIFICJOB_BUILDNUMBER)
         buildnumber = getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
       
-      if (!service.buildNumberExists(buildnumber, nodeId)) {
-        listener.getLogger().println(MessageFormat.format("INFO: Add buidnumber ''{0}'' on SCTM.", buildnumber));
-        if (!service.addBuildNumber(buildnumber, nodeId))
-          buildnumber = -1;
-      } else
-        listener.getLogger().println(MessageFormat.format("INFO: Buildnumber ''{0}'' already exists on SCTM.", buildnumber));
+      try {
+        if (!service.buildNumberExists(buildnumber, nodeId)) {
+          listener.getLogger().println(MessageFormat.format("INFO: Add buidnumber ''{0}'' on SCTM.", buildnumber));
+          if (!service.addBuildNumber(buildnumber, nodeId))
+            buildnumber = -1;
+        } else
+          listener.getLogger().println(MessageFormat.format("INFO: Buildnumber ''{0}'' already exists on SCTM.", buildnumber));
+      } catch (IllegalArgumentException e) {
+        listener.error(e.getMessage());
+        buildnumber = -1;
+      }
       return buildnumber;
     case OPT_USE_LATEST_SCTM_BUILDNUMBER:
       return service.getLatestSCTMBuildnumber(nodeId);      

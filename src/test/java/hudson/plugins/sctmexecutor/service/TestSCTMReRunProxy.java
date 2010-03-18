@@ -73,7 +73,7 @@ public class TestSCTMReRunProxy {
 
   @Test
   public void testStartInt() throws SCTMException {
-    EasyMock.expect(mockService.start((Integer)EasyMock.gt(0))).andThrow(new SCTMException(""));
+    EasyMock.expect(mockService.start(EasyMock.gt(0))).andThrow(new SCTMException(""));
     EasyMock.expectLastCall().andThrow(new SCTMException(""));
     EasyMock.expectLastCall().andReturn(new ArrayList<ExecutionHandle>());
     EasyMock.replay(mockService);
@@ -82,7 +82,7 @@ public class TestSCTMReRunProxy {
   
   @Test(expected=SCTMException.class)
   public void testStartIntReRunFailed() throws SCTMException {
-    EasyMock.expect(mockService.start((Integer)EasyMock.gt(0))).andThrow(new SCTMException(""));
+    EasyMock.expect(mockService.start(EasyMock.gt(0))).andThrow(new SCTMException(""));
     for (int i=0; i<SCTMReRunProxy.MAXRERUN; i++)
       EasyMock.expectLastCall().andThrow(new SCTMException(""));
 
@@ -92,7 +92,7 @@ public class TestSCTMReRunProxy {
 
   @Test
   public void testStartIntString() throws SCTMException {
-    EasyMock.expect(mockService.start((Integer)EasyMock.gt(0), (String)EasyMock.notNull())).andThrow(new SCTMException(""));
+    EasyMock.expect(mockService.start(EasyMock.gt(0), (String)EasyMock.notNull())).andThrow(new SCTMException(""));
     EasyMock.expectLastCall().andThrow(new SCTMException(""));
     EasyMock.expectLastCall().andReturn(new ArrayList<ExecutionHandle>());
     EasyMock.replay(mockService);
@@ -101,7 +101,7 @@ public class TestSCTMReRunProxy {
   
   @Test(expected=SCTMException.class)
   public void testStartIntStringReRunFailed() throws SCTMException {
-    EasyMock.expect(mockService.start((Integer)EasyMock.gt(0), (String)EasyMock.notNull())).andThrow(new SCTMException(""));
+    EasyMock.expect(mockService.start(EasyMock.gt(0), (String)EasyMock.notNull())).andThrow(new SCTMException(""));
     for (int i=0; i<SCTMReRunProxy.MAXRERUN; i++)
       EasyMock.expectLastCall().andThrow(new SCTMException(""));
 

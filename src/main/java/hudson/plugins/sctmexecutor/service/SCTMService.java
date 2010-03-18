@@ -223,6 +223,10 @@ public class SCTMService implements ISCTMService {
     ExecutionNode node = getExecDefNode(nodeId);
     String version = getExecutionNodePropertyValue(node, "PROP_VERSIONNAME");
     String productName = getProductName(node);
+    if (version == null || productName == null) {
+      String name = getExecutionNodePropertyValue(node, "PROP_NAME");
+      throw new IllegalArgumentException(MessageFormat.format("Cannot add a build number because the Execution definition ''{0}'' ({1}) is configured for using a ''Build Information File''. Disable ''Read from Build Information File'' and configure at least a valid version.",name, nodeId));
+    }
     String[] builds = adminService.getBuilds(sessionId, productName, version);
     return builds;
   }
