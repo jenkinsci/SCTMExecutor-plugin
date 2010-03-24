@@ -1,5 +1,6 @@
 package hudson.plugins.sctmexecutor.service;
 
+import hudson.FilePath;
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 
 import java.text.MessageFormat;
@@ -9,6 +10,7 @@ import java.util.logging.Logger;
 
 import com.borland.sctm.ws.execution.entities.ExecutionHandle;
 import com.borland.sctm.ws.execution.entities.ExecutionResult;
+import com.borland.sctm.ws.performer.SPNamedEntity;
 
 public class SCTMReRunProxy implements ISCTMService {
   static final int MAXRERUN = 2;
@@ -178,6 +180,29 @@ public class SCTMReRunProxy implements ISCTMService {
         throw e;
     }
   }
-  
 
+  @Override
+  public SPNamedEntity[] getResultFiles(int testDefRunId) throws SCTMException {
+    return doGetResultFiles(testDefRunId, MAXRERUN);
+  }
+  
+  private SPNamedEntity[] doGetResultFiles(int testDefRunId, int tryCount) throws SCTMException {
+    try {
+      return this.target.getResultFiles(testDefRunId);
+    } catch (SCTMException e) {
+      if (tryCount > 0) {
+        String tryMore = ""; //$NON-NLS-1$
+        if (tryCount > 1)
+          tryMore = "Try once more."; //$NON-NLS-1$
+        LOGGER.log(Level.WARNING, MessageFormat.format("Cannot load any result file from SCTM. {0}", tryMore));
+        return doGetResultFiles(testDefRunId, --tryCount);
+      } else
+        throw e;
+    }
+  }
+
+  @Override
+  public FilePath loadResultFile(int fileId, String fileName) {
+    return loadResultFile(fileId, fileName); // TODO: check if retry logic is needed
+  }
 }
