@@ -19,16 +19,20 @@ public interface ISCTMService {
 
   public ExecutionResult getExecutionResult(ExecutionHandle handle) throws SCTMException;
 
-  public boolean buildNumberExists(int buildNumber, int nodeId) throws SCTMException;
+  public boolean buildNumberExists(String productName, String version, int buildNumber) throws SCTMException;
 
-  public boolean addBuildNumber(int buildNumber, int nodeId) throws SCTMException;
+  public boolean addBuildNumber(String productName, String version, int buildNumber) throws SCTMException;
 
-  public int getLatestSCTMBuildnumber(int nodeId) throws SCTMException;
+  public int getLatestSCTMBuildnumber(String productName, String version) throws SCTMException;
 
   public String getExecDefinitionName(int execDefId) throws SCTMException;
   
   public SPNamedEntity[] getResultFiles(int testDefRunId) throws SCTMException;
   
-  public FilePath loadResultFile(int fileId, String fileName);
+  public void loadResultFile(int fileId, FilePath file);
+
+  public Collection<String> getAllVersions(int execDefId) throws SCTMException;
+
+  public String getProductName(int integer) throws SCTMException;
 
 }

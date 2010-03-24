@@ -56,11 +56,17 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     String jobName = ""; //$NON-NLS-1$
     JSONObject buildNumberUsageOption = (JSONObject)formData.get("buildNumberUsageOption");
     int optValue = buildNumberUsageOption.getInt("value"); // SCTMExecutor.OPT_NO_BUILD_NUMBER;
-    if (optValue == SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER) {
-      jobName = buildNumberUsageOption.getString("jobName");
+    
+    String version = null;
+    switch (optValue) {
+      case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
+        jobName = buildNumberUsageOption.getString("jobName");      
+      case SCTMExecutor.OPT_USE_LATEST_SCTM_BUILDNUMBER:
+      case SCTMExecutor.OPT_USE_THIS_BUILD_NUMBER:
+        version = formData.getString("version");
     }
     
-    return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults, ignoreSetupCleanup);
+    return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults, ignoreSetupCleanup, version);
   }
   
   private int getOptionalIntValue(String value, int defaultValue) {

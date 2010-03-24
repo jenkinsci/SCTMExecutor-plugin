@@ -25,18 +25,44 @@
     </f:entry>
     <f:entry title="${%SCTMExecutor.projectConf.property.label.bnusage.title}" help="/plugin/SCTMExecutor/help-buildnumberusage.html">
     </f:entry>
-		    <f:radioBlock title="${%SCTMExecutor.projectConf.property.label.bnusage.dontcare}" name="buildNumberUsageOption" value="1" checked="${instance.buildNumberUsageOption=='1'}"/>
-		    <f:radioBlock title="${%SCTMExecutor.projectConf.property.label.bnusage.lastSctmBuild}" name="buildNumberUsageOption" value="4" checked="${instance.buildNumberUsageOption=='4'}"/>
-		    <f:radioBlock title="${%SCTMExecutor.projectConf.property.label.bnusage.usemynumber}" name="buildNumberUsageOption" value="2" checked="${instance.buildNumberUsageOption=='2'}"/>
-		    <f:radioBlock title="${%SCTMExecutor.projectConf.property.label.bnusage.upstream}" name="buildNumberUsageOption" value="3" checked="${instance.buildNumberUsageOption=='3'}">
-		      <f:entry name="jobName" field="jobName" title="${%SCTMExecutor.projectConf.property.label.bnusage.upstreamjob}">
-		        <j:set var="allJobNames" value="${descriptor.getAllJobs()}"/>
-		        <select name="jobName" >
-		          <j:forEach var="job" items="${allJobNames}">
-		            <f:option selected="${instance.jobName==job}">${job}</f:option>
-		          </j:forEach>
-		        </select>
-		      </f:entry>
-		    </f:radioBlock>
+    <f:radioBlock title="${%SCTMExecutor.projectConf.property.label.bnusage.dontcare}" name="buildNumberUsageOption" value="1" checked="${instance.buildNumberUsageOption=='1'}"/>
+    <f:radioBlock title="${%SCTMExecutor.projectConf.property.label.bnusage.lastSctmBuild}" name="buildNumberUsageOption" value="4" checked="${instance.buildNumberUsageOption=='4'}">
+      <f:entry name="version" field="version" title="${%SCTMExecutor.projectConf.property.label.bnusage.version}">
+        <j:set var="allVersions" value="${instance.getAllVersions()}"/>
+        <select name="version" >
+          <j:forEach var="version" items="${allVersions}">
+            <f:option selected="${instance.version==version}">${version}</f:option>
+          </j:forEach>
+        </select>
+      </f:entry>
+    </f:radioBlock>
+    <f:radioBlock title="${%SCTMExecutor.projectConf.property.label.bnusage.usemynumber}" name="buildNumberUsageOption" value="2" checked="${instance.buildNumberUsageOption=='2'}">
+	    <f:entry name="version" field="version" title="${%SCTMExecutor.projectConf.property.label.bnusage.version}">
+	        <j:set var="allVersions" value="${instance.getAllVersions()}"/>
+	        <select name="version" >
+	          <j:forEach var="version" items="${allVersions}">
+	            <f:option selected="${instance.version==version}">${version}</f:option>
+	          </j:forEach>
+	        </select>
+	      </f:entry>
+	    </f:radioBlock>
+    <f:radioBlock title="${%SCTMExecutor.projectConf.property.label.bnusage.upstream}" name="buildNumberUsageOption" value="3" checked="${instance.buildNumberUsageOption=='3'}">
+      <f:entry name="jobName" field="jobName" title="${%SCTMExecutor.projectConf.property.label.bnusage.upstreamjob}">
+        <j:set var="allJobNames" value="${descriptor.getAllJobs()}"/>
+        <select name="jobName" >
+          <j:forEach var="job" items="${allJobNames}">
+            <f:option selected="${instance.jobName==job}">${job}</f:option>
+          </j:forEach>
+        </select>
+      </f:entry>
+      <f:entry name="version" field="version" title="${%SCTMExecutor.projectConf.property.label.bnusage.version}">
+        <j:set var="allVersions" value="${instance.getAllVersions()}"/>
+        <select name="version" >
+          <j:forEach var="version" items="${allVersions}">
+            <f:option selected="${instance.version==version}">${version}</f:option>
+          </j:forEach>
+        </select>
+      </f:entry>
+    </f:radioBlock>
   </f:advanced>
 </j:jelly>

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -45,12 +46,16 @@ public final class SCTMExecutor extends Builder {
   private final boolean continueOnError;
   private final boolean collectResults;
   private final boolean ignoreSetupCleanup;
+  private String version;
 
   private boolean succeed;
+  private ISCTMService service;
+  private String product;
+  private List<Integer> execDefIdList;
 
   @DataBoundConstructor
   public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption,
-      final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup) {
+      final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup, String version) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
     this.delay = delay;
@@ -59,6 +64,19 @@ public final class SCTMExecutor extends Builder {
     this.continueOnError = contOnErr;
     this.collectResults = collectResults;
     this.ignoreSetupCleanup = ignoreSetupCleanup;
+    this.version = version;
+    this.execDefIdList = this.csvToIntList(this.execDefIds);
+
+    SCTMExecutorDescriptor descriptor = getDescriptor();
+    String serviceURL = descriptor.getServiceURL();
+    try {
+      service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor
+          .getPassword(), projectId));
+      this.product = this.service.getProductName(this.execDefIdList.get(0));
+    } catch (SCTMException e) {
+      LOGGER.log(Level.SEVERE, MessageFormat.format(
+          "Creating a remote connection to SCTM host ({0}) failed.", serviceURL), e); //$NON-NLS-1$
+    }
   }
 
   @Override
@@ -97,6 +115,15 @@ public final class SCTMExecutor extends Builder {
   public boolean isCollectResults() {
     return this.collectResults;
   }
+  
+  public Collection<String> getAllVersions() {
+    try {
+      return this.service.getAllVersions(this.execDefIdList.get(0));
+    } catch (SCTMException e) {
+      LOGGER.warning("No versions available for product.");
+    }
+    return Collections.emptyList();
+  }
 
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
@@ -104,17 +131,14 @@ public final class SCTMExecutor extends Builder {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
     try {
-      ISCTMService service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor
-          .getPassword(), projectId));
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
       FilePath rootDir = createResultDir(build.number, build, listener);
-      Collection<Integer> ids = csvToIntList(execDefIds);
 
-      Collection<Thread> executions = new ArrayList<Thread>(ids.size());
-      for (Integer execDefId : ids) {
+      Collection<Thread> executions = new ArrayList<Thread>(execDefIdList.size());
+      for (Integer execDefId : execDefIdList) {
         StdXMLResultWriter resultWriter = null;
         if (collectResults)
-          resultWriter = new StdXMLResultWriter(rootDir, descriptor.getServiceURL(), String.valueOf(build.number),
+          resultWriter = new StdXMLResultWriter(rootDir, serviceURL, String.valueOf(build.number),
               this.ignoreSetupCleanup);
         int buildNumber = -1;
         buildNumber = getOrAddBuildNumber(build, listener, service, execDefId);
@@ -124,7 +148,7 @@ public final class SCTMExecutor extends Builder {
         Thread t = new Thread(resultCollector);
         executions.add(t);
         t.start();
-        if (delay > 0 && ids.size() > 1)
+        if (delay > 0 && execDefIdList.size() > 1)
           Thread.sleep(delay * 1000);
       }
 
@@ -153,9 +177,9 @@ public final class SCTMExecutor extends Builder {
         buildnumber = getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
       
       try {
-        if (!service.buildNumberExists(buildnumber, nodeId)) {
+        if (!service.buildNumberExists(product, version, buildnumber)) {
           listener.getLogger().println(MessageFormat.format("INFO: Add buidnumber ''{0}'' on SCTM.", buildnumber));
-          if (!service.addBuildNumber(buildnumber, nodeId))
+          if (!service.addBuildNumber(product, version, buildnumber))
             buildnumber = -1;
         } else
           listener.getLogger().println(MessageFormat.format("INFO: Buildnumber ''{0}'' already exists on SCTM.", buildnumber));
@@ -165,7 +189,7 @@ public final class SCTMExecutor extends Builder {
       }
       return buildnumber;
     case OPT_USE_LATEST_SCTM_BUILDNUMBER:
-      return service.getLatestSCTMBuildnumber(nodeId);      
+      return service.getLatestSCTMBuildnumber(product, version);      
     default:
       return -1;
     }

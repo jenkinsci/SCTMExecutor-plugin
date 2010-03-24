@@ -102,60 +102,60 @@ public class SCTMReRunProxy implements ISCTMService {
   }
 
   @Override
-  public boolean addBuildNumber(int buildNumber, int nodeId) throws SCTMException {
-    return doAddBuildNumber(buildNumber, nodeId, MAXRERUN);
+  public boolean addBuildNumber(String productName, String version, int buildNumber) throws SCTMException {
+    return doAddBuildNumber(productName, version, buildNumber, MAXRERUN);
   }
 
-  private boolean doAddBuildNumber(int buildNumber, int nodeId, int tryCount) throws SCTMException {
+  private boolean doAddBuildNumber(String product, String version, int buildNumber, int tryCount) throws SCTMException {
     try {
-      return this.target.addBuildNumber(buildNumber, nodeId);
+      return this.target.addBuildNumber(product, version, buildNumber);
     } catch (SCTMException e) {
       if (tryCount > 0) {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
         LOGGER.log(Level.WARNING, MessageFormat.format("BuildNumber ''{0}'' cannot be added. {1}", buildNumber, tryMore));
-        return doAddBuildNumber(buildNumber, nodeId, --tryCount);
+        return doAddBuildNumber(product, version, buildNumber, --tryCount);
       } else
         throw e;
     }
   }
 
   @Override
-  public boolean buildNumberExists(int buildNumber, int nodeId) throws SCTMException {
-    return doBuildNumberExists(buildNumber, nodeId, MAXRERUN);
+  public boolean buildNumberExists(String productName, String version, int buildNumber) throws SCTMException {
+    return doBuildNumberExists(productName, version, buildNumber, MAXRERUN);
   }
 
-  private boolean doBuildNumberExists(int buildNumber, int nodeId, int tryCount) throws SCTMException {
+  private boolean doBuildNumberExists(String product, String version, int buildNumber, int tryCount) throws SCTMException {
     try {
-      return this.target.buildNumberExists(buildNumber, nodeId);
+      return this.target.buildNumberExists(product, version, buildNumber);
     } catch (SCTMException e) {
       if (tryCount > 0) {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
         LOGGER.log(Level.WARNING, MessageFormat.format("BuildNumber ''{0}'' cannot be added. {1}", buildNumber, tryMore));
-        return doBuildNumberExists(buildNumber, nodeId, --tryCount);
+        return doBuildNumberExists(product, version, buildNumber, --tryCount);
       } else
         throw e;
     }
   }
 
   @Override
-  public int getLatestSCTMBuildnumber(int nodeId) throws SCTMException {
-    return doGetLatestSCTMBuildnumber(nodeId, MAXRERUN);
+  public int getLatestSCTMBuildnumber(String productName, String version) throws SCTMException {
+    return doGetLatestSCTMBuildnumber(productName, version, MAXRERUN);
   }
   
-  private int doGetLatestSCTMBuildnumber(int nodeId, int tryCount) throws SCTMException {
+  private int doGetLatestSCTMBuildnumber(String productName, String version, int tryCount) throws SCTMException {
     try {
-      return this.target.getLatestSCTMBuildnumber(nodeId);
+      return this.target.getLatestSCTMBuildnumber(productName, version);
     } catch (SCTMException e) {
       if (tryCount > 0) {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
         LOGGER.log(Level.WARNING, MessageFormat.format("No BuildNumber available on SCTM. {0}", tryMore));
-        return doGetLatestSCTMBuildnumber(nodeId, --tryCount);
+        return doGetLatestSCTMBuildnumber(productName, version, --tryCount);
       } else
         throw e;
     }
@@ -182,8 +182,48 @@ public class SCTMReRunProxy implements ISCTMService {
   }
 
   @Override
+  public Collection<String> getAllVersions(int execDefId) throws SCTMException {
+    return doGetAllVersions(execDefId, MAXRERUN);
+  }
+
+  private Collection<String> doGetAllVersions(int nodeId, int tryCount) throws SCTMException {
+    try {
+      return this.target.getAllVersions(nodeId);
+    } catch (SCTMException e) {
+      if (tryCount > 0) {
+        String tryMore = ""; //$NON-NLS-1$
+        if (tryCount > 1)
+          tryMore = "Try once more."; //$NON-NLS-1$
+        LOGGER.log(Level.WARNING, MessageFormat.format("No version available on SCTM. {0}", tryMore));
+        return doGetAllVersions(nodeId, --tryCount);
+      } else
+        throw e;
+    }
+  }
+
+  @Override
+  public String getProductName(int nodeId) throws SCTMException {
+    return doGetProductName(nodeId, MAXRERUN);
+  }
+
+  @Override
   public SPNamedEntity[] getResultFiles(int testDefRunId) throws SCTMException {
     return doGetResultFiles(testDefRunId, MAXRERUN);
+  }
+  
+  private String doGetProductName(int nodeId, int tryCount) throws SCTMException {
+    try {
+      return this.target.getProductName(nodeId);
+    } catch (SCTMException e) {
+      if (tryCount > 0) {
+        String tryMore = ""; //$NON-NLS-1$
+        if (tryCount > 1)
+          tryMore = "Try once more."; //$NON-NLS-1$
+        LOGGER.log(Level.WARNING, MessageFormat.format("No product name available on SCTM. {0}", tryMore));
+        return doGetProductName(nodeId, --tryCount);
+      } else
+        throw e;
+    }
   }
   
   private SPNamedEntity[] doGetResultFiles(int testDefRunId, int tryCount) throws SCTMException {
@@ -202,7 +242,7 @@ public class SCTMReRunProxy implements ISCTMService {
   }
 
   @Override
-  public FilePath loadResultFile(int fileId, String fileName) {
-    return loadResultFile(fileId, fileName); // TODO: check if retry logic is needed
+  public void loadResultFile(int fileId, FilePath fileName) {
+    loadResultFile(fileId, fileName); // TODO: check if retry logic is needed
   }
 }
