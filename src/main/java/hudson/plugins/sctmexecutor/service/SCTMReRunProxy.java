@@ -243,6 +243,6 @@ public class SCTMReRunProxy implements ISCTMService {
 
   @Override
   public void loadResultFile(int fileId, FilePath fileName) {
-    loadResultFile(fileId, fileName); // TODO: check if retry logic is needed
+    this.target.loadResultFile(fileId, fileName); // TODO: check if retry logic is needed
   }
 }

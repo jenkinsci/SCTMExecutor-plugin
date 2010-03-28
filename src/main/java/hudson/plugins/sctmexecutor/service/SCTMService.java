@@ -73,7 +73,7 @@ public class SCTMService implements ISCTMService {
       adminService = new MainEntitiesServiceLocator().getsccentities(new URL(serviceURL+"/sccentities?wsdl"));
       planningService = new PlanningServiceServiceLocator().gettmplanning(new URL(serviceURL+"/tmplanning?wsdl"));
       performerService = new PerformerServiceServiceLocator().gettmperformer(new URL(serviceURL+"/tmperformer?wsdl"));
-      serviceExchangeURL = String.format("%sExchange?hid=%s&sid=%s&rfid=%s", serviceURL, "SilkPerformer");
+      serviceExchangeURL = String.format("%sExchange?hid=%s", serviceURL, "SilkPerformer");
       
       logon();
       this.execDefIdToNode = new HashMap<Integer, ExecutionNode>();
@@ -316,7 +316,7 @@ public class SCTMService implements ISCTMService {
   public void loadResultFile(int fileId, FilePath file) {
     InputStream responseBodyAsStream = null;
     try {
-      URL url = new URL(String.format(this.serviceExchangeURL, this.sessionId, fileId));
+      URL url = new URL(String.format("%s&sid=%s&rfid=%s", this.serviceExchangeURL, this.sessionId, fileId));
       
       HttpClient client = new HttpClient();
       HttpMethod get = new GetMethod(url.toExternalForm());

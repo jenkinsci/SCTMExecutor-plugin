@@ -4,6 +4,8 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
+import hudson.plugins.sctmexecutor.exceptions.SCTMException;
+import hudson.plugins.sctmexecutor.service.ISCTMService;
 import hudson.plugins.sctmexecutor.validators.EmptySingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.NumberCSVSingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.TestConnectionValidator;
@@ -15,6 +17,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 
@@ -31,9 +35,11 @@ import org.kohsuke.stapler.StaplerResponse;
  */
 @Extension
 public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
+  private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor");
   private String serviceURL;
   private String user;
   private String password;
+  private ISCTMService service;
 
   public SCTMExecutorDescriptor() {
     super(SCTMExecutor.class);
@@ -54,21 +60,22 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     boolean collectResults = formData.getBoolean("collectResults"); //$NON-NLS-1$
     boolean ignoreSetupCleanup = formData.getBoolean("ignoreSetupCleanup"); //$NON-NLS-1$
     String jobName = ""; //$NON-NLS-1$
-    JSONObject buildNumberUsageOption = (JSONObject)formData.get("buildNumberUsageOption");
+    JSONObject buildNumberUsageOption = (JSONObject) formData.get("buildNumberUsageOption");
     int optValue = buildNumberUsageOption.getInt("value"); // SCTMExecutor.OPT_NO_BUILD_NUMBER;
-    
+
     String version = null;
     switch (optValue) {
-      case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
-        jobName = buildNumberUsageOption.getString("jobName");      
-      case SCTMExecutor.OPT_USE_LATEST_SCTM_BUILDNUMBER:
-      case SCTMExecutor.OPT_USE_THIS_BUILD_NUMBER:
-        version = formData.getString("version");
+    case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
+      jobName = buildNumberUsageOption.getString("jobName");
+    case SCTMExecutor.OPT_USE_LATEST_SCTM_BUILDNUMBER:
+    case SCTMExecutor.OPT_USE_THIS_BUILD_NUMBER:
+      version = buildNumberUsageOption.getString("productVersion");
     }
-    
-    return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults, ignoreSetupCleanup, version);
+
+    return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults,
+        ignoreSetupCleanup, version);
   }
-  
+
   private int getOptionalIntValue(String value, int defaultValue) {
     try {
       return Integer.parseInt(value);
@@ -114,15 +121,19 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     this.password = password;
   }
 
-  public FormValidation doCheckServiceURL(StaplerRequest req, StaplerResponse rsp, 
-      @QueryParameter("value") final String value)
-      throws IOException, ServletException {
-    
+  void setService(ISCTMService service) {
+    this.service = service;
+  }
+
+  public FormValidation doCheckServiceURL(StaplerRequest req, StaplerResponse rsp,
+      @QueryParameter("value") final String value) throws IOException, ServletException {
+
     return new FormValidation.URLCheck() {
       @Override
       protected FormValidation check() throws IOException, ServletException {
-        if (value == null ||
-            (value != null && !value.matches("http(s)?://(((\\d{1,3}.){3}\\d{1,3})?|([\\p{Alnum}-_.])*)(:\\d{0,5})?(/([\\p{Alnum}-_.])*)?/services"))) { //$NON-NLS-1$
+        if (value == null
+            || (value != null && !value
+                .matches("http(s)?://(((\\d{1,3}.){3}\\d{1,3})?|([\\p{Alnum}-_.])*)(:\\d{0,5})?(/([\\p{Alnum}-_.])*)?/services"))) { //$NON-NLS-1$
           return FormValidation.error(Messages.getString("SCTMExecutorDescriptor.validate.msg.noValidURL")); //$NON-NLS-1$
         }
         try {
@@ -140,43 +151,59 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
       }
     }.check();
   }
-  
+
   public Collection<String> getAllJobs() {
     return Hudson.getInstance().getJobNames();
   }
 
-  public FormValidation doCheckUser(StaplerRequest req, StaplerResponse rsp, 
+  public Collection<String> getAllVersions(String execdefIds) {
+    try {
+      int execDefId = Utils.csvToIntList(execdefIds).get(0);
+      return this.service.getAllVersions(execDefId);
+    } catch (SCTMException e) {
+      LOGGER.warning("No versions available for product.");
+    }
+    return Collections.emptyList();
+  }
+
+  public FormValidation doCheckUser(StaplerRequest req, StaplerResponse rsp, @QueryParameter("value") final String value) {
+    return new EmptySingleFieldValidator().check(value);
+  }
+
+  public FormValidation doCheckPassword(StaplerRequest req, StaplerResponse rsp,
       @QueryParameter("value") final String value) {
     return new EmptySingleFieldValidator().check(value);
   }
 
-  public FormValidation doCheckPassword(StaplerRequest req, StaplerResponse rsp, 
-      @QueryParameter("value") final String value) {
-    return new EmptySingleFieldValidator().check(value);
-  }
-
-  public FormValidation doCheckExecDefIds(StaplerRequest req, StaplerResponse rsp, 
+  public FormValidation doCheckExecDefIds(StaplerRequest req, StaplerResponse rsp,
       @QueryParameter("value") final String value) {
     return new NumberCSVSingleFieldValidator().check(value);
   }
 
-  public FormValidation doCheckProjectId(StaplerRequest req, StaplerResponse rsp, 
-      @QueryParameter("value") final String value) {
-    return FormValidation.validateNonNegativeInteger(value);
-  }
-  
-  public FormValidation doCheckDelay(StaplerRequest rep, StaplerResponse rsp, 
+  public FormValidation doCheckProjectId(StaplerRequest req, StaplerResponse rsp,
       @QueryParameter("value") final String value) {
     return FormValidation.validateNonNegativeInteger(value);
   }
 
-  public FormValidation doTestConnection(StaplerRequest req, StaplerResponse rsp, 
-      @QueryParameter("serviceURL") final String serviceURL,
-      @QueryParameter("user") final String user,
+  public FormValidation doCheckDelay(StaplerRequest rep, StaplerResponse rsp,
+      @QueryParameter("value") final String value) {
+    return FormValidation.validateNonNegativeInteger(value);
+  }
+
+  public FormValidation doTestConnection(StaplerRequest req, StaplerResponse rsp,
+      @QueryParameter("serviceURL") final String serviceURL, @QueryParameter("user") final String user,
       @QueryParameter("password") final String password) throws IOException, ServletException {
     return new TestConnectionValidator().check(serviceURL, user, password);
   }
 
+//  public FormValidation doCheckVersion(StaplerRequest req, StaplerResponse rsp,
+//      @QueryParameter("version") final String version, @QueryParameter("execDefIds") final String execDefIds) {
+//    Collection<String> allVersions = getAllVersions(execDefIds);
+//    return allVersions.contains(version) ? FormValidation.ok() : FormValidation.warning(MessageFormat.format(
+//        "The given version ({0}) ist not available on SCTM. Choose one from the following: {1}", version, allVersions));
+//  }
+
+  @SuppressWarnings("unchecked")
   @Override
   public boolean isApplicable(Class<? extends AbstractProject> jobType) {
     return (FreeStyleProject.class.equals(jobType));
