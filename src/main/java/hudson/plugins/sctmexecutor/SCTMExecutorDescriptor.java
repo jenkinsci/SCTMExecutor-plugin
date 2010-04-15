@@ -4,8 +4,6 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
-import hudson.plugins.sctmexecutor.exceptions.SCTMException;
-import hudson.plugins.sctmexecutor.service.ISCTMService;
 import hudson.plugins.sctmexecutor.validators.EmptySingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.NumberCSVSingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.TestConnectionValidator;
@@ -39,7 +37,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   private String serviceURL;
   private String user;
   private String password;
-  private ISCTMService service;
+//  private transients ISCTMService service;
 
   public SCTMExecutorDescriptor() {
     super(SCTMExecutor.class);
@@ -121,10 +119,6 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     this.password = password;
   }
 
-  void setService(ISCTMService service) {
-    this.service = service;
-  }
-
   public FormValidation doCheckServiceURL(StaplerRequest req, StaplerResponse rsp,
       @QueryParameter("value") final String value) throws IOException, ServletException {
 
@@ -157,12 +151,12 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   }
 
   public Collection<String> getAllVersions(String execdefIds) {
-    try {
-      int execDefId = Utils.csvToIntList(execdefIds).get(0);
-      return this.service.getAllVersions(execDefId);
-    } catch (SCTMException e) {
-      LOGGER.warning("No versions available for product.");
-    }
+//    try {
+//      int execDefId = Utils.csvToIntList(execdefIds).get(0);
+//      return this.service.getAllVersions(execDefId);
+//    } catch (SCTMException e) {
+//      LOGGER.warning("No versions available for product.");
+//    }
     return Collections.emptyList();
   }
 

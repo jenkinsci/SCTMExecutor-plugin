@@ -1,19 +1,18 @@
 package hudson.plugins.sctmexecutor.publisher.xunit;
 
-import org.kohsuke.stapler.DataBoundConstructor;
-
 import hudson.Extension;
+
+import org.kohsuke.stapler.DataBoundConstructor;
 
 import com.thalesgroup.hudson.plugins.xunit.types.XUnitType;
 import com.thalesgroup.hudson.plugins.xunit.types.XUnitTypeDescriptor;
 
 public class SCTMUnitType extends XUnitType {
   private static final long serialVersionUID = 1L;
-
   
   @DataBoundConstructor
-  public SCTMUnitType(String pattern, String customXSL, boolean faildedIfNotNew, boolean deleteJUnitFiles) {
-    super(pattern, customXSL, faildedIfNotNew, deleteJUnitFiles);
+  public SCTMUnitType(String pattern, boolean faildedIfNotNew, boolean deleteJUnitFiles) {
+    super(pattern, faildedIfNotNew, deleteJUnitFiles);
   }
   
   @Override

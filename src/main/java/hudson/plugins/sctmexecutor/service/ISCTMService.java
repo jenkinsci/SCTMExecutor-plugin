@@ -1,8 +1,8 @@
 package hudson.plugins.sctmexecutor.service;
 
-import hudson.FilePath;
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 
+import java.io.InputStream;
 import java.util.Collection;
 
 import com.borland.sctm.ws.execution.entities.ExecutionHandle;
@@ -29,7 +29,7 @@ public interface ISCTMService {
   
   public SPNamedEntity[] getResultFiles(int testDefRunId) throws SCTMException;
   
-  public void loadResultFile(int fileId, FilePath file);
+  public InputStream loadResultFile(int fileId);
 
   public Collection<String> getAllVersions(int execDefId) throws SCTMException;
 

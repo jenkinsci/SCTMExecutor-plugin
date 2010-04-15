@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -49,9 +47,7 @@ public final class SCTMExecutor extends Builder {
   private String productVersion;
 
   private boolean succeed;
-  private ISCTMService service;
   private String product;
-  private List<Integer> execDefIdList;
 
   @DataBoundConstructor
   public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption,
@@ -65,19 +61,21 @@ public final class SCTMExecutor extends Builder {
     this.collectResults = collectResults;
     this.ignoreSetupCleanup = ignoreSetupCleanup;
     this.productVersion = productVersion;
-    this.execDefIdList = Utils.csvToIntList(this.execDefIds);
+  }
 
+  private ISCTMService createSctmService(final int projectId, List<Integer> execDefIdList) {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
+    ISCTMService service = null;
     try {
       service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor
           .getPassword(), projectId));
-      descriptor.setService(service);
-      this.product = this.service.getProductName(this.execDefIdList.get(0));
+      this.product = service.getProductName(execDefIdList.get(0));
     } catch (SCTMException e) {
       LOGGER.log(Level.SEVERE, MessageFormat.format(
           "Creating a remote connection to SCTM host ({0}) failed.", serviceURL), e); //$NON-NLS-1$
     }
+    return service;
   }
 
   @Override
@@ -126,19 +124,21 @@ public final class SCTMExecutor extends Builder {
       throws InterruptedException, IOException {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
+    List<Integer> execDefIdList = Utils.csvToIntList(this.execDefIds);
+    ISCTMService service = createSctmService(projectId, execDefIdList);
     try {
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
       FilePath rootDir = createResultDir(build.number, build, listener);
 
       Collection<Thread> executions = new ArrayList<Thread>(execDefIdList.size());
+      int buildNumber = -1;
+      buildNumber = getOrAddBuildNumber(build, listener, execDefIdList.get(0), service);
       for (Integer execDefId : execDefIdList) {
         ITestResultWriter resultWriter = null;
         if (collectResults)
 //          resultWriter = new StdXMLResultWriter(rootDir, serviceURL, String.valueOf(build.number),
 //              this.ignoreSetupCleanup);
           resultWriter = new SCTMResultWriter(rootDir, service, ignoreSetupCleanup);
-        int buildNumber = -1;
-        buildNumber = getOrAddBuildNumber(build, listener, service, execDefId);
         Runnable resultCollector = new ExecutionRunnable(service, execDefId, buildNumber, resultWriter, listener
             .getLogger());
 
@@ -163,7 +163,7 @@ public final class SCTMExecutor extends Builder {
     return continueOnError || succeed;
   }
 
-  private int getOrAddBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, ISCTMService service, int nodeId) throws SCTMException {
+  private int getOrAddBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, int nodeId, ISCTMService service) throws SCTMException {
     switch (this.buildNumberUsageOption) {
     case OPT_USE_THIS_BUILD_NUMBER:
     case OPT_USE_SPECIFICJOB_BUILDNUMBER:
@@ -202,7 +202,7 @@ public final class SCTMExecutor extends Builder {
     return -1;
   }
 
-  private static FilePath createResultDir(int currentBuildNo, AbstractBuild<?, ?> build, BuildListener listener)
+  private FilePath createResultDir(int currentBuildNo, AbstractBuild<?, ?> build, BuildListener listener)
       throws IOException, InterruptedException {
     FilePath rootDir = build.getWorkspace();
     if (rootDir == null) {
@@ -211,19 +211,21 @@ public final class SCTMExecutor extends Builder {
       throw new RuntimeException();
     }
 
+    final String buildNo = String.valueOf(currentBuildNo);
     rootDir = new FilePath(rootDir, "SCTMResults"); //$NON-NLS-1$
+    FilePath buildResults = new FilePath(rootDir, buildNo); //$NON-NLS-1$
     if (rootDir.exists()) {
-      final String buildNo = String.valueOf(currentBuildNo);
-      List<FilePath> list = rootDir.list();// new TestFileFilter(buildNo));
-      if (list.size() > 0) {
-        for (FilePath filePath : list) {
-          if (filePath.getName().matches("TEST-(\\p{Print}*)-" + buildNo + ".xml"))
-            return rootDir; // test results of the current run available, do not clean the results directory
-        }
-        rootDir.deleteContents(); // clean old results
+      boolean found = false;
+      for (FilePath file : rootDir.list()) {
+        if (!file.getName().equals(buildNo)) // delete results of old builds
+          file.deleteRecursive();
+        else
+          found = true;
       }
+      if (!found)
+        buildResults.mkdirs();
     } else
-      rootDir.mkdirs();
-    return rootDir;
+      buildResults.mkdirs();
+    return buildResults;
   }
 }

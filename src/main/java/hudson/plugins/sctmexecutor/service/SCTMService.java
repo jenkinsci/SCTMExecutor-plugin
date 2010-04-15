@@ -1,23 +1,16 @@
 package hudson.plugins.sctmexecutor.service;
 
-import hudson.FilePath;
 import hudson.plugins.sctmexecutor.Messages;
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,7 +20,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.io.IOUtils;
 
 import com.borland.sctm.ws.administration.MainEntities;
 import com.borland.sctm.ws.administration.MainEntitiesServiceLocator;
@@ -58,7 +50,6 @@ public class SCTMService implements ISCTMService {
   private volatile int logonRetryCount;
   private String user;
   private String pwd;
-  private Map<Integer, ExecutionNode> execDefIdToNode;
   private int projectId;
   private String serviceExchangeURL;
 
@@ -76,7 +67,6 @@ public class SCTMService implements ISCTMService {
       serviceExchangeURL = String.format("%sExchange?hid=%s", serviceURL, "SilkPerformer");
       
       logon();
-      this.execDefIdToNode = new HashMap<Integer, ExecutionNode>();
     } catch (MalformedURLException e) {
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
       throw new SCTMException(Messages.getString("SCTMService.err.serviceUrlWrong")); //$NON-NLS-1$
@@ -115,7 +105,8 @@ public class SCTMService implements ISCTMService {
 
   private boolean lostSessionExceptionThrown(RemoteException e) {
     String message = e.getMessage();
-    return message.contains("Not logged in.") ||
+    return message.contains("Not logged in.") || message.contains("Connection timed out") ||
+           (message.contains("InvalidIdException: sid") && message.contains("is invalid or expired")) || // InvalidIdException is not exposed as class in the wsdl
            (message.contains("InvalidSidException: sid") && message.contains("is invalid or expired")); // InvalidSidException is not exposed as class in the wsdl
   }
 
@@ -313,34 +304,22 @@ public class SCTMService implements ISCTMService {
   }
 
   @Override
-  public void loadResultFile(int fileId, FilePath file) {
-    InputStream responseBodyAsStream = null;
+  public InputStream loadResultFile(int fileId) {
     try {
       URL url = new URL(String.format("%s&sid=%s&rfid=%s", this.serviceExchangeURL, this.sessionId, fileId));
       
       HttpClient client = new HttpClient();
       HttpMethod get = new GetMethod(url.toExternalForm());
       client.executeMethod(get);
-      responseBodyAsStream = get.getResponseBodyAsStream();
-      
-      file.copyFrom(responseBodyAsStream);
+      return get.getResponseBodyAsStream();
     } catch (MalformedURLException e) {
       LOGGER.log(Level.SEVERE, "Cannot access to exchange service on SCTM. Check the service URL and if SCTM up and running.!", e);
     } catch (HttpException e) {
-      // handle lost session here
+      LOGGER.log(Level.FINE, "Cannot load result file from SCTM.", e);
     } catch (IOException e) {
       LOGGER.log(Level.SEVERE, "Cannot load result file from SCTM.", e);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } finally {
-      try {
-        if (responseBodyAsStream != null)
-          responseBodyAsStream.close();      
-      } catch (IOException e) {
-        LOGGER.log(Level.SEVERE, "Cannot close file stream.", e);
-      }
     }
+    return null; 
   }
 
   @Override

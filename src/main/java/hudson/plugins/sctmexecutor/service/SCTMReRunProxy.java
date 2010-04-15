@@ -1,8 +1,8 @@
 package hudson.plugins.sctmexecutor.service;
 
-import hudson.FilePath;
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -242,7 +242,7 @@ public class SCTMReRunProxy implements ISCTMService {
   }
 
   @Override
-  public void loadResultFile(int fileId, FilePath fileName) {
-    this.target.loadResultFile(fileId, fileName); // TODO: check if retry logic is needed
+  public InputStream loadResultFile(int fileId) {
+    return this.target.loadResultFile(fileId); // TODO: check if retry logic is needed
   }
 }
