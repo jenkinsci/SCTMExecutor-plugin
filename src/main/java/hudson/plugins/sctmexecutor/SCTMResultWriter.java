@@ -43,8 +43,8 @@ public class SCTMResultWriter implements ITestResultWriter {
         execDefFolder.mkdirs();
       
       if (!ignoreSetupCleanup) {
-        writeTestDefResult(result.getSetupTestDef(), execDefFolder, null);
-        writeTestDefResult(result.getCleanupTestDef(), execDefFolder, null);
+        writeTestDefResult(result.getSetupTestDef(), execDefFolder, result.getExecDefName());
+        writeTestDefResult(result.getCleanupTestDef(), execDefFolder, result.getExecDefName());
       }
       
       for (TestDefinitionResult testResult : result.getTestDefResult()) {
@@ -58,6 +58,8 @@ public class SCTMResultWriter implements ITestResultWriter {
   }
 
   private void writeTestDefResult(TestDefinitionResult testDefResult, FilePath execDefResultFolder, String execDefName) throws SCTMException {
+    if (testDefResult == null)
+      return;
     String name = testDefResult.getName();
     int testRunId = testDefResult.getTestRunId();
     
