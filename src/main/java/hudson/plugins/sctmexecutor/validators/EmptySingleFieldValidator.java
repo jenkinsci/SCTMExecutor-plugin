@@ -13,6 +13,6 @@ public class EmptySingleFieldValidator {
   }
   
   public FormValidation check(String value) {
-    return validate(value) ? FormValidation.ok() : FormValidation.error(Messages.getString("EmptySingleFieldValidator.msg.emptyProperty"));
+    return validate(value) ? FormValidation.ok() : FormValidation.error(Messages.getString("EmptySingleFieldValidator.msg.emptyProperty")); //$NON-NLS-1$
   }
 }

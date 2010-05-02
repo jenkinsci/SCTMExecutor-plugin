@@ -33,7 +33,7 @@ import org.kohsuke.stapler.StaplerResponse;
  */
 @Extension
 public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
-  private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor");
+  private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
   private String serviceURL;
   private String user;
   private String password;
@@ -58,16 +58,16 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     boolean collectResults = formData.getBoolean("collectResults"); //$NON-NLS-1$
     boolean ignoreSetupCleanup = formData.getBoolean("ignoreSetupCleanup"); //$NON-NLS-1$
     String jobName = ""; //$NON-NLS-1$
-    JSONObject buildNumberUsageOption = (JSONObject) formData.get("buildNumberUsageOption");
-    int optValue = buildNumberUsageOption.getInt("value"); // SCTMExecutor.OPT_NO_BUILD_NUMBER;
+    JSONObject buildNumberUsageOption = (JSONObject) formData.get("buildNumberUsageOption"); //$NON-NLS-1$
+    int optValue = buildNumberUsageOption.getInt("value"); // SCTMExecutor.OPT_NO_BUILD_NUMBER; //$NON-NLS-1$
 
     String version = null;
     switch (optValue) {
     case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
-      jobName = buildNumberUsageOption.getString("jobName");
+      jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$
     case SCTMExecutor.OPT_USE_LATEST_SCTM_BUILDNUMBER:
     case SCTMExecutor.OPT_USE_THIS_BUILD_NUMBER:
-      version = buildNumberUsageOption.getString("productVersion");
+      version = buildNumberUsageOption.getString("productVersion"); //$NON-NLS-1$
     }
 
     return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults,

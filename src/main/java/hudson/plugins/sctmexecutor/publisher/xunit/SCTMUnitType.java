@@ -17,7 +17,7 @@ public class SCTMUnitType extends XUnitType {
   
   @Override
   public String getXsl() {
-    return "sctm-to-junit.xsl";
+    return "sctm-to-junit.xsl"; //$NON-NLS-1$
   }
   
   @Override
@@ -34,12 +34,12 @@ public class SCTMUnitType extends XUnitType {
 
     @Override
     public String getDisplayName() {
-      return "Silk Central TestManager";
+      return Messages.getString("SCTMUnitType.xunit.pluginname"); //$NON-NLS-1$
     }
     
     @Override
     public String getId() {
-      return "sctmunit";
+      return "sctmunit"; //$NON-NLS-1$
     }
     
   }

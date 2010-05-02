@@ -175,11 +175,11 @@ public final class SCTMExecutor extends Builder {
       
       try {
         if (!service.buildNumberExists(product, productVersion, buildnumber)) {
-          listener.getLogger().println(MessageFormat.format("INFO: Add buidnumber ''{0}'' on SCTM.", buildnumber));
+          listener.getLogger().println(MessageFormat.format(Messages.getString("SCTMExecutor.msg.info.addBuildNumber"), buildnumber)); //$NON-NLS-1$
           if (!service.addBuildNumber(product, productVersion, buildnumber))
             buildnumber = -1;
         } else
-          listener.getLogger().println(MessageFormat.format("INFO: Buildnumber ''{0}'' already exists on SCTM.", buildnumber));
+          listener.getLogger().println(MessageFormat.format(Messages.getString("SCTMExecutor.msg.info.buildnumberExists"), buildnumber)); //$NON-NLS-1$
       } catch (IllegalArgumentException e) {
         listener.error(e.getMessage());
         buildnumber = -1;

@@ -34,7 +34,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format("Fetch result for execution definition {0} failed. {1}", handle.getExecDefId(), tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.resultLost"), handle.getExecDefId(), tryMore)); //$NON-NLS-1$
         return doGetExecutionResult(handle, --tryCount);
       } else
         throw e;        
@@ -54,7 +54,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format("Fetch state of execution for execution definition {0} failed. {1}", handle.getExecDefId(), tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.stateLost"), handle.getExecDefId(), tryMore)); //$NON-NLS-1$
         return doIsFinished(handle, --tryCount);
       } else
         throw e;
@@ -74,7 +74,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format("Start execution for execution definition {0} failed. {1}", executionId, tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.startExecDefFailed"), executionId, tryMore)); //$NON-NLS-1$
         return doStart(executionId, --tryCount);
       } else
         throw e;
@@ -94,7 +94,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format("Start execution for execution definition {0} failed. {1}", executionId, tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.startExecDefFailed"), executionId, tryMore)); //$NON-NLS-1$
         return doStart(executionId, buildNumber, --tryCount);
       } else
         throw e;
@@ -114,7 +114,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format("BuildNumber ''{0}'' cannot be added. {1}", buildNumber, tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.addBuildnoFailed"), buildNumber, tryMore)); //$NON-NLS-1$
         return doAddBuildNumber(product, version, buildNumber, --tryCount);
       } else
         throw e;
@@ -134,7 +134,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format("BuildNumber ''{0}'' cannot be added. {1}", buildNumber, tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.addBuildnoFailed"), buildNumber, tryMore)); //$NON-NLS-1$
         return doBuildNumberExists(product, version, buildNumber, --tryCount);
       } else
         throw e;
@@ -154,7 +154,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format("No BuildNumber available on SCTM. {0}", tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.noBuildNoOnSCTM"), tryMore, productName, version)); //$NON-NLS-1$
         return doGetLatestSCTMBuildnumber(productName, version, --tryCount);
       } else
         throw e;
@@ -174,7 +174,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format("No BuildNumber available on SCTM. {0}", tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.noBuildNoOnSCTM"), tryMore)); //$NON-NLS-1$
         return doGetExecDefinitionName(nodeId, --tryCount);
       } else
         throw e;
@@ -194,7 +194,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format("No version available on SCTM. {0}", tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.noVersionOnSCTM"), tryMore, nodeId)); //$NON-NLS-1$
         return doGetAllVersions(nodeId, --tryCount);
       } else
         throw e;
@@ -219,7 +219,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format("No product name available on SCTM. {0}", tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.noProductOnSCTM"), tryMore, nodeId)); //$NON-NLS-1$
         return doGetProductName(nodeId, --tryCount);
       } else
         throw e;
@@ -234,7 +234,7 @@ public class SCTMReRunProxy implements ISCTMService {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format("Cannot load any result file from SCTM. {0}", tryMore));
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.loadResultFailed"), tryMore)); //$NON-NLS-1$
         return doGetResultFiles(testDefRunId, --tryCount);
       } else
         throw e;

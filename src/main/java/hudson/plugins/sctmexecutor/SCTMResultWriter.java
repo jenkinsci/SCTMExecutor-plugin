@@ -24,7 +24,7 @@ import com.borland.sctm.ws.execution.entities.TestDefinitionResult;
 import com.borland.sctm.ws.performer.SPNamedEntity;
 
 public class SCTMResultWriter implements ITestResultWriter {
-  private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor");
+  private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
   
   private ISCTMService service;
   private FilePath rootDir;
@@ -51,7 +51,7 @@ public class SCTMResultWriter implements ITestResultWriter {
         writeTestDefResult(testResult, execDefFolder, result.getExecDefName());
       }
     } catch (Exception e) {
-      String msg = MessageFormat.format("Cannot create result folder for Execution definition ''{0}'' ({1}). ", result.getExecDefName(), result.getExecDefId());
+      String msg = MessageFormat.format(Messages.getString("SCTMResultWriter.err.createResultFolderExecDef"), result.getExecDefName(), result.getExecDefId()); //$NON-NLS-1$
       LOGGER.log(Level.FINE, msg, e);
       throw new SCTMException(msg);
     }
@@ -73,13 +73,13 @@ public class SCTMResultWriter implements ITestResultWriter {
         FilePath file = new FilePath(testDefResFolder, resultFileName);
         int miId = resultFile.getMiId();
         result = this.service.loadResultFile(miId);
-        if (resultFileName.matches("output.xml"))
+        if (resultFileName.matches("output.xml")) //$NON-NLS-1$
           completeAndWriteResultFile(result, file, execDefName, testDefResult.getName());
         else
           file.copyFrom(result);
       }
     } catch (Exception e) {
-      String msg = MessageFormat.format("Cannot create result folder for Test definition ''{0}'' ({1}). ", testDefResult.getName(), testDefResult.getTestDefId());
+      String msg = MessageFormat.format(Messages.getString("SCTMResultWriter.err.err.createResultFolderTestDef"), testDefResult.getName(), testDefResult.getTestDefId()); //$NON-NLS-1$
       LOGGER.log(Level.FINE, msg, e);
       throw new SCTMException(msg);
     } finally {
@@ -98,12 +98,12 @@ public class SCTMResultWriter implements ITestResultWriter {
     Element rootElement = document.getRootElement();
     Element oldRootElement = (Element) rootElement.clone();
     rootElement.removeContent();
-    rootElement.setAttribute("TestItem", execDefName);
-    rootElement.removeAttribute("ExtId");
+    rootElement.setAttribute("TestItem", execDefName); //$NON-NLS-1$
+    rootElement.removeAttribute("ExtId"); //$NON-NLS-1$
     completeElement(oldRootElement, rootElement);
-    Element testDefElement = new Element("TestSuite");
+    Element testDefElement = new Element("TestSuite"); //$NON-NLS-1$
     completeElement(oldRootElement, testDefElement);
-    testDefElement.setAttribute("TestItem", testDefName);
+    testDefElement.setAttribute("TestItem", testDefName); //$NON-NLS-1$
     testDefElement.addContent(oldRootElement);
     rootElement.addContent(testDefElement);
     
@@ -119,9 +119,9 @@ public class SCTMResultWriter implements ITestResultWriter {
   }
 
   private void completeElement(Element oldRootElement, Element testDefElement) {
-    addElement(testDefElement, "RunCount", oldRootElement.getChildText("RunCount"));
-    addElement(testDefElement, "Timer", oldRootElement.getChildText("Timer"));
-    addElement(testDefElement, "WasSuccess", oldRootElement.getChildText("WasSuccess"));
+    addElement(testDefElement, "RunCount", oldRootElement.getChildText("RunCount")); //$NON-NLS-1$ //$NON-NLS-2$
+    addElement(testDefElement, "Timer", oldRootElement.getChildText("Timer")); //$NON-NLS-1$ //$NON-NLS-2$
+    addElement(testDefElement, "WasSuccess", oldRootElement.getChildText("WasSuccess")); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   private void addElement(Element testDefElement, String elementName, String value) {
