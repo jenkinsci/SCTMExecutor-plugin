@@ -59,15 +59,19 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     boolean ignoreSetupCleanup = formData.getBoolean("ignoreSetupCleanup"); //$NON-NLS-1$
     String jobName = ""; //$NON-NLS-1$
     JSONObject buildNumberUsageOption = (JSONObject) formData.get("buildNumberUsageOption"); //$NON-NLS-1$
-    int optValue = buildNumberUsageOption.getInt("value"); // SCTMExecutor.OPT_NO_BUILD_NUMBER; //$NON-NLS-1$
+    int optValue;
+    if (buildNumberUsageOption == null)
+      optValue = SCTMExecutor.OPT_NO_BUILD_NUMBER;
+    else
+      optValue = buildNumberUsageOption.getInt("value");//$NON-NLS-1$
 
     String version = null;
     switch (optValue) {
-    case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
-      jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$
-    case SCTMExecutor.OPT_USE_LATEST_SCTM_BUILDNUMBER:
-    case SCTMExecutor.OPT_USE_THIS_BUILD_NUMBER:
-      version = buildNumberUsageOption.getString("productVersion"); //$NON-NLS-1$
+      case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
+        jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$
+      case SCTMExecutor.OPT_USE_LATEST_SCTM_BUILDNUMBER:
+      case SCTMExecutor.OPT_USE_THIS_BUILD_NUMBER:
+        version = buildNumberUsageOption.getString("productVersion"); //$NON-NLS-1$
     }
 
     return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults,
