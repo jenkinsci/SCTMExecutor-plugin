@@ -3,17 +3,14 @@ package hudson.plugins.sctmexecutor.validators;
 import hudson.plugins.sctmexecutor.Messages;
 import hudson.util.FormValidation;
 
-import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
-
-import javax.servlet.ServletException;
 
 import com.borland.sctm.ws.logon.SystemService;
 import com.borland.sctm.ws.logon.SystemServiceServiceLocator;
 
 public class TestConnectionValidator {
-  public FormValidation check(String serviceURL, String user, String password) throws IOException, ServletException {
+  public FormValidation check(String serviceURL, String user, String password) {
     try {
       SystemService systemService = new SystemServiceServiceLocator().getsccsystem(new URL(serviceURL + "/sccsystem?wsdl")); //$NON-NLS-1$
       try {

@@ -37,6 +37,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
     this.ignoreSetupCleanup = ignoreSetupCleanup;
   }
 
+  @Override
   public void write(ExecutionResult result) {
     int done = 3;
     String resultFileName = MessageFormat.format("TEST-{0}-{1}.xml",result.getExecDefName(), buildNumber); //$NON-NLS-1$

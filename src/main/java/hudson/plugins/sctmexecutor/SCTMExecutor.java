@@ -2,9 +2,9 @@ package hudson.plugins.sctmexecutor;
 
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
 import hudson.model.Hudson;
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 import hudson.plugins.sctmexecutor.service.ISCTMService;
@@ -118,7 +118,7 @@ public final class SCTMExecutor extends Builder {
   public String getProductVersion() {
     return productVersion;
   }
-
+  
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
       throws InterruptedException, IOException {
@@ -192,6 +192,7 @@ public final class SCTMExecutor extends Builder {
     }
   }
 
+  @SuppressWarnings("rawtypes")
   private int getBuildNumberFromUpStreamProject(String projectName, Set<AbstractProject> upstreamProjects,
       BuildListener listener) {
     for (AbstractProject<?, ?> project : upstreamProjects) {

@@ -33,6 +33,7 @@ import org.kohsuke.stapler.StaplerResponse;
  */
 @Extension
 public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
+  @SuppressWarnings("unused")
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
   private String serviceURL;
   private String user;
@@ -190,7 +191,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
 
   public FormValidation doTestConnection(StaplerRequest req, StaplerResponse rsp,
       @QueryParameter("serviceURL") final String serviceURL, @QueryParameter("user") final String user,
-      @QueryParameter("password") final String password) throws IOException, ServletException {
+      @QueryParameter("password") final String password) {
     return new TestConnectionValidator().check(serviceURL, user, password);
   }
 
@@ -201,7 +202,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
 //        "The given version ({0}) ist not available on SCTM. Choose one from the following: {1}", version, allVersions));
 //  }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   @Override
   public boolean isApplicable(Class<? extends AbstractProject> jobType) {
     return (FreeStyleProject.class.equals(jobType));

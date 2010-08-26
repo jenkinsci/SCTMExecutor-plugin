@@ -124,10 +124,10 @@ public class TestResultCollector {
     return serviceMock;
   }
 
-  private ITestResultWriter createTestResultWriterMock(ExecutionResult result) throws SCTMException {
-    ITestResultWriter resultWriterMock = EasyMock.createStrictMock(ITestResultWriter.class);
-    resultWriterMock.write(result);
-    return resultWriterMock;
-  }
+//  private ITestResultWriter createTestResultWriterMock(ExecutionResult result) throws SCTMException {
+//    ITestResultWriter resultWriterMock = EasyMock.createStrictMock(ITestResultWriter.class);
+//    resultWriterMock.write(result);
+//    return resultWriterMock;
+//  }
 
 }
