@@ -229,10 +229,12 @@ public class SCTMService implements ISCTMService {
   public boolean buildNumberExists(String productName, String version, int buildNumber) throws SCTMException {
     try {
       String[] builds = adminService.getBuilds(sessionId, productName, version);
-      String value = String.valueOf(buildNumber);
-      for (String build : builds) {
-        if (value.equals(build))
-          return true;
+      if (builds != null) {
+        String value = String.valueOf(buildNumber);
+        for (String build : builds) {
+          if (value.equals(build))
+            return true;
+        }
       }
       return false;
     } catch (RemoteException e) {
