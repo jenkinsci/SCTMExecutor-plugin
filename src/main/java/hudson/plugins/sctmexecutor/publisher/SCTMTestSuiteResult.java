@@ -7,7 +7,9 @@ import hudson.tasks.test.TestResult;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -19,43 +21,79 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   private TestObject parent;
   private String name;
   private Collection<TestResult> childResults;
-  private Map<String, SCTMTestResult> configurationResults;
 
-  private int passCount = 0;
-  private int skipCount = 0;
-  private int failCount = 0;
+  public SCTMTestSuiteResult(String name, AbstractBuild<?, ?> owner) {
+    this(name, owner, new ArrayList<TestResult>());
+  }
 
-  public SCTMTestSuiteResult(String name, AbstractBuild<?, ?> owner, Map<String, SCTMTestResult> configurationResults,
-      Collection<TestResult> children) {
-    this.owner = owner;
+  SCTMTestSuiteResult(String name, AbstractBuild<?, ?> owner, Collection<TestResult> children) {
     this.name = name;
-    this.configurationResults = configurationResults;
+    this.owner = owner;
     this.childResults = children;
     for (TestResult result : children) {
       result.setParent(this);
-      passCount += result.getPassCount();
-      skipCount += result.getSkipCount();
-      failCount += result.getFailCount();
     }
+  }
+
+  private int getXCount(SCTMTestResult.TestState state) {
+    int count = 0;
+    for (SCTMTestResult result : this.getConfigurationResult().values()) {
+      switch (state) {
+        case PASSED:
+          count += result.getPassedCount();
+          break;
+        case SKIPPED:
+          count += result.getSkippedCount();
+          break;
+        case FAILED:
+          count += result.getFailedCount();
+          break;
+      }
+    }
+    return count;
+  }
+  
+  Map<String, SCTMTestResult> getConfigurationResult() {
+    Map<String, SCTMTestResult> suiteResult = new HashMap<String, SCTMTestResult>();
+    for (TestResult result : this.childResults) {
+      Map<String, SCTMTestResult> configurationResult = null;
+      if (result instanceof SCTMTestCaseResult) {
+        configurationResult = ((SCTMTestCaseResult)result).getConfigurationResult();
+      } else if (result instanceof SCTMTestSuiteResult) {
+        configurationResult = ((SCTMTestSuiteResult)result).getConfigurationResult();
+      }
+      if (configurationResult != null) {
+        for (Entry<String, SCTMTestResult> childResult : configurationResult.entrySet()) {
+          SCTMTestResult testResult = suiteResult.get(childResult.getKey());
+          if (testResult == null)
+            suiteResult.put(childResult.getKey(), new SCTMTestResult(childResult.getValue()));
+          else {
+            SCTMTestResult childTestResult = childResult.getValue();
+            testResult.addSubTestCounts(childTestResult.getPassedCount(), childTestResult.getSkippedCount(), childTestResult.getFailedCount());
+          }
+        }
+      }
+    }
+    return suiteResult;
   }
 
   @Override
   public int getPassCount() {
-    return passCount;
+    return getXCount(SCTMTestResult.TestState.PASSED);
   }
 
   @Override
   public int getSkipCount() {
-    return skipCount;
+    return getXCount(SCTMTestResult.TestState.SKIPPED);
   }
 
   @Override
   public int getFailCount() {
-    return failCount;
+    return getXCount(SCTMTestResult.TestState.FAILED);
   }
 
   public Collection<String> getConfigurations() {
-    return configurationResults.keySet();
+    return getConfigurationResult().keySet();
   }
 
   @Override
@@ -64,7 +102,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   }
 
   public SCTMTestResult getTestResultForConfiguration(String configuration) {
-    return this.configurationResults.get(configuration);
+    return this.getConfigurationResult().get(configuration);
   }
 
   @Override
@@ -95,6 +133,24 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   @Override
   public String getName() {
     return name;
+  }
+  
+  public SCTMTestSuiteResult getChildSuiteByName(String name) {
+    for (TestResult child : this.childResults) {
+      if ((child instanceof SCTMTestSuiteResult) &&
+          name.equals(child.getName()))
+        return (SCTMTestSuiteResult)child;
+    }
+    return null;
+  }
+
+  public SCTMTestCaseResult getChildTestByName(String name) {
+    for (TestResult child : this.childResults) {
+      if ((child instanceof SCTMTestCaseResult) &&
+          name.equals(child.getName()))
+        return (SCTMTestCaseResult)child;
+    }
+    return null;
   }
 
   @Override
@@ -131,5 +187,9 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
         testResult.getDynamic(token, req, rsp);
     }
     return super.getDynamic(token, req, rsp);
+  }
+
+  public void addChild(TestResult test) {
+    childResults.add(test);
   }
 }

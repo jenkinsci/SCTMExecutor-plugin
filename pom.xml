@@ -66,6 +66,7 @@
     	<groupId>org.jvnet.hudson.plugins</groupId>
     	<artifactId>xunit</artifactId>
     	<version>1.7</version>
+    	<scope>provided</scope>
     </dependency>
   </dependencies>
   <developers>

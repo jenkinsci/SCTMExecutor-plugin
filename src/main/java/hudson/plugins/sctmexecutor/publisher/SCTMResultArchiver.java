@@ -32,15 +32,15 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
       throws InterruptedException, IOException {
     
-    build.getActions().add(new SCTMResultAction(build, new SCTMTestSuiteResult("root", build, createConfigurationResult(), createSuiteResults(build))));
+    build.getActions().add(new SCTMResultAction(build, new SCTMTestSuiteResult("root", build, createSuiteResults(build))));
     return true;
   }
 
   private Collection<TestResult> createSuiteResults(AbstractBuild<?, ?> owner) {
     Collection<TestResult> result = new ArrayList<TestResult>();
-    result.add(new SCTMTestSuiteResult("Suite1", owner, createConfigurationResult(), createChildResults(owner)));
-    result.add(new SCTMTestSuiteResult("Suite2", owner, createConfigurationResult(), createChildResults(owner)));
-    result.add(new SCTMTestSuiteResult("Suite3", owner, createConfigurationResult(), createChildResults(owner)));
+    result.add(new SCTMTestSuiteResult("Suite1", owner, createChildResults(owner)));
+    result.add(new SCTMTestSuiteResult("Suite2", owner, createChildResults(owner)));
+    result.add(new SCTMTestSuiteResult("Suite3", owner, createChildResults(owner)));
     return result;
   }
 

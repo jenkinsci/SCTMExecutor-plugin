@@ -1,0 +1,125 @@
+package hudson.plugins.sctmexecutor.publisher;
+
+import hudson.FilePath;
+import hudson.model.Result;
+import hudson.model.AbstractBuild;
+import hudson.plugins.sctmexecutor.publisher.handler.OutputXMLParserHandler;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+
+public class SCTMResultParser {
+
+  private final class SuiteNameParserHandler extends DefaultHandler {
+    private String name;
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+      if ("TestSuite".equals(qName))
+        name = attributes.getValue("TestItem");
+    }
+    
+    public String getName() {
+      return name;
+    }
+  }
+
+  private String rootPath;
+  private Map<String, SCTMTestSuiteResult> resultMap;
+
+  public SCTMResultParser(String rootPath) {
+    this.rootPath = rootPath;
+    this.resultMap = new HashMap<String, SCTMTestSuiteResult>();
+  }
+  
+  public Result createResult(AbstractBuild<?, ?> owner) {
+    List<FilePath> resultFilePath = findAllResultFiles(new FilePath(new File(this.rootPath)));
+    
+    for (FilePath filePath : resultFilePath) {
+      String testSuiteName = getSuiteName(filePath);
+      SCTMTestSuiteResult suiteResult = null;
+      if (resultMap.containsKey(testSuiteName))
+        suiteResult = this.resultMap.get(testSuiteName);
+      else {
+        suiteResult = new SCTMTestSuiteResult(testSuiteName, owner);
+        this.resultMap.put(testSuiteName, suiteResult);
+      }
+      parseResultFile(filePath, suiteResult);
+    }
+    
+    return null;
+  }
+
+  private void parseResultFile(FilePath filePath, SCTMTestSuiteResult suiteResult) {
+    try {
+      SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+      OutputXMLParserHandler handler = new OutputXMLParserHandler(suiteResult, filePath.getName());
+      parser.parse(filePath.read(), handler);
+    } catch (ParserConfigurationException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (SAXException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  private String getSuiteName(FilePath filePath) {
+    try {
+      SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+      SuiteNameParserHandler handler = new SuiteNameParserHandler();
+      parser.parse(filePath.read(), handler);
+      return handler.getName();
+    } catch (ParserConfigurationException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (SAXException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    return null;
+  }
+
+  private List<FilePath> findAllResultFiles(FilePath rootPath) {
+    List<FilePath> resultFilePath = new ArrayList<FilePath>();
+    try {
+      if (rootPath.isDirectory()) { // just to be sure we are in a directory
+        List<FilePath> list = rootPath.list(new RegexFileFilter("output.xml"));
+        resultFilePath.addAll(list);
+        list = rootPath.listDirectories();
+        for (FilePath dirPath : list) {
+          List<FilePath> childrens = findAllResultFiles(dirPath);
+          resultFilePath.addAll(childrens);
+        }
+      }
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    return resultFilePath;
+  }
+}

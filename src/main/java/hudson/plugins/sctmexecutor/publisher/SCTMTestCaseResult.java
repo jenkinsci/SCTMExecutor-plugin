@@ -6,6 +6,7 @@ import hudson.tasks.test.TestResult;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public final class SCTMTestCaseResult extends TestResult implements Comparable<SCTMTestCaseResult> {
@@ -15,34 +16,52 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
   private TestObject parent;
   private String name;
   private Map<String, SCTMTestResult> configurationResults;
-  private int passCount;
-  private int skipCount;
-  private int failCount;
   
-  SCTMTestCaseResult(String name, AbstractBuild<?,?> owner, Map<String, SCTMTestResult> configurationResults) {
+  public SCTMTestCaseResult(String name, AbstractBuild<?,?> owner) {
+    this(name, owner, new HashMap<String, SCTMTestResult>());
+  }
+  
+  SCTMTestCaseResult(String name, AbstractBuild<?,?> owner, Map<String, SCTMTestResult> configurationResults) {    
     this.owner = owner;
     this.name = name;
     this.configurationResults = configurationResults;
-    for (SCTMTestResult result : configurationResults.values()) {
-      passCount += result.getPassedCount();
-      skipCount += result.getSkippedCount();
-      failCount += result.getFailedCount();
-    }
   }
   
+  private int getXCount(SCTMTestResult.TestState state) {
+    int count = 0;
+    for (SCTMTestResult result : this.configurationResults.values()) {
+      switch (state) {
+        case PASSED:
+          count += result.getPassedCount();
+          break;
+        case SKIPPED:
+          count += result.getSkippedCount();
+          break;
+        case FAILED:
+          count += result.getFailedCount();
+          break;
+      }
+    }
+    return count;
+  }
+
+  Map<String, SCTMTestResult> getConfigurationResult() {
+    return this.configurationResults;
+  }
+
   @Override
   public int getPassCount() {
-    return passCount;
+    return getXCount(SCTMTestResult.TestState.PASSED);
   }
-  
+
   @Override
   public int getSkipCount() {
-    return skipCount;
+    return getXCount(SCTMTestResult.TestState.SKIPPED);
   }
-  
+
   @Override
   public int getFailCount() {
-    return failCount;
+    return getXCount(SCTMTestResult.TestState.FAILED);
   }
   
   @Override
@@ -96,5 +115,9 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
         return ((SCTMTestSuiteResult)parent).compareTo((SCTMTestSuiteResult)o.getParent());
     }
     return -1;
+  }
+
+  public void addConfigurationResult(String configuration, SCTMTestResult testResult) {
+    this.configurationResults.put(configuration, testResult);
   }
 }
