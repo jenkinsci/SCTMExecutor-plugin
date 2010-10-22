@@ -17,7 +17,7 @@ public class SCTMTestType extends TestType {
   
   @Override
   public TestTypeDescriptor<SCTMTestType> getDescriptor() {
-    return new SCTMTestType.DescriptorImpl();
+    return null; //new SCTMTestType.DescriptorImpl();
   }
 
   @Extension

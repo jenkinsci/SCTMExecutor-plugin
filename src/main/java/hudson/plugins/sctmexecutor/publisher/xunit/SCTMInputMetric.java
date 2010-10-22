@@ -1,9 +1,9 @@
 package hudson.plugins.sctmexecutor.publisher.xunit;
 
 import com.thalesgroup.dtkit.junit.model.JUnitModel;
-import com.thalesgroup.dtkit.metrics.api.InputMetricXSL;
-import com.thalesgroup.dtkit.metrics.api.InputType;
-import com.thalesgroup.dtkit.metrics.api.OutputMetric;
+import com.thalesgroup.dtkit.metrics.model.InputMetricXSL;
+import com.thalesgroup.dtkit.metrics.model.InputType;
+import com.thalesgroup.dtkit.metrics.model.OutputMetric;
 
 public final class SCTMInputMetric extends InputMetricXSL {
   private static final long serialVersionUID = -38720636581583520L;
@@ -11,11 +11,6 @@ public final class SCTMInputMetric extends InputMetricXSL {
   @Override
   public String getXslName() {
     return "sctm-to-junit.xsl"; //$NON-NLS-1$
-  }
-
-  @Override
-  public String getInputXsd() {
-    return null;
   }
 
   @Override
