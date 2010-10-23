@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="c:\Temp\lib\NTF\tests\MicroFocus.SilkTest.Ntf.Test.Integration.dll" tests="54" failure="0" error="0" skipped="0" time="596.727">
+  54
+  0
+  0
+  596.727
+  true
+  
+    596.711
+    true
+    
+      596.711
+      true
+      
+        596.711
+        true
+        
+          596.711
+          true
+          
+            596.711
+            true
+            
+              16.265
+              true
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.BrowserTest.BrowserBaseStateTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.BrowserTest" time="15.265"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.BrowserTest.OperationNotSupportedTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.BrowserTest" time="0.547"/>
+            
+            
+              76.185
+              true
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest.AttachAndDetachTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest" time="5.359"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest.CheckForCorrectTestObjectTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest" time="5.531"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest.DecryptReturnsCharactersThatAreNotAllowedInXmlTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest" time="5.64"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest.DecryptTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest" time="5.406"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest.DynamicFindAndInvokeTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest" time="5.734"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest.EncryptDecryptTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest" time="5.328"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest.ExistsTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest" time="5.531"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest.FindWithTypeParameterTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest" time="5.515"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest.FindWithWrongTypeParameterTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest" time="5.5"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest.RemoteAgentTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest" time="20.468"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest.TestDesktop" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest" time="0.687"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest.TestWindow" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.DesktopTest" time="5.484"/>
+            
+            
+              30.905
+              true
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.IndexOutOfRangeExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="13.484"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.InvalidBitmapRegionExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.078"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.InvalidColumnNumberExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.969"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.InvalidFileNameExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.125"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.InvalidItemIdentifierExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.5"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.InvalidItemPathExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.875"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.InvalidLineNumberExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.281"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.InvalidObjectHandleExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.437"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.InvalidOptionNameExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.094"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.InvalidParameterExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.703"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.InvalidPropertyNameExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.125"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.InvalidXPathExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.125"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.LaunchApplicationFailedExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="5.14"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.ObjectNotEnabledExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="1.734"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.ObjectNotFoundExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="5.109"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.PositionOutOfRangeExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.719"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest.PropertyReadOnlyExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.ExceptionTest" time="0.109"/>
+            
+            
+              6.125
+              true
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.FindExtensionsTest.Test" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.FindExtensionsTest" time="6.125"/>
+            
+            
+              433.358
+              true
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest.DateChooser" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest" time="17.374"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest.FlexEventExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest" time="376.032"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest.InvalidFlexSDKVersionExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest" time="12.14"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest.ListParameterTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest" time="7.203"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest.ScrollBar" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest" time="7.515"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest.StyleNotSetExceptionTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest" time="7.468"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest.TriggerEvent" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.FlexTest" time="5.312"/>
+            
+            
+              14.39
+              true
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.ColorTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="7.109"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.DateTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="1.344"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.GenericFindAllTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="0.125"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.ItemIdentifierTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="0.719"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.ItemPathTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="1.016"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.ListOfItemIdentifierTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="0.625"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.ModifierKeysTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="0.734"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.OptionsTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="0.047"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.RangeTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="0.641"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.TechDomainOptionsTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="0.047"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.TextPositionTextRangeTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="0.719"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.TimeTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="0.641"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest.TreeTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.SwtTest" time="0.562"/>
+            
+            
+              19.484
+              true
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.WpfTest.DoubleTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.WpfTest" time="18.39"/>
+              <testcase name="MicroFocus.SilkTest.Ntf.Test.Integration.WpfTest.PointAndRectTest" classname="c:\Temp\lib\NTF\tests\MicroFocus_SilkTest_Ntf_Test_Integration_dll.MicroFocus.SilkTest.Ntf.Test.Integration.WpfTest" time="0.078"/>
+            
+          
+        
+      
+    
+  
+</testsuite>

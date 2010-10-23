@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.borland.testutils._TestSuiteAllTest" tests="13" failure="" error="0" skipped="0" time="116.906">
+  13
+  116906.0
+  true
+  
+    8
+    116102.0
+    true
+    calculator.test.CalcTest
+    <testcase name="testProperties" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_CalcTest" time="109.762"/>
+    <testcase name="testAdd" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_CalcTest" time="0.258"/>
+    <testcase name="testDifferentAdd" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_CalcTest" time="0.452"/>
+    <testcase name="testMinus" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_CalcTest" time="0.185"/>
+    <testcase name="testMultiply" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_CalcTest" time="0.238"/>
+    <testcase name="testDivide" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_CalcTest" time="0.169"/>
+    <testcase name="testMultiAdds" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_CalcTest" time="4.863"/>
+    <testcase name="wrongTest" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_CalcTest" time="0.175"/>
+  
+  
+    5
+    804.0
+    true
+    calculator.test.ParameterizedCalcTest
+    <testcase name="testAdd[0]" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_ParameterizedCalcTest" time="0.16"/>
+    <testcase name="testAdd[1]" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_ParameterizedCalcTest" time="0.154"/>
+    <testcase name="testAdd[2]" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_ParameterizedCalcTest" time="0.148"/>
+    <testcase name="testAdd[3]" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_ParameterizedCalcTest" time="0.19"/>
+    <testcase name="testAdd[4]" classname="com_borland_testutils__TestSuiteAllTest.calculator_test_ParameterizedCalcTest" time="0.152"/>
+  
+</testsuite>

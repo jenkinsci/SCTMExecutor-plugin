@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="4Test.pln" tests="205" time="43">
+  205
+  43000.0
+  true
+  
+    64
+    14000.0
+    true
+    
+      9
+      4000.0
+      true
+      <testcase name="T_GetDir" classname="4Test_pln.SYSFunctions_pln.TestSYSDirFunctions_t" time="3">
+<property/>
+</testcase>
+      <testcase name="T_SetDir" classname="4Test_pln.SYSFunctions_pln.TestSYSDirFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetDirContents" classname="4Test_pln.SYSFunctions_pln.TestSYSDirFunctions_t" time="1">
+<property/>
+</testcase>
+      <testcase name="T_MakeRemoveDir" classname="4Test_pln.SYSFunctions_pln.TestSYSDirFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_DirExists" classname="4Test_pln.SYSFunctions_pln.TestSYSDirFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetDrive" classname="4Test_pln.SYSFunctions_pln.TestSYSDirFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_SetDrive" classname="4Test_pln.SYSFunctions_pln.TestSYSDirFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetExecutableDir" classname="4Test_pln.SYSFunctions_pln.TestSYSDirFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_MoveFile" classname="4Test_pln.SYSFunctions_pln.TestSYSDirFunctions_t" time="0">
+<property/>
+</testcase>
+    
+    
+      27
+      4000.0
+      true
+      <testcase name="T_OpenCloseRemoveFile" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="1">
+<property/>
+</testcase>
+      <testcase name="T_ReadFile" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_WriteFile" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_UpdateFile" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_AppendFile" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_WriteReadValue" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_SetPointer" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_WriteASCII" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_OpenFile_DenyNone" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="1">
+<property/>
+</testcase>
+      <testcase name="T_OpenFile_DenyWrite" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_OpenFile_Exclusive" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_FileExists" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_FileListReadWrite" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetFileContents" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_CopyFile" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_MoveFile" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_CreateOpenCloseRemoveIniFile" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_SetGetIniValue" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="1">
+<property/>
+</testcase>
+      <testcase name="T_SetGetIniValue_ASCII" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="Error_CloseTwice" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="Error_FileNotExists" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="Error_WriteInReadOnly" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="Error_SetPointer" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="Error_CloseIniTwice" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_ListReadAndWrite" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_WriteReadListWithInvalidCharSet" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_WriteReadListWithUNICODE" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_t" time="1">
+<property/>
+</testcase>
+    
+    
+      12
+      1000.0
+      true
+      <testcase name="T_Execute" classname="4Test_pln.SYSFunctions_pln.TestSYSFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetAgentVersion" classname="4Test_pln.SYSFunctions_pln.TestSYSFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetFreeDiscSpace" classname="4Test_pln.SYSFunctions_pln.TestSYSFunctions_t" time="1">
+<property/>
+</testcase>
+      <testcase name="T_SetAndGetEnv" classname="4Test_pln.SYSFunctions_pln.TestSYSFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_SetAndGetRegistryValue" classname="4Test_pln.SYSFunctions_pln.TestSYSFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetFreeMemory" classname="4Test_pln.SYSFunctions_pln.TestSYSFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetFreeDiskSpace" classname="4Test_pln.SYSFunctions_pln.TestSYSFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetName" classname="4Test_pln.SYSFunctions_pln.TestSYSFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetVersion" classname="4Test_pln.SYSFunctions_pln.TestSYSFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetLocale" classname="4Test_pln.SYSFunctions_pln.TestSYSFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetExecutableDir" classname="4Test_pln.SYSFunctions_pln.TestSYSFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetRegistryKeyNames" classname="4Test_pln.SYSFunctions_pln.TestSYSFunctions_t" time="0">
+<property/>
+</testcase>
+    
+    
+      11
+      2000.0
+      true
+      <testcase name="T_WriteUnicode" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_Unicode_t" time="1">
+<property/>
+</testcase>
+      <testcase name="T_WriteUTF8" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_WriteUnicodeFileName" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_CopyFile" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_FileListReadWrite_Unicode" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_FileListReadWrite_UTF8" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_SetGetIniValue_Unicode" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_SetGetIniValue_UTF8" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_SetGetIniValue_UnicodeFileName" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+      <testcase name="Error_WriteAscii" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_Unicode_t" time="1">
+<property/>
+</testcase>
+      <testcase name="Error_SetIniValue_ASCII" classname="4Test_pln.SYSFunctions_pln.TestSYSFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    
+    
+      5
+      3000.0
+      true
+      <testcase name="T_CompareBinary" classname="4Test_pln.SYSFunctions_pln.TestSYSCompareFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_CompareBitmap" classname="4Test_pln.SYSFunctions_pln.TestSYSCompareFunctions_t" time="2">
+<property/>
+</testcase>
+      <testcase name="T_CompareText" classname="4Test_pln.SYSFunctions_pln.TestSYSCompareFunctions_t" time="0">
+<property/>
+</testcase>
+      <testcase name="T_GetBitmapCRC" classname="4Test_pln.SYSFunctions_pln.TestSYSCompareFunctions_t" time="1">
+<property/>
+</testcase>
+      <testcase name="T_VerifyText" classname="4Test_pln.SYSFunctions_pln.TestSYSCompareFunctions_t" time="0">
+<property/>
+</testcase>
+    
+  
+  
+    5
+    1000.0
+    true
+    <testcase name="T_SetGuiType" classname="4Test_pln.TestApplStateCtrlFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_GetAppState" classname="4Test_pln.TestApplStateCtrlFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_GetAppStateList" classname="4Test_pln.TestApplStateCtrlFunctions_t" time="1">
+<property/>
+</testcase>
+    <testcase name="T_SetBrowserType" classname="4Test_pln.TestApplStateCtrlFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetDefaultBrowserType" classname="4Test_pln.TestApplStateCtrlFunctions_t" time="0">
+<property/>
+</testcase>
+  
+  
+    3
+    0.0
+    true
+    <testcase name="???1" classname="4Test_pln.TestApplStateCtrlFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_GetAppState" classname="4Test_pln.TestApplStateCtrlFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_GetAppStateList" classname="4Test_pln.TestApplStateCtrlFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+  
+  
+    4
+    0.0
+    true
+    <testcase name="T_ArrayFind" classname="4Test_pln.TestArrayFunctions_String_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ArrayResize" classname="4Test_pln.TestArrayFunctions_String_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ArraySize" classname="4Test_pln.TestArrayFunctions_String_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ArraySort" classname="4Test_pln.TestArrayFunctions_String_t" time="0">
+<property/>
+</testcase>
+  
+  
+    4
+    1000.0
+    true
+    <testcase name="T_ArrayFind" classname="4Test_pln.TestArrayFunctions_Int_t" time="1">
+<property/>
+</testcase>
+    <testcase name="T_ArrayResize" classname="4Test_pln.TestArrayFunctions_Int_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ArraySize" classname="4Test_pln.TestArrayFunctions_Int_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ArraySort" classname="4Test_pln.TestArrayFunctions_Int_t" time="0">
+<property/>
+</testcase>
+  
+  
+    4
+    0.0
+    true
+    <testcase name="T_ArrayFind" classname="4Test_pln.TestArrayFunctions_Chinese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ArrayResize" classname="4Test_pln.TestArrayFunctions_Chinese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ArraySize" classname="4Test_pln.TestArrayFunctions_Chinese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ArraySort" classname="4Test_pln.TestArrayFunctions_Chinese_t" time="0">
+<property/>
+</testcase>
+  
+  
+    5
+    1000.0
+    true
+    <testcase name="T_ExceptCalls" classname="4Test_pln.TestExceptFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ExceptClear" classname="4Test_pln.TestExceptFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ExceptData" classname="4Test_pln.TestExceptFunctions_t" time="1">
+<property/>
+</testcase>
+    <testcase name="T_ExceptNum" classname="4Test_pln.TestExceptFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ExceptPrint" classname="4Test_pln.TestExceptFunctions_t" time="0">
+<property/>
+</testcase>
+  
+  
+    5
+    0.0
+    true
+    <testcase name="T_ExceptCalls" classname="4Test_pln.TestExceptFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ExceptClear" classname="4Test_pln.TestExceptFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ExceptData" classname="4Test_pln.TestExceptFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ExceptNum" classname="4Test_pln.TestExceptFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ExceptPrint" classname="4Test_pln.TestExceptFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+  
+  
+    15
+    2000.0
+    true
+    <testcase name="T_OpenCloseFile" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ReadFile" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_WriteFile" classname="4Test_pln.TestFileFunctions_t" time="1">
+<property/>
+</testcase>
+    <testcase name="T_UpdateFile" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_AppendFile" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_WriteReadValue" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetPointer" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_WriteASCII" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_OpenFile_DenyNone" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_OpenFile_DenyWrite" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_OpenFile_Exclusive" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Error_CloseTwice" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Error_FileNotExists" classname="4Test_pln.TestFileFunctions_t" time="1">
+<property/>
+</testcase>
+    <testcase name="Error_WriteInReadOnly" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Error_SetPointer" classname="4Test_pln.TestFileFunctions_t" time="0">
+<property/>
+</testcase>
+  
+  
+    3
+    0.0
+    true
+    <testcase name="T_WriteUnicode" classname="4Test_pln.TestFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_WriteUTF8" classname="4Test_pln.TestFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Error_WriteAscii" classname="4Test_pln.TestFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+  
+  
+    4
+    0.0
+    true
+    <testcase name="T_OpenCloseIniFile" classname="4Test_pln.TestIniFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetGetIniValue" classname="4Test_pln.TestIniFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetGetIniValue_ASCII" classname="4Test_pln.TestIniFileFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Error_CloseTwice" classname="4Test_pln.TestIniFileFunctions_t" time="0">
+<property/>
+</testcase>
+  
+  
+    3
+    1000.0
+    true
+    <testcase name="T_SetGetIniValue_Unicode" classname="4Test_pln.TestIniFileFunctions_Unicode_t" time="1">
+<property/>
+</testcase>
+    <testcase name="T_SetGetIniValue_UTF8" classname="4Test_pln.TestIniFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Error_SetIniValue_ASCII" classname="4Test_pln.TestIniFileFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+  
+  
+    1
+    0.0
+    true
+    <testcase name="TestAgentOptions" classname="4Test_pln.optionsTest_t" time="0">
+<property/>
+</testcase>
+  
+  
+    15
+    1000.0
+    true
+    <testcase name="Test_Number" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_Integer" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_Real" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_Double" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_Float" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_Boolean" classname="4Test_pln.TestXpProtocol_t" time="1">
+<property/>
+</testcase>
+    <testcase name="Test_Date" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_Time" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_DateTime" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_Char" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_String" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_ShortInteger" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_LongInteger" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_List" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Test_Anytype" classname="4Test_pln.TestXpProtocol_t" time="0">
+<property/>
+</testcase>
+  
+  
+    4
+    0.0
+    true
+    <testcase name="T_ResOpenCloseList" classname="4Test_pln.TestResFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ResPrintList" classname="4Test_pln.TestResFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ResExport" classname="4Test_pln.TestResFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ResExportOnClose" classname="4Test_pln.TestResFunctions_t" time="0">
+<property/>
+</testcase>
+  
+  
+    4
+    0.0
+    true
+    <testcase name="T_ResOpenCloseList" classname="4Test_pln.TestResFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ResPrintList" classname="4Test_pln.TestResFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ResExport" classname="4Test_pln.TestResFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ResExportOnClose" classname="4Test_pln.TestResFunctions_Unicode_t" time="0">
+<property/>
+</testcase>
+  
+  
+    9
+    1000.0
+    true
+    <testcase name="T_IsInSet" classname="4Test_pln.TestSetFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_AddMemberToSet" classname="4Test_pln.TestSetFunctions_t" time="1">
+<property/>
+</testcase>
+    <testcase name="T_SetComplement" classname="4Test_pln.TestSetFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetCount" classname="4Test_pln.TestSetFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetDomain" classname="4Test_pln.TestSetFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetExclude" classname="4Test_pln.TestSetFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetIntersection" classname="4Test_pln.TestSetFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_RemoveMemberOfSet" classname="4Test_pln.TestSetFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetUnion" classname="4Test_pln.TestSetFunctions_t" time="0">
+<property/>
+</testcase>
+  
+  
+    9
+    1000.0
+    true
+    <testcase name="T_IsInSet" classname="4Test_pln.TestSetFunctions_arabic_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_AddMemberToSet" classname="4Test_pln.TestSetFunctions_arabic_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetComplement" classname="4Test_pln.TestSetFunctions_arabic_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetCount" classname="4Test_pln.TestSetFunctions_arabic_t" time="1">
+<property/>
+</testcase>
+    <testcase name="T_SetDomain" classname="4Test_pln.TestSetFunctions_arabic_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetExclude" classname="4Test_pln.TestSetFunctions_arabic_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetIntersection" classname="4Test_pln.TestSetFunctions_arabic_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_RemoveMemberOfSet" classname="4Test_pln.TestSetFunctions_arabic_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetUnion" classname="4Test_pln.TestSetFunctions_arabic_t" time="0">
+<property/>
+</testcase>
+  
+  
+    9
+    1000.0
+    true
+    <testcase name="T_IsInSet" classname="4Test_pln.TestSetFunctions_chinese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_AddMemberToSet" classname="4Test_pln.TestSetFunctions_chinese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetComplement" classname="4Test_pln.TestSetFunctions_chinese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetCount" classname="4Test_pln.TestSetFunctions_chinese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetDomain" classname="4Test_pln.TestSetFunctions_chinese_t" time="1">
+<property/>
+</testcase>
+    <testcase name="T_SetExclude" classname="4Test_pln.TestSetFunctions_chinese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetIntersection" classname="4Test_pln.TestSetFunctions_chinese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_RemoveMemberOfSet" classname="4Test_pln.TestSetFunctions_chinese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetUnion" classname="4Test_pln.TestSetFunctions_chinese_t" time="0">
+<property/>
+</testcase>
+  
+  
+    9
+    1000.0
+    true
+    <testcase name="T_IsInSet" classname="4Test_pln.TestSetFunctions_japanese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_AddMemberToSet" classname="4Test_pln.TestSetFunctions_japanese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetComplement" classname="4Test_pln.TestSetFunctions_japanese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetCount" classname="4Test_pln.TestSetFunctions_japanese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetDomain" classname="4Test_pln.TestSetFunctions_japanese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetExclude" classname="4Test_pln.TestSetFunctions_japanese_t" time="1">
+<property/>
+</testcase>
+    <testcase name="T_SetIntersection" classname="4Test_pln.TestSetFunctions_japanese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_RemoveMemberOfSet" classname="4Test_pln.TestSetFunctions_japanese_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetUnion" classname="4Test_pln.TestSetFunctions_japanese_t" time="0">
+<property/>
+</testcase>
+  
+  
+    9
+    1000.0
+    true
+    <testcase name="T_IsInSet" classname="4Test_pln.TestSetFunctions_korean_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_AddMemberToSet" classname="4Test_pln.TestSetFunctions_korean_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetComplement" classname="4Test_pln.TestSetFunctions_korean_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetCount" classname="4Test_pln.TestSetFunctions_korean_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetDomain" classname="4Test_pln.TestSetFunctions_korean_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetExclude" classname="4Test_pln.TestSetFunctions_korean_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetIntersection" classname="4Test_pln.TestSetFunctions_korean_t" time="1">
+<property/>
+</testcase>
+    <testcase name="T_RemoveMemberOfSet" classname="4Test_pln.TestSetFunctions_korean_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_SetUnion" classname="4Test_pln.TestSetFunctions_korean_t" time="0">
+<property/>
+</testcase>
+  
+  
+    5
+    2000.0
+    true
+    <testcase name="T_CompareBinary" classname="4Test_pln.TestSYSCompareFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_CompareBitmap" classname="4Test_pln.TestSYSCompareFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_CompareText" classname="4Test_pln.TestSYSCompareFunctions_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_GetBitmapCRC" classname="4Test_pln.TestSYSCompareFunctions_t" time="2">
+<property/>
+</testcase>
+    <testcase name="T_VerifyText" classname="4Test_pln.TestSYSCompareFunctions_t" time="0">
+<property/>
+</testcase>
+  
+  
+    11
+    14000.0
+    true
+    <testcase name="T_CreateDestroyTimer" classname="4Test_pln.TestTimer_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_StartStopTimer" classname="4Test_pln.TestTimer_t" time="3">
+<property/>
+</testcase>
+    <testcase name="T_PauseResumeTimer" classname="4Test_pln.TestTimer_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_StateOfTimer" classname="4Test_pln.TestTimer_t" time="0">
+<property/>
+</testcase>
+    <testcase name="T_ElapsedTime" classname="4Test_pln.TestTimer_t" time="10">
+<property/>
+</testcase>
+    <testcase name="Error_DestroyWithoutCreate" classname="4Test_pln.TestTimer_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Error_StopWithoutStart" classname="4Test_pln.TestTimer_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Error_StartTimerTwice" classname="4Test_pln.TestTimer_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Error_StopTimerTwice" classname="4Test_pln.TestTimer_t" time="1">
+<property/>
+</testcase>
+    <testcase name="Error_StartStopWithoutCreate" classname="4Test_pln.TestTimer_t" time="0">
+<property/>
+</testcase>
+    <testcase name="Error_ResumeWithoutPause" classname="4Test_pln.TestTimer_t" time="0">
+<property/>
+</testcase>
+  
+  
+    1
+    1000.0
+    true
+    <testcase name="T_TestNonAsciiString" classname="4Test_pln.TestNonAsciiString_t" time="1">
+<property/>
+</testcase>
+  
+</testsuite>

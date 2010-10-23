@@ -10,11 +10,6 @@
       <xsl:attribute name="tests">
         <xsl:value-of select="/TestSuite/RunCount"/>
       </xsl:attribute>
-      <xsl:attribute name="failure">
-        <xsl:value-of select="/TestSuite/ErrorCount"/>
-      </xsl:attribute>
-      <xsl:attribute name="error">0</xsl:attribute>
-      <xsl:attribute name="skipped">0</xsl:attribute>
       <xsl:attribute name="time">      
         <xsl:choose>
           <xsl:when test="contains(/TestSuite/@TestItem, 'dll')">
@@ -25,7 +20,7 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
-      <xsl:apply-templates/>
+      <xsl:apply-templates select="//Test"/>
     </xsl:element>
   </xsl:template>
   
@@ -42,7 +37,7 @@
           <xsl:value-of select="concat(translate(./@TestItem, '.', '_'), '.')"/>
         </xsl:for-each>
       </xsl:variable>
-      <!-- xsl:attribute name="classname" select="replace(substring($classname,0,string-length($classname)),'(\p{Graph}*)(\\|/)','')"/-->
+      
       <xsl:attribute name="classname">
         <xsl:value-of select="substring($classname,0,string-length($classname))"/>
       </xsl:attribute>

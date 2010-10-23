@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/silkroot/xsl/output.xsl"?>
+<TestSuite TestItem="Sap.pln" ExtId="Sap.pln">
+  <RunCount>3</RunCount>
+  <ErrorCount>2</ErrorCount>
+  <Timer>60000.0</Timer>
+  <WasSuccess>false</WasSuccess>
+
+  <TestSuite TestItem="SapOkCodeField.t" ExtId="Sap.pln/SapOkCodeField.t">
+    <RunCount>1</RunCount>
+    <ErrorCount>2</ErrorCount>
+    <Timer>21000.0</Timer>
+    <WasSuccess>false</WasSuccess>
+    <Test TestItem="SapOkCodeField" ExtId="Sap.pln/SapOkCodeField.t/SapOkCodeField">
+      <RunCount>1</RunCount>
+
+      <ErrorCount>2</ErrorCount>
+      <Timer>21000.0</Timer>
+      <WasSuccess>false</WasSuccess>
+      <Incident>
+        <Message>Log Error: Could not find object '//SapTree[@automationId='shellcont/shell']'.</Message>
+        <Severity>Error</Severity>
+
+        <Detail>
+          <TestName>Info</TestName>
+          <Info>Print: Occurred in Find&#xD;
+Print: Called from SapOkCodeField at SapOkCodeField.t(6)</Info>
+        </Detail>
+      </Incident>
+      <Incident>
+        <Message>Log Error: &lt;&lt;&lt;&lt; Click to View Bitmap of Error cmd /C" start C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\SCC_ExecServer_19124_19125\PerfProjects\PerfPrj_45_1270803017013\SapOkCodeField105147.bmp"</Message>
+
+        <Severity>Error</Severity>
+        <Detail>
+          <TestName>Info</TestName>
+          <Info>Print: Occurred in CaptureDesktop at ..\common.inc(150)&#xD;
+Print: Called from TestCaseExit at frame.inc(16)&#xD;
+Print: Called from SapOkCodeField at SapOkCodeField.t(6)</Info>
+        </Detail>
+
+      </Incident>
+    </Test>
+  </TestSuite>
+  <TestSuite TestItem="window.t" ExtId="Sap.pln/window.t">
+    <RunCount>1</RunCount>
+    <Timer>17000.0</Timer>
+    <WasSuccess>true</WasSuccess>
+
+    <Test TestItem="SapWindowTest" ExtId="Sap.pln/window.t/SapWindowTest">
+      <RunCount>1</RunCount>
+      <Timer>17000.0</Timer>
+      <WasSuccess>true</WasSuccess>
+    </Test>
+  </TestSuite>
+  <TestSuite TestItem="table.t" ExtId="Sap.pln/table.t">
+
+    <RunCount>1</RunCount>
+    <ErrorCount>2</ErrorCount>
+    <Timer>22000.0</Timer>
+    <WasSuccess>false</WasSuccess>
+    <Test TestItem="TableTest" ExtId="Sap.pln/table.t/TableTest">
+      <RunCount>1</RunCount>
+
+      <ErrorCount>2</ErrorCount>
+      <Timer>22000.0</Timer>
+      <WasSuccess>false</WasSuccess>
+      <Incident>
+        <Message>Log Error: Could not find object '//SapTree[@automationId='shellcont/shell']'.</Message>
+        <Severity>Error</Severity>
+
+        <Detail>
+          <TestName>Info</TestName>
+          <Info>Print: Occurred in Find&#xD;
+Print: Called from Table at frame.inc(64)&#xD;
+Print: Called from DefaultTestCaseEnter at defaults.inc(540)&#xD;
+Print: Called from TestCaseEnter at frame.inc(8)&#xD;
+Print: Called from TableTest at table.t(3)</Info>
+        </Detail>
+
+      </Incident>
+      <Incident>
+        <Message>Log Error: &lt;&lt;&lt;&lt; Click to View Bitmap of Error cmd /C" start C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\SCC_ExecServer_19124_19125\PerfProjects\PerfPrj_45_1270803017013\TableTest105225.bmp"</Message>
+        <Severity>Error</Severity>
+        <Detail>
+          <TestName>Info</TestName>
+
+          <Info>Print: Occurred in CaptureDesktop at ..\common.inc(150)&#xD;
+Print: Called from TestCaseExit at frame.inc(16)&#xD;
+Print: Called from TableTest at table.t(3)</Info>
+        </Detail>
+      </Incident>
+    </Test>
+  </TestSuite>
+</TestSuite>
+
