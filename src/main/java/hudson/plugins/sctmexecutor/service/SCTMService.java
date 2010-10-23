@@ -1,6 +1,5 @@
 package hudson.plugins.sctmexecutor.service;
 
-import hudson.plugins.sctmexecutor.Messages;
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 
 import java.io.IOException;

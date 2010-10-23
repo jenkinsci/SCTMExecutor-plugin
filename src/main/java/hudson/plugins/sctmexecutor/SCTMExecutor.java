@@ -63,18 +63,13 @@ public final class SCTMExecutor extends Builder {
     this.productVersion = productVersion;
   }
 
-  private ISCTMService createSctmService(final int projectId, List<Integer> execDefIdList) {
+  private ISCTMService createSctmService(final int projectId, List<Integer> execDefIdList) throws SCTMException {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
     ISCTMService service = null;
-    try {
-      service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor
-          .getPassword(), projectId));
-      this.product = service.getProductName(execDefIdList.get(0));
-    } catch (SCTMException e) {
-      LOGGER.log(Level.SEVERE, MessageFormat.format(
-          "Creating a remote connection to SCTM host ({0}) failed.", serviceURL), e); //$NON-NLS-1$
-    }
+    service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor
+        .getPassword(), projectId));
+    this.product = service.getProductName(execDefIdList.get(0));
     return service;
   }
 
@@ -125,8 +120,8 @@ public final class SCTMExecutor extends Builder {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
     List<Integer> execDefIdList = Utils.csvToIntList(this.execDefIds);
-    ISCTMService service = createSctmService(projectId, execDefIdList);
     try {
+      ISCTMService service = createSctmService(projectId, execDefIdList);
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
       FilePath rootDir = createResultDir(build.number, build, listener);
 
