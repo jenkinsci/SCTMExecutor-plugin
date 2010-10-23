@@ -74,10 +74,6 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
     return owner;
   }
   
-  public void setParent(SCTMTestSuiteResult parent) {
-    this.parent = parent;
-  }
-
   @Override
   public TestObject getParent() {
     return parent;
@@ -89,23 +85,24 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
   }
 
   @Override
+  public String getName() {
+    return name;
+  }
+  
+  @Override
+  public float getDuration() {
+    float duration = 0f;
+    for (SCTMTestResult result : this.configurationResults.values()) {
+      duration += result.getDuration();
+    }
+    return duration;
+  }
+
+  @Override
   public TestResult findCorrespondingResult(String id) {
     if (id.equals(safe(getName())))
       return this;
     return null;
-  }
-  
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  public Collection<String> getConfigurations() {
-    return this.configurationResults.keySet();
-  }
-  
-  public SCTMTestResult getTestResultForConfiguration(String config) {
-    return this.configurationResults.get(config);
   }
 
   @Override
@@ -116,8 +113,25 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
     }
     return -1;
   }
+  
+  @Override
+  public String toString() {
+    return String.format("TestCase [%s]", this.name);
+  }
+
+  public void setParent(SCTMTestSuiteResult parent) {
+    this.parent = parent;
+  }
 
   public void addConfigurationResult(String configuration, SCTMTestResult testResult) {
     this.configurationResults.put(configuration, testResult);
+  }
+
+  public SCTMTestResult getTestResultForConfiguration(String config) {
+    return this.configurationResults.get(config);
+  }
+
+  public Collection<String> getConfigurations() {
+    return this.configurationResults.keySet();
   }
 }

@@ -1,11 +1,10 @@
 package hudson.plugins.sctmexecutor.publisher;
 
 import hudson.FilePath;
-import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.plugins.sctmexecutor.publisher.handler.OutputXMLParserHandler;
+import hudson.tasks.test.TestResult;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,36 +16,21 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
 
 public class SCTMResultParser {
-
-  private final class SuiteNameParserHandler extends DefaultHandler {
-    private String name;
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-      if ("TestSuite".equals(qName))
-        name = attributes.getValue("TestItem");
-    }
-    
-    public String getName() {
-      return name;
-    }
-  }
-
-  private String rootPath;
+  private FilePath rootPath;
   private Map<String, SCTMTestSuiteResult> resultMap;
+  private final SCTMTestSuiteResult rootSuite;
 
-  public SCTMResultParser(String rootPath) {
-    this.rootPath = rootPath;
+  public SCTMResultParser(FilePath resultRootPath, SCTMTestSuiteResult rootSuite) {
+    this.rootPath = resultRootPath;
+    this.rootSuite = rootSuite;
     this.resultMap = new HashMap<String, SCTMTestSuiteResult>();
   }
   
-  public Result createResult(AbstractBuild<?, ?> owner) {
-    List<FilePath> resultFilePath = findAllResultFiles(new FilePath(new File(this.rootPath)));
+  public TestResult createResult(AbstractBuild<?, ?> owner) {
+    List<FilePath> resultFilePath = findAllResultFiles(rootPath);
     
     for (FilePath filePath : resultFilePath) {
       String testSuiteName = getSuiteName(filePath);
@@ -55,6 +39,7 @@ public class SCTMResultParser {
         suiteResult = this.resultMap.get(testSuiteName);
       else {
         suiteResult = new SCTMTestSuiteResult(testSuiteName, owner);
+        this.rootSuite.addChild(suiteResult);
         this.resultMap.put(testSuiteName, suiteResult);
       }
       parseResultFile(filePath, suiteResult);
@@ -66,7 +51,7 @@ public class SCTMResultParser {
   private void parseResultFile(FilePath filePath, SCTMTestSuiteResult suiteResult) {
     try {
       SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-      OutputXMLParserHandler handler = new OutputXMLParserHandler(suiteResult, filePath.getName());
+      OutputXMLParserHandler handler = new OutputXMLParserHandler(suiteResult, filePath.getParent().getParent().getName());
       parser.parse(filePath.read(), handler);
     } catch (ParserConfigurationException e) {
       // TODO Auto-generated catch block
@@ -81,23 +66,7 @@ public class SCTMResultParser {
   }
 
   private String getSuiteName(FilePath filePath) {
-    try {
-      SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-      SuiteNameParserHandler handler = new SuiteNameParserHandler();
-      parser.parse(filePath.read(), handler);
-      return handler.getName();
-    } catch (ParserConfigurationException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (SAXException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    
-    return null;
+   return filePath.getParent().getName();
   }
 
   private List<FilePath> findAllResultFiles(FilePath rootPath) {

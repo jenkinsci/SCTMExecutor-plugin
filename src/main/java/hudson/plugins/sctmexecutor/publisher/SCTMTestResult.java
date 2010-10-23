@@ -1,5 +1,6 @@
 package hudson.plugins.sctmexecutor.publisher;
 
+
 public class SCTMTestResult {
   public static enum TestState {
     FAILED("failed"),
@@ -23,14 +24,27 @@ public class SCTMTestResult {
     }
   }
   
+  private TestState state = TestState.NOTESTS;
   private int failedCount;
   private int skippedCount;
-
   private int passedCount;
-  private TestState state;
+  private float duration;
   
-  SCTMTestResult(TestState state) {
+  private SCTMTestResult(int failCount, int skipCount, int passCount, float duration) {
+    super();
+    this.failedCount = failCount;
+    this.skippedCount = skipCount;
+    this.passedCount = passCount;
+    this.duration = duration;
+    
+    calculateState();
+  }
+  
+  public SCTMTestResult(TestState state, float duration) {
+    super();
     this.state = state;
+    this.duration = duration;
+    
     switch (state) {
       case PASSED:
         passedCount = 1;
@@ -42,18 +56,9 @@ public class SCTMTestResult {
         failedCount = 1;
     }
   }
-  
-  SCTMTestResult(int failCount, int skipCount, int passCount) {
-    super();
-    this.failedCount = failCount;
-    this.skippedCount = skipCount;
-    this.passedCount = passCount;
-    
-    calculateState();
-  }
 
   public SCTMTestResult(SCTMTestResult value) {
-    this(value.getFailedCount(), value.getSkippedCount(), value.getPassedCount());
+    this(value.getFailedCount(), value.getSkippedCount(), value.getPassedCount(), value.getDuration());
   }
 
   private void calculateState() {
@@ -74,6 +79,15 @@ public class SCTMTestResult {
     calculateState();
   }
 
+  void addSubDuration(float duration) {
+    this.duration += duration;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("%s in %fms", this.state, this.duration);
+  }
+
   public int getFailedCount() {
     return failedCount;
   }
@@ -88,5 +102,9 @@ public class SCTMTestResult {
 
   public TestState getState() {
     return state;
+  }
+
+  public float getDuration() {
+    return duration;
   }
 }

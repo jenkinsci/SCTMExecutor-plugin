@@ -9,7 +9,9 @@ import com.thalesgroup.dtkit.metrics.hudson.api.type.TestType;
 
 public class SCTMTestType extends TestType {
   private static final long serialVersionUID = 1L;
-  private static final SCTMTestType.DescriptorImpl DESCRIPTOR = new SCTMTestType.DescriptorImpl();
+  
+  @Extension
+  public static final SCTMTestType.DescriptorImpl DESCRIPTOR = new SCTMTestType.DescriptorImpl();
   
   @DataBoundConstructor
   public SCTMTestType(String pattern, boolean faildedIfNotNew, boolean deleteJUnitFiles) {
@@ -21,7 +23,6 @@ public class SCTMTestType extends TestType {
     return DESCRIPTOR;
   }
 
-  @Extension
   public static class DescriptorImpl extends TestTypeDescriptor<SCTMTestType> {
 
     public DescriptorImpl() {
