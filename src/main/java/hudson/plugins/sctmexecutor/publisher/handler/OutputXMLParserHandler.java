@@ -1,12 +1,12 @@
 package hudson.plugins.sctmexecutor.publisher.handler;
 
-import java.util.Stack;
-
 import hudson.plugins.sctmexecutor.publisher.SCTMTestCaseResult;
 import hudson.plugins.sctmexecutor.publisher.SCTMTestResult;
 import hudson.plugins.sctmexecutor.publisher.SCTMTestResult.TestState;
 import hudson.plugins.sctmexecutor.publisher.SCTMTestSuiteResult;
 import hudson.tasks.test.TestResult;
+
+import java.util.Stack;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -19,6 +19,7 @@ public class OutputXMLParserHandler extends DefaultHandler {
   private Stack<String> cdataStack;
   private final String configuration;
   private boolean pushCData;
+  private int incident;
   
   public OutputXMLParserHandler(SCTMTestSuiteResult suiteResult, String configuration) {
     this.rootSuiteResult = suiteResult;
@@ -59,11 +60,13 @@ public class OutputXMLParserHandler extends DefaultHandler {
       
       this.resultStack.push(child);
     } else if ("RunCount".equals(qName)) {
-    } else if ("Timer".equals(qName)) {
+    } else if ("Timer".equals(qName) ||
+        "WasSuccess".equals(qName) ||
+        "Message".equals(qName)||
+        "Info".equals(qName)) {
       pushCData = true;
-    } else if ("WasSuccess".equals(qName)) {
-      pushCData = true;
-    }
+    } else if ("Incident".equals(qName))
+      incident++;
   }
   
   @Override
@@ -81,14 +84,28 @@ public class OutputXMLParserHandler extends DefaultHandler {
       this.resultStack.pop();
     } else if ("Test".equals(qName)) {
       SCTMTestCaseResult result = (SCTMTestCaseResult) this.resultStack.pop();
+      StringBuilder errormsg = new StringBuilder();
+      for (int i=0; i<incident; i++) {
+        String tmp = popStringFromCDataStack();
+        errormsg.append("<b>Error: </b><br/>");
+        errormsg.append(popStringFromCDataStack());
+        errormsg.append("<b>Stacktrace: </b><br/>");
+        errormsg.append(tmp);
+      }
       boolean success = popBooleanFromCDataStack();
       float duration = popFloatFromCDataStack();
       
-      result.addConfigurationResult(this.configuration, new SCTMTestResult(success ? TestState.PASSED: TestState.FAILED, duration));
+      result.addConfigurationResult(this.configuration, 
+          new SCTMTestResult(success ? TestState.PASSED: TestState.FAILED, duration, errormsg.toString()));
+      incident = 0;
     } else if ("RunCount".equals(qName)) {
     } else if ("Timer".equals(qName)) {
     } else if ("WasSuccess".equals(qName)) {
     }
+  }
+
+  private String popStringFromCDataStack() {
+    return this.cdataStack.pop();
   }
 
   private float popFloatFromCDataStack() {

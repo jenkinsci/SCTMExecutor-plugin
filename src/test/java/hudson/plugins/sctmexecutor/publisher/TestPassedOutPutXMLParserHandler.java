@@ -12,7 +12,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestOutPutXMLParserHandler {
+public class TestPassedOutPutXMLParserHandler {
 
   private static final String TESTRESULTS_ROOTPATH = "src/test/resources/hudson/plugins/sctmexecutor/publisher/";
   private SCTMTestSuiteResult rootSuite;

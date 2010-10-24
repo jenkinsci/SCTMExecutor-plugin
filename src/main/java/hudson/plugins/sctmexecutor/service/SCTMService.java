@@ -9,6 +9,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -115,14 +116,6 @@ public class SCTMService implements ISCTMService {
       runs.add(handle);
     }
     return runs;
-  }
-
-  private Collection<String> toList(String[] versions) {
-    Collection<String> c = new ArrayList<String>(versions.length);
-    for (String version : versions) {
-      c.add(version);
-    }
-    return c;
   }
 
   private String getExecutionNodePropertyValue(ExecutionNode node, String propertyName) {
@@ -293,7 +286,7 @@ public class SCTMService implements ISCTMService {
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
       throw new SCTMException(MessageFormat.format(Messages.getString("SCTMService.err.commonFatalError"), e.getMessage())); //$NON-NLS-1$
     }
-    return toList(versions);
+    return Arrays.asList(versions);
   }
 
   @Override

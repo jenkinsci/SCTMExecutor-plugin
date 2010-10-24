@@ -29,21 +29,13 @@ public class SCTMTestResult {
   private int skippedCount;
   private int passedCount;
   private float duration;
+  private String errorMessage;
   
-  private SCTMTestResult(int failCount, int skipCount, int passCount, float duration) {
-    super();
-    this.failedCount = failCount;
-    this.skippedCount = skipCount;
-    this.passedCount = passCount;
-    this.duration = duration;
-    
-    calculateState();
-  }
-  
-  public SCTMTestResult(TestState state, float duration) {
+  public SCTMTestResult(TestState state, float duration, String errormsg) {
     super();
     this.state = state;
     this.duration = duration;
+    this.errorMessage = errormsg;
     
     switch (state) {
       case PASSED:
@@ -58,7 +50,13 @@ public class SCTMTestResult {
   }
 
   public SCTMTestResult(SCTMTestResult value) {
-    this(value.getFailedCount(), value.getSkippedCount(), value.getPassedCount(), value.getDuration());
+    this.failedCount = value.getFailedCount();
+    this.skippedCount = value.getSkippedCount();
+    this.passedCount = value.getPassedCount();
+    this.duration = value.getDuration();
+    this.errorMessage = value.getErrorMessage();
+    
+    calculateState();
   }
 
   private void calculateState() {
@@ -106,5 +104,9 @@ public class SCTMTestResult {
 
   public float getDuration() {
     return duration;
+  }
+
+  public String getErrorMessage() {
+    return errorMessage;
   }
 }

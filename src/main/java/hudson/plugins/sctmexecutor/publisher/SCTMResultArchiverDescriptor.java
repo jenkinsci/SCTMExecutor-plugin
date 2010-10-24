@@ -1,12 +1,11 @@
 package hudson.plugins.sctmexecutor.publisher;
 
-import net.sf.json.JSONObject;
-
-import org.kohsuke.stapler.StaplerRequest;
-
 import hudson.Extension;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
+import net.sf.json.JSONObject;
+
+import org.kohsuke.stapler.StaplerRequest;
 
 @Extension
 public final class SCTMResultArchiverDescriptor extends BuildStepDescriptor<Publisher> {

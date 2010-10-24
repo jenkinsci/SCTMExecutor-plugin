@@ -21,6 +21,26 @@
       <comments>All source code is under the MIT license.</comments>
     </license>
   </licenses>
+  <reporting>
+  	<excludeDefaults>true</excludeDefaults>
+  	<plugins>
+    	<plugin>
+    		<groupId>org.codehaus.mojo</groupId>
+    		<artifactId>findbugs-maven-plugin</artifactId>
+    		<version>2.3.1</version>
+        <configuration>
+          <findbugsXmlOutput>true</findbugsXmlOutput>
+          <!-- Optional directory to put findbugs xml report -->
+          <findbugsXmlOutputDirectory>target/site</findbugsXmlOutputDirectory>
+        </configuration>
+      </plugin>
+    	<plugin>
+    		<groupId>org.sonatype.maven.plugin</groupId>
+    		<artifactId>emma-maven-plugin</artifactId>
+    		<version>1.2</version>
+    	</plugin>
+    </plugins>
+  </reporting>
   <dependencies>
     <dependency>
       <groupId>org.easymock</groupId>

@@ -1,6 +1,7 @@
 package hudson.plugins.sctmexecutor.publisher;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,22 +15,22 @@ public class TestDomainObjectLogic {
     rootSuite = new SCTMTestSuiteResult("root", null);
     SCTMTestSuiteResult suite1 = new SCTMTestSuiteResult("suite1", null);
     SCTMTestCaseResult test1 = new SCTMTestCaseResult("case1", null);
-    test1.addConfigurationResult("config1", new SCTMTestResult(SCTMTestResult.TestState.PASSED, 1));
-    test1.addConfigurationResult("config2", new SCTMTestResult(SCTMTestResult.TestState.SKIPPED, 1));
-    test1.addConfigurationResult("config3", new SCTMTestResult(SCTMTestResult.TestState.FAILED, 1));
+    test1.addConfigurationResult("config1", new SCTMTestResult(SCTMTestResult.TestState.PASSED, 1, ""));
+    test1.addConfigurationResult("config2", new SCTMTestResult(SCTMTestResult.TestState.SKIPPED, 1, ""));
+    test1.addConfigurationResult("config3", new SCTMTestResult(SCTMTestResult.TestState.FAILED,1, ""));
     suite1.addChild(test1);
     rootSuite.addChild(suite1);
     SCTMTestSuiteResult suite2 = new SCTMTestSuiteResult("suite2", null);
     SCTMTestSuiteResult subsuite = new SCTMTestSuiteResult("suite2.1", null);
     SCTMTestCaseResult test2 = new SCTMTestCaseResult("case2", null);
-    test2.addConfigurationResult("config1", new SCTMTestResult(SCTMTestResult.TestState.PASSED, 2));
-    test2.addConfigurationResult("config2", new SCTMTestResult(SCTMTestResult.TestState.SKIPPED, 2));
-    test2.addConfigurationResult("config3", new SCTMTestResult(SCTMTestResult.TestState.FAILED, 2));
+    test2.addConfigurationResult("config1", new SCTMTestResult(SCTMTestResult.TestState.PASSED, 2, ""));
+    test2.addConfigurationResult("config2", new SCTMTestResult(SCTMTestResult.TestState.SKIPPED, 2, ""));
+    test2.addConfigurationResult("config3", new SCTMTestResult(SCTMTestResult.TestState.FAILED, 2, ""));
     subsuite.addChild(test2);
     SCTMTestCaseResult test3 = new SCTMTestCaseResult("case3", null);
-    test3.addConfigurationResult("config1", new SCTMTestResult(SCTMTestResult.TestState.PASSED, 3));
-    test3.addConfigurationResult("config2", new SCTMTestResult(SCTMTestResult.TestState.SKIPPED, 3));
-    test3.addConfigurationResult("config3", new SCTMTestResult(SCTMTestResult.TestState.FAILED, 3));
+    test3.addConfigurationResult("config1", new SCTMTestResult(SCTMTestResult.TestState.PASSED, 3, ""));
+    test3.addConfigurationResult("config2", new SCTMTestResult(SCTMTestResult.TestState.SKIPPED, 3, ""));
+    test3.addConfigurationResult("config3", new SCTMTestResult(SCTMTestResult.TestState.FAILED, 3, ""));
     subsuite.addChild(test3);
     suite2.addChild(subsuite);
     rootSuite.addChild(suite2);

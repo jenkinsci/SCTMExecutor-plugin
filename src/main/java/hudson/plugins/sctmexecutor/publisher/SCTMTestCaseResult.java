@@ -4,7 +4,6 @@ import hudson.model.AbstractBuild;
 import hudson.tasks.test.TestObject;
 import hudson.tasks.test.TestResult;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
