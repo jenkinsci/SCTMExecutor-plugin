@@ -33,16 +33,7 @@ public class SCTMResultParser {
     List<FilePath> resultFilePath = findAllResultFiles(rootPath);
     
     for (FilePath filePath : resultFilePath) {
-      String testSuiteName = getSuiteName(filePath);
-      SCTMTestSuiteResult suiteResult = null;
-      if (resultMap.containsKey(testSuiteName))
-        suiteResult = this.resultMap.get(testSuiteName);
-      else {
-        suiteResult = new SCTMTestSuiteResult(testSuiteName, owner);
-        this.rootSuite.addChild(suiteResult);
-        this.resultMap.put(testSuiteName, suiteResult);
-      }
-      parseResultFile(filePath, suiteResult);
+      parseResultFile(filePath, rootSuite);
     }
     
     return null;
