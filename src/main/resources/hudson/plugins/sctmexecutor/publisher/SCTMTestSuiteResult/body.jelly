@@ -47,10 +47,23 @@ THE SOFTWARE.
             <j:forEach var="config" items="${p.getConfigurations()}" varStatus="status">
 	            <td class="pane" style="width:6em">
 	              <j:set var="result" value="${it.getTestResultForConfiguration(config)}"/>
-	              <j:set var="state" value="${result.state}"/>
-	              <span class="result-${state}">
-	                ${state.message}
-	              </span>
+	              <j:choose>
+	                <j:when test="${result.getTotalCount() > 1}">
+	                  <!--${result.failCount}/${result.skipCount}/${result.passCount}-->
+			              <div style="width:100%; height:1em; background-color: #729FCF">
+						          <!-- Failed tests part of the bar. -->
+						          <div style="width:${result.failCount*100/result.totalCount}%; height: 1em; background-color: #EF2929; float: left"></div>
+						          <!-- Skipped tests part of the bar. -->
+						          <div style="width:${result.skipCount*100/result.totalCount}%; height: 1em; background-color: #FCE94F; float: left"></div>
+					        	</div>
+			            </j:when>
+			            <j:otherwise>
+			              <j:set var="state" value="${result.state}"/>
+			              <span class="result-${state}">
+			                ${state.message}
+			              </span>
+			            </j:otherwise>
+	              </j:choose>
 	            </td>
 	          </j:forEach>
           </tr>

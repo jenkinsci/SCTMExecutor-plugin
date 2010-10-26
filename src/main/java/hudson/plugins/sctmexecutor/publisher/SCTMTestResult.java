@@ -27,9 +27,9 @@ public class SCTMTestResult {
   }
   
   private TestState state = TestState.NOTESTS;
-  private int failedCount;
-  private int skippedCount;
-  private int passedCount;
+  private int failCount;
+  private int skipCount;
+  private int passCount;
   private float duration;
   private String errorMessage;
   
@@ -41,20 +41,20 @@ public class SCTMTestResult {
     
     switch (state) {
       case PASSED:
-        passedCount = 1;
+        passCount = 1;
         break;
       case SKIPPED:
-        skippedCount = 1;
+        skipCount = 1;
         break;
       case FAILED:
-        failedCount = 1;
+        failCount = 1;
     }
   }
 
   public SCTMTestResult(SCTMTestResult value) {
-    this.failedCount = value.getFailedCount();
-    this.skippedCount = value.getSkippedCount();
-    this.passedCount = value.getPassedCount();
+    this.failCount = value.getFailCount();
+    this.skipCount = value.getSkipCount();
+    this.passCount = value.getPassCount();
     this.duration = value.getDuration();
     this.errorMessage = value.getErrorMessage();
     
@@ -62,20 +62,20 @@ public class SCTMTestResult {
   }
 
   private void calculateState() {
-    if (this.failedCount > 0)
+    if (this.failCount > 0)
       state = TestState.FAILED;
-    else if (this.passedCount > 0)
+    else if (this.passCount > 0)
       state = TestState.PASSED;
-    else if (this.skippedCount > 0)
+    else if (this.skipCount > 0)
       state = TestState.SKIPPED;
     else
       state = TestState.NOTESTS;
   }
   
   void addSubTestCounts(int passed, int skipped, int failed) {
-    this.passedCount += passed;
-    this.skippedCount += skipped;
-    this.failedCount += failed;
+    this.passCount += passed;
+    this.skipCount += skipped;
+    this.failCount += failed;
     calculateState();
   }
 
@@ -88,16 +88,20 @@ public class SCTMTestResult {
     return String.format("%s in %fms", this.state, this.duration);
   }
 
-  public int getFailedCount() {
-    return failedCount;
+  public Object getTotalCount() {
+    return failCount+skipCount+passCount;
+  }
+
+  public int getFailCount() {
+    return failCount;
   }
   
-  public int getSkippedCount() {
-    return skippedCount;
+  public int getSkipCount() {
+    return skipCount;
   }
   
-  public int getPassedCount() {
-    return passedCount;
+  public int getPassCount() {
+    return passCount;
   }
 
   public TestState getState() {
@@ -115,4 +119,5 @@ public class SCTMTestResult {
   public String getErrorMessage() {
     return errorMessage;
   }
+
 }

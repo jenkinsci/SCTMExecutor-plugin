@@ -34,13 +34,13 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
     for (SCTMTestResult result : this.getConfigurationResult().values()) {
       switch (state) {
         case PASSED:
-          count += result.getPassedCount();
+          count += result.getPassCount();
           break;
         case SKIPPED:
-          count += result.getSkippedCount();
+          count += result.getSkipCount();
           break;
         case FAILED:
-          count += result.getFailedCount();
+          count += result.getFailCount();
           break;
       }
     }
@@ -63,7 +63,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
             suiteResult.put(childResult.getKey(), new SCTMTestResult(childResult.getValue()));
           else {
             SCTMTestResult childTestResult = childResult.getValue();
-            testResult.addSubTestCounts(childTestResult.getPassedCount(), childTestResult.getSkippedCount(), childTestResult.getFailedCount());
+            testResult.addSubTestCounts(childTestResult.getPassCount(), childTestResult.getSkipCount(), childTestResult.getFailCount());
             testResult.addSubDuration(childTestResult.getDuration());
           }
         }

@@ -46,23 +46,23 @@ public class TestDomainObjectLogic {
     assertEquals(3, test1.getDuration(), 0.1);
     
     SCTMTestResult result = test1.getTestResultForConfiguration("config1");
-    assertEquals(1, result.getPassedCount());
-    assertEquals(0, result.getSkippedCount());
-    assertEquals(0, result.getFailedCount());
+    assertEquals(1, result.getPassCount());
+    assertEquals(0, result.getSkipCount());
+    assertEquals(0, result.getFailCount());
     assertEquals(SCTMTestResult.TestState.PASSED, result.getState());
     assertEquals(1, result.getDuration(), 0.1);
     
     result = test1.getTestResultForConfiguration("config2");
-    assertEquals(0, result.getPassedCount());
-    assertEquals(1, result.getSkippedCount());
-    assertEquals(0, result.getFailedCount());
+    assertEquals(0, result.getPassCount());
+    assertEquals(1, result.getSkipCount());
+    assertEquals(0, result.getFailCount());
     assertEquals(SCTMTestResult.TestState.SKIPPED, result.getState());
     assertEquals(1, result.getDuration(), 0.1);
     
     result = test1.getTestResultForConfiguration("config3");
-    assertEquals(0, result.getPassedCount());
-    assertEquals(0, result.getSkippedCount());
-    assertEquals(1, result.getFailedCount());
+    assertEquals(0, result.getPassCount());
+    assertEquals(0, result.getSkipCount());
+    assertEquals(1, result.getFailCount());
     assertEquals(SCTMTestResult.TestState.FAILED, result.getState());
     assertEquals(1, result.getDuration(), 0.1);
   }
@@ -74,23 +74,23 @@ public class TestDomainObjectLogic {
     assertEquals(3, suite1.getDuration(), 0.1);
     
     SCTMTestResult result = suite1.getTestResultForConfiguration("config1");
-    assertEquals(1, result.getPassedCount());
-    assertEquals(0, result.getSkippedCount());
-    assertEquals(0, result.getFailedCount());
+    assertEquals(1, result.getPassCount());
+    assertEquals(0, result.getSkipCount());
+    assertEquals(0, result.getFailCount());
     assertEquals(SCTMTestResult.TestState.PASSED, result.getState());
     assertEquals(1, result.getDuration(), 0.1);
     
     result = suite1.getTestResultForConfiguration("config2");
-    assertEquals(0, result.getPassedCount());
-    assertEquals(1, result.getSkippedCount());
-    assertEquals(0, result.getFailedCount());
+    assertEquals(0, result.getPassCount());
+    assertEquals(1, result.getSkipCount());
+    assertEquals(0, result.getFailCount());
     assertEquals(SCTMTestResult.TestState.SKIPPED, result.getState());
     assertEquals(1, result.getDuration(), 0.1);
     
     result = suite1.getTestResultForConfiguration("config3");
-    assertEquals(0, result.getPassedCount());
-    assertEquals(0, result.getSkippedCount());
-    assertEquals(1, result.getFailedCount());
+    assertEquals(0, result.getPassCount());
+    assertEquals(0, result.getSkipCount());
+    assertEquals(1, result.getFailCount());
     assertEquals(SCTMTestResult.TestState.FAILED, result.getState());
     assertEquals(1, result.getDuration(), 0.1);
   }
@@ -100,23 +100,23 @@ public class TestDomainObjectLogic {
     assertEquals(18, rootSuite.getDuration(), 0.1);
     
     SCTMTestResult result = this.rootSuite.getTestResultForConfiguration("config1");
-    assertEquals(3, result.getPassedCount());
-    assertEquals(0, result.getSkippedCount());
-    assertEquals(0, result.getFailedCount());
+    assertEquals(3, result.getPassCount());
+    assertEquals(0, result.getSkipCount());
+    assertEquals(0, result.getFailCount());
     assertEquals(SCTMTestResult.TestState.PASSED, result.getState());
     assertEquals(6, result.getDuration(), 0.1);
     
     result = this.rootSuite.getTestResultForConfiguration("config2");
-    assertEquals(0, result.getPassedCount());
-    assertEquals(3, result.getSkippedCount());
-    assertEquals(0, result.getFailedCount());
+    assertEquals(0, result.getPassCount());
+    assertEquals(3, result.getSkipCount());
+    assertEquals(0, result.getFailCount());
     assertEquals(SCTMTestResult.TestState.SKIPPED, result.getState());
     assertEquals(6, result.getDuration(), 0.1);
     
     result = this.rootSuite.getTestResultForConfiguration("config3");
-    assertEquals(0, result.getPassedCount());
-    assertEquals(0, result.getSkippedCount());
-    assertEquals(3, result.getFailedCount());
+    assertEquals(0, result.getPassCount());
+    assertEquals(0, result.getSkipCount());
+    assertEquals(3, result.getFailCount());
     assertEquals(SCTMTestResult.TestState.FAILED, result.getState());
     assertEquals(6, result.getDuration(), 0.1);
   }

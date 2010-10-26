@@ -36,23 +36,27 @@ public class TestSkippedOutPutXMLParserHandler {
     assertNotNull(testDef);
     assertEquals("Test", testDef.getName());
     assertEquals(2, testDef.getTotalCount());
+    assertEquals(2, testDef.getTestResultForConfiguration(CONFIG_DUMMY).getTotalCount());
     assertEquals(1, testDef.getChildren().size());
     
     SCTMTestSuiteResult suite = testDef.getChildSuiteByName("RepeatButtonTest");
     assertNotNull(suite);
     assertEquals("RepeatButtonTest", suite.getName());
     assertEquals(2, suite.getTotalCount());
+    assertEquals(2, suite.getTestResultForConfiguration(CONFIG_DUMMY).getTotalCount());
     assertEquals(2, suite.getChildren().size());
     
     SCTMTestCaseResult test = suite.getChildTestByName("RepeatButtonTest.CustomAttributesFindTest"); 
     assertNotNull(test);
     assertEquals("RepeatButtonTest.CustomAttributesFindTest", test.getName());
     assertEquals(1, test.getTotalCount());
+    assertEquals(1, test.getTestResultForConfiguration(CONFIG_DUMMY).getTotalCount());
     
     test = suite.getChildTestByName("RepeatButtonTest.RepeatButtonTest"); 
     assertNotNull(test);
     assertEquals("RepeatButtonTest.RepeatButtonTest", test.getName());
     assertEquals(1, test.getTotalCount());
+    assertEquals(1, test.getTestResultForConfiguration(CONFIG_DUMMY).getTotalCount());
   }
   
   @Test

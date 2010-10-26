@@ -37,6 +37,7 @@ public class TestFailedOutPutXMLParserHandler {
     assertNotNull(plan);
     assertEquals("plan.pln", plan.getName());
     assertEquals(5, plan.getTotalCount());
+    assertEquals(5, plan.getTestResultForConfiguration(CONFIG_DUMMY).getTotalCount());
     assertEquals(4, plan.getChildren().size());
     
     SCTMTestSuiteResult suite = plan.getChildSuiteByName("codeField.t");
@@ -60,6 +61,7 @@ public class TestFailedOutPutXMLParserHandler {
     assertNotNull(test);
     assertEquals("WindowTest", test.getName());
     assertEquals(1, test.getTotalCount());
+    assertEquals(1, test.getTestResultForConfiguration(CONFIG_DUMMY).getTotalCount());
     
     suite = plan.getChildSuiteByName("table.t");
     assertNotNull(suite);

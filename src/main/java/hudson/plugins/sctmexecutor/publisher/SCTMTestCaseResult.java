@@ -32,13 +32,13 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
     for (SCTMTestResult result : this.configurationResults.values()) {
       switch (state) {
         case PASSED:
-          count += result.getPassedCount();
+          count += result.getPassCount();
           break;
         case SKIPPED:
-          count += result.getSkippedCount();
+          count += result.getSkipCount();
           break;
         case FAILED:
-          count += result.getFailedCount();
+          count += result.getFailCount();
           break;
       }
     }
