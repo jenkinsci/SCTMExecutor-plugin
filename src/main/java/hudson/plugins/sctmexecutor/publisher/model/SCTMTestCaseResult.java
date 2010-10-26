@@ -1,4 +1,4 @@
-package hudson.plugins.sctmexecutor.publisher;
+package hudson.plugins.sctmexecutor.publisher.model;
 
 import hudson.model.AbstractBuild;
 import hudson.tasks.test.TestObject;

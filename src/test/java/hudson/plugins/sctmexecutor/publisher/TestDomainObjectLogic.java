@@ -2,6 +2,9 @@ package hudson.plugins.sctmexecutor.publisher;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import hudson.plugins.sctmexecutor.publisher.model.SCTMTestCaseResult;
+import hudson.plugins.sctmexecutor.publisher.model.SCTMTestResult;
+import hudson.plugins.sctmexecutor.publisher.model.SCTMTestSuiteResult;
 
 import org.junit.Before;
 import org.junit.Test;

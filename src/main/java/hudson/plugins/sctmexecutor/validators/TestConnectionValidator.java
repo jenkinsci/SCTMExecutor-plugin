@@ -1,6 +1,5 @@
 package hudson.plugins.sctmexecutor.validators;
 
-import hudson.plugins.sctmexecutor.Messages;
 import hudson.util.FormValidation;
 
 import java.net.URL;

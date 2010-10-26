@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/silkroot/xsl/output.xsl"?>
 <TestSuite TestItem="plan.pln" ExtId="plan.pln">
-  <RunCount>3</RunCount>
-  <ErrorCount>2</ErrorCount>
-  <Timer>60000.0</Timer>
+  <RunCount>5</RunCount>
+  <ErrorCount>3</ErrorCount>
+  <Timer>62160.0</Timer>
   <WasSuccess>false</WasSuccess>
 
   <TestSuite TestItem="codeField.t" ExtId="plan.pln/codeField.t">
@@ -44,7 +44,6 @@ Print: Called from CodeField at CodeField.t(6)</Info>
     <RunCount>1</RunCount>
     <Timer>17000.0</Timer>
     <WasSuccess>true</WasSuccess>
-
     <Test TestItem="WindowTest" ExtId="plan.pln/window.t/WindowTest">
       <RunCount>1</RunCount>
       <Timer>17000.0</Timer>
@@ -52,14 +51,12 @@ Print: Called from CodeField at CodeField.t(6)</Info>
     </Test>
   </TestSuite>
   <TestSuite TestItem="table.t" ExtId="plan.pln/table.t">
-
-    <RunCount>1</RunCount>
+    <RunCount>2</RunCount>
     <ErrorCount>2</ErrorCount>
-    <Timer>22000.0</Timer>
+    <Timer>24000.0</Timer>
     <WasSuccess>false</WasSuccess>
     <Test TestItem="TableTest" ExtId="plan.pln/table.t/TableTest">
       <RunCount>1</RunCount>
-
       <ErrorCount>2</ErrorCount>
       <Timer>22000.0</Timer>
       <WasSuccess>false</WasSuccess>
@@ -89,6 +86,73 @@ Print: Called from TableTest at table.t(3)</Info>
         </Detail>
       </Incident>
     </Test>
+    <Test TestItem="TableTest2" ExtId="plan.pln/table.t/TableTest2">
+      <RunCount>1</RunCount>
+      <ErrorCount>0</ErrorCount>
+      <Timer>2000.0</Timer>
+      <WasSuccess>true</WasSuccess>
+    </Test>
   </TestSuite>
+  <ResultElement TestItem="calculator.test.ParameterizedCalcTest" ExtId="~calculator.test.ParameterizedCalcTest">
+    <RunCount>1</RunCount>
+    <Timer>160.0</Timer>
+    <WasSuccess>true</WasSuccess>
+    <property name="_junit_ClassFile">calculator.test.ParameterizedCalcTest</property>
+    <Test TestItem="testAdd[0]" ExtId="~calculator.test.ParameterizedCalcTest#testAdd[0]">
+      <RunCount>1</RunCount>
+      <Timer>160.0</Timer>
+      <WasSuccess>false</WasSuccess>
+      <property name="_junit_TestMethod">testAdd[0]</property>
+      <Incident>
+        <Message>The object is not ready for user interaction because it is not enabled.</Message>
+        <Severity>Error</Severity>
+        <Detail>
+          <TestName>testBusyWaitSync(com.borland.jtf.browser.script.AutoSynchronization)</TestName>
+          <Info>com.borland.silktest.jtf.common.ObjectNotEnabledException: The object is not ready for user interaction because it is not enabled.&#xD;
+  at com.borland.silktest.jtf.Agent.executeBrowserBaseState(Agent.java:502)&#xD;
+  at com.borland.silktest.jtf.BrowserBaseState.execute(BrowserBaseState.java:242)&#xD;
+  at com.borland.jtf.browser.script.BaseStates.ieDefaultBaseState(BaseStates.java:11)&#xD;
+  at com.borland.jtf.browser.script.AutoSynchronization.baseState(AutoSynchronization.java:44)&#xD;
+  at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)&#xD;
+  at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)&#xD;
+  at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)&#xD;
+  at java.lang.reflect.Method.invoke(Method.java:597)&#xD;
+  at org.junit.internal.runners.MethodRoadie.runBefores(MethodRoadie.java:122)&#xD;
+  at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:86)&#xD;
+  at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)&#xD;
+  at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)&#xD;
+  at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)&#xD;
+  at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)&#xD;
+  at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)&#xD;
+  at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)&#xD;
+  at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)&#xD;
+  at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)&#xD;
+  at org.junit.internal.runners.CompositeRunner.runChildren(CompositeRunner.java:33)&#xD;
+  at org.junit.runners.Suite.access$000(Suite.java:26)&#xD;
+  at org.junit.runners.Suite$1.run(Suite.java:93)&#xD;
+  at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)&#xD;
+  at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)&#xD;
+  at org.junit.runners.Suite.run(Suite.java:91)&#xD;
+  at com.borland.testutils.DynamicTestSuite.run(DynamicTestSuite.java:111)&#xD;
+  at org.junit.internal.runners.CompositeRunner.runChildren(CompositeRunner.java:33)&#xD;
+  at org.junit.internal.runners.CompositeRunner.run(CompositeRunner.java:28)&#xD;
+  at org.junit.runner.JUnitCore.run(JUnitCore.java:130)&#xD;
+  at org.junit.runner.JUnitCore.run(JUnitCore.java:109)&#xD;
+  at org.junit.runner.JUnitCore.run(JUnitCore.java:100)&#xD;
+  at com.segue.tm.plugins.testlaunch.junit.ju4support.JU4Helper.executeJunitTest(JU4Helper.java:88)&#xD;
+  at com.segue.tm.plugins.testlaunch.junit.ju4support.JU4Helper.executeJU4TestClassOrMethodOnly(JU4Helper.java:42)&#xD;
+  at com.segue.tm.plugins.testlaunch.junit.ju4support.JUnit4CmdLineWrapper.executeTestClassOrMethod(JUnit4CmdLineWrapper.java:47)&#xD;
+  at com.segue.tm.plugins.testlaunch.junit.ju4support.JUnit4CmdLineWrapper.main(JUnit4CmdLineWrapper.java:81)</Info>
+        </Detail>
+      </Incident>
+      <Incident>
+        <Severity>Error</Severity>
+        <Detail>
+          <TestName>testBusyWaitSync(com.borland.jtf.browser.script.AutoSynchronization)</TestName>
+          <Info>com.borland.silktest.jtf.common.ObjectNotEnabledException: The object is not ready for user interaction because it is not enabled.&#xD;</Info>
+        </Detail>
+      </Incident>
+    </Test>
+  </ResultElement>
 </TestSuite>
 

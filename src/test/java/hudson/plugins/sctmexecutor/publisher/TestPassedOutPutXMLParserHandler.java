@@ -1,8 +1,11 @@
 package hudson.plugins.sctmexecutor.publisher;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import hudson.plugins.sctmexecutor.publisher.handler.OutputXMLParserHandler;
+import hudson.plugins.sctmexecutor.publisher.model.SCTMTestCaseResult;
+import hudson.plugins.sctmexecutor.publisher.model.SCTMTestSuiteResult;
 
 import java.io.File;
 
@@ -34,7 +37,7 @@ public class TestPassedOutPutXMLParserHandler {
     assertNotNull(suite);
     assertEquals("4Test.pln", suite.getName());
     assertEquals(3, suite.getTotalCount());
-    assertEquals(1, suite.getChildren().size());
+    assertEquals(2, suite.getChildren().size());
     
     suite = suite.getChildSuiteByName("SubSuite.pln");
     assertNotNull(suite);
@@ -82,6 +85,15 @@ public class TestPassedOutPutXMLParserHandler {
     assertEquals(0, test.getSkipCount());
     assertEquals(1, test.getPassCount());
     assertEquals(3000.0, test.getDuration(), 0.1);
+  }
+  
+  @Test
+  public void testNormalizedNUnitSuiteName() throws Exception {
+    SCTMTestSuiteResult suite = rootSuite.getChildSuiteByName("4Test.pln").getChildSuiteByName("SilkTest.Ntf.Test.Awt");
+    assertNotNull(suite);
+    assertEquals("SilkTest.Ntf.Test.Awt", suite.getName());
+    assertEquals(0, suite.getTotalCount());
+    assertEquals(0, suite.getChildren().size());
   }
 
 }

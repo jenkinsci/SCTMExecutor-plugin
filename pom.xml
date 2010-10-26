@@ -38,6 +38,10 @@
     		<groupId>org.sonatype.maven.plugin</groupId>
     		<artifactId>emma-maven-plugin</artifactId>
     		<version>1.2</version>
+        <configuration>
+          <maven.emma.report.xml>true</maven.emma.report.xml>
+          <maven.emma.report.html>false</maven.emma.report.html>
+        </configuration>
     	</plugin>
     </plugins>
   </reporting>

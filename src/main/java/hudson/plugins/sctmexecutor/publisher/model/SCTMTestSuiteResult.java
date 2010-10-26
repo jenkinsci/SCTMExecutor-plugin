@@ -1,4 +1,4 @@
-package hudson.plugins.sctmexecutor.publisher;
+package hudson.plugins.sctmexecutor.publisher.model;
 
 import hudson.model.AbstractBuild;
 import hudson.tasks.test.TabulatedResult;
@@ -23,16 +23,9 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   private Collection<TestResult> childResults;
 
   public SCTMTestSuiteResult(String name, AbstractBuild<?, ?> owner) {
-    this(name, owner, new ArrayList<TestResult>());
-  }
-
-  SCTMTestSuiteResult(String name, AbstractBuild<?, ?> owner, Collection<TestResult> children) {
     this.name = name;
     this.owner = owner;
-    this.childResults = children;
-    for (TestResult result : children) {
-      result.setParent(this);
-    }
+    this.childResults = new ArrayList<TestResult>();
   }
 
   private int getXCount(SCTMTestResult.TestState state) {

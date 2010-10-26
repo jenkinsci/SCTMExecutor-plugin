@@ -3,6 +3,7 @@ package hudson.plugins.sctmexecutor.publisher;
 import hudson.FilePath;
 import hudson.model.AbstractBuild;
 import hudson.plugins.sctmexecutor.publisher.handler.OutputXMLParserHandler;
+import hudson.plugins.sctmexecutor.publisher.model.SCTMTestSuiteResult;
 import hudson.tasks.test.TestResult;
 
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class SCTMResultParser {
       parseResultFile(filePath, rootSuite);
     }
     
-    return null;
+    return null; // TODO
   }
 
   private void parseResultFile(FilePath filePath, SCTMTestSuiteResult suiteResult) {

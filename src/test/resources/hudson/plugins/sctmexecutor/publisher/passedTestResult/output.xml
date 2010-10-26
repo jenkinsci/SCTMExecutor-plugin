@@ -28,5 +28,10 @@
       <WasSuccess>true</WasSuccess>
     </Test>
   </TestSuite>
+  <TestSuite TestItem="c:\Temp\lib\NTF\tests\SilkTest.Ntf.Test.Awt.dll" ExtId="c:\Temp\lib\NTF\tests\SilkTest.Ntf.Test.Awt.dll">
+    <RunCount>1</RunCount>
+    <Timer>0.0</Timer>
+    <WasSuccess>true</WasSuccess>
+  </TestSuite>
 </TestSuite>
 

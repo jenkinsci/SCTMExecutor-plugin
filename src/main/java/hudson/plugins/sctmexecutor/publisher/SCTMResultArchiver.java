@@ -5,13 +5,12 @@ import hudson.Launcher;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.Hudson;
+import hudson.plugins.sctmexecutor.publisher.model.SCTMTestSuiteResult;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
-import hudson.tasks.test.TestResult;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -29,7 +28,7 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
       throws InterruptedException, IOException {
-    final SCTMTestSuiteResult rootSuite = new SCTMTestSuiteResult("root", build, new ArrayList<TestResult>());
+    final SCTMTestSuiteResult rootSuite = new SCTMTestSuiteResult("root", build);
     
     FilePath workspace = build.getWorkspace();
     FilePath resultRootPath = workspace.child(String.format("SCTMResults/%d", build.getNumber()));
@@ -37,7 +36,7 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
     sctmResultParser.createResult(build);
     
     build.getActions().add(new SCTMResultAction(build, rootSuite));
-    return true;
+    return true; // TODO: provide a build result
   }
 
   @Override

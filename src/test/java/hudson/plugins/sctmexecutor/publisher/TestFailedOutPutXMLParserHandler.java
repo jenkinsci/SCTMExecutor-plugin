@@ -3,6 +3,10 @@ package hudson.plugins.sctmexecutor.publisher;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import hudson.plugins.sctmexecutor.publisher.handler.OutputXMLParserHandler;
+import hudson.plugins.sctmexecutor.publisher.model.SCTMTestCaseResult;
+import hudson.plugins.sctmexecutor.publisher.model.SCTMTestResult;
+import hudson.plugins.sctmexecutor.publisher.model.SCTMTestSuiteResult;
+import hudson.plugins.sctmexecutor.publisher.model.SCTMTestResult.TestState;
 
 import java.io.File;
 
@@ -15,6 +19,7 @@ import org.junit.Test;
 
 public class TestFailedOutPutXMLParserHandler {
 
+  private static final String CONFIG_DUMMY = "config1";
   private static final String TESTRESULTS_ROOTPATH = "src/test/resources/hudson/plugins/sctmexecutor/publisher/";
   private SCTMTestSuiteResult rootSuite;
 
@@ -22,20 +27,20 @@ public class TestFailedOutPutXMLParserHandler {
   public void setUp() throws Exception {
     SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
     rootSuite = new SCTMTestSuiteResult("root", null);
-    OutputXMLParserHandler handler = new OutputXMLParserHandler(rootSuite , "config1");
+    OutputXMLParserHandler handler = new OutputXMLParserHandler(rootSuite , CONFIG_DUMMY);
     parser.parse(new File(TESTRESULTS_ROOTPATH+"failedTestResult/output.xml"), handler);
   }
   
   @Test
   public void testParsedStructure() throws Exception {
-    assertEquals(3, this.rootSuite.getTotalCount());
+    assertEquals(5, this.rootSuite.getTotalCount());
     assertEquals(1, this.rootSuite.getChildren().size());
     
     SCTMTestSuiteResult plan = this.rootSuite.getChildSuiteByName("plan.pln");
     assertNotNull(plan);
     assertEquals("plan.pln", plan.getName());
-    assertEquals(3, plan.getTotalCount());
-    assertEquals(3, plan.getChildren().size());
+    assertEquals(5, plan.getTotalCount());
+    assertEquals(4, plan.getChildren().size());
     
     SCTMTestSuiteResult suite = plan.getChildSuiteByName("codeField.t");
     assertNotNull(suite);
@@ -62,21 +67,52 @@ public class TestFailedOutPutXMLParserHandler {
     suite = plan.getChildSuiteByName("table.t");
     assertNotNull(suite);
     assertEquals("table.t", suite.getName());
-    assertEquals(1, suite.getTotalCount());
-    assertEquals(1, suite.getChildren().size());
+    assertEquals(2, suite.getTotalCount());
+    assertEquals(2, suite.getChildren().size());
     
     test = suite.getChildTestByName("TableTest"); 
     assertNotNull(test);
     assertEquals("TableTest", test.getName());
     assertEquals(1, test.getTotalCount());
+    
+    test = suite.getChildTestByName("TableTest2"); 
+    assertNotNull(test);
+    assertEquals("TableTest2", test.getName());
+    assertEquals(1, test.getTotalCount());
+    
+    suite = plan.getChildSuiteByName("calculator.test.ParameterizedCalcTest");
+    assertNotNull(suite);
+    assertEquals("calculator.test.ParameterizedCalcTest", suite.getName());
+    assertEquals(1, suite.getTotalCount());
+    assertEquals(1, suite.getChildren().size());
+    
+    test = suite.getChildTestByName("testAdd[0]"); 
+    assertNotNull(test);
+    assertEquals("testAdd[0]", test.getName());
+    assertEquals(1, test.getTotalCount());
+  }
+  
+  @Test
+  public void testTestResult() throws Exception {
+    SCTMTestSuiteResult suite = this.rootSuite.getChildSuiteByName("plan.pln").getChildSuiteByName("table.t");
+    SCTMTestResult suiteResult = suite.getTestResultForConfiguration(CONFIG_DUMMY);
+    assertEquals(TestState.FAILED, suiteResult.getState());
+    
+    SCTMTestCaseResult test = suite.getChildTestByName("TableTest");
+    SCTMTestResult caseResult = test.getTestResultForConfiguration(CONFIG_DUMMY);
+    assertEquals(TestState.FAILED, caseResult.getState());
+    
+    test = suite.getChildTestByName("TableTest2");
+    caseResult = test.getTestResultForConfiguration(CONFIG_DUMMY);
+    assertEquals(TestState.PASSED, caseResult.getState());
   }
   
   @Test
   public void testFailedTestRun() throws Exception {   
-    assertEquals(2, rootSuite.getFailCount());
+    assertEquals(3, rootSuite.getFailCount());
     assertEquals(0, rootSuite.getSkipCount());
-    assertEquals(1, rootSuite.getPassCount());
-    assertEquals(60000.0, rootSuite.getDuration(), 0.1);
+    assertEquals(2, rootSuite.getPassCount());
+    assertEquals(62160.0, rootSuite.getDuration(), 0.1);
     
     SCTMTestSuiteResult suite = rootSuite.getChildSuiteByName("plan.pln").getChildSuiteByName("codeField.t");
     assertEquals(1, suite.getFailCount());
@@ -89,13 +125,52 @@ public class TestFailedOutPutXMLParserHandler {
     assertEquals(0, test.getSkipCount());
     assertEquals(0, test.getPassCount());
     assertEquals(21000.0, test.getDuration(), 0.1);
+    
+    suite = rootSuite.getChildSuiteByName("plan.pln").getChildSuiteByName("table.t");
+    assertEquals(1, suite.getFailCount());
+    assertEquals(0, suite.getSkipCount());
+    assertEquals(1, suite.getPassCount());
+    assertEquals(24000.0, suite.getDuration(), 0.1);
+
+    test = suite.getChildTestByName("TableTest");
+    assertEquals(1, test.getFailCount());
+    assertEquals(0, test.getSkipCount());
+    assertEquals(0, test.getPassCount());
+    assertEquals(22000.0, test.getDuration(), 0.1);
+    
+    test = suite.getChildTestByName("TableTest2");
+    assertEquals(0, test.getFailCount());
+    assertEquals(0, test.getSkipCount());
+    assertEquals(1, test.getPassCount());
+    assertEquals(2000.0, test.getDuration(), 0.1);
+    
+    suite = rootSuite.getChildSuiteByName("plan.pln").getChildSuiteByName("calculator.test.ParameterizedCalcTest");
+    assertEquals(1, suite.getFailCount());
+    assertEquals(0, suite.getSkipCount());
+    assertEquals(0, suite.getPassCount());
+    assertEquals(160.0, suite.getDuration(), 0.1);
+    
+    test = suite.getChildTestByName("testAdd[0]");
+    assertEquals(1, test.getFailCount());
+    assertEquals(0, test.getSkipCount());
+    assertEquals(0, test.getPassCount());
+    assertEquals(160.0, test.getDuration(), 0.1);
+  }
+  
+  @Test @Ignore
+  public void testFailingTestWithMissingMessage() throws Exception {
+    SCTMTestCaseResult test = rootSuite.getChildSuiteByName("plan.pln").getChildSuiteByName("calculator.test.ParameterizedCalcTest").getChildTestByName("testAdd[0]");
+    assertNotNull(test);
+    SCTMTestResult configurationResult = test.getTestResultForConfiguration(CONFIG_DUMMY);
+    assertNotNull(configurationResult);
+    String errormsg = configurationResult.getErrorMessage();
   }
   
   @Test @Ignore
   public void testErrorMessage() throws Exception {
     SCTMTestCaseResult test = this.rootSuite.getChildSuiteByName("plan.pln").getChildSuiteByName("codeField.t").getChildTestByName("codeField");
     assertNotNull(test);
-    SCTMTestResult configurationResult = test.getTestResultForConfiguration("config1");
+    SCTMTestResult configurationResult = test.getTestResultForConfiguration(CONFIG_DUMMY);
     assertNotNull(configurationResult);
     String errormsg = configurationResult.getErrorMessage();
     assertEquals("<b>Error: </b><br/>"+
