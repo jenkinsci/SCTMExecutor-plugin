@@ -1,5 +1,7 @@
 package hudson.plugins.sctmexecutor.publisher;
 
+import hudson.Util;
+
 
 public class SCTMTestResult {
   public static enum TestState {
@@ -104,6 +106,10 @@ public class SCTMTestResult {
 
   public float getDuration() {
     return duration;
+  }
+  
+  public String getDurationString() {
+    return Util.getTimeSpanString((long)duration);
   }
 
   public String getErrorMessage() {
