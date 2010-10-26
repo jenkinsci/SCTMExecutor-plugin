@@ -3,7 +3,6 @@ package hudson.plugins.sctmexecutor.publisher;
 import hudson.FilePath;
 import hudson.model.AbstractBuild;
 import hudson.plugins.sctmexecutor.publisher.handler.OutputXMLParserHandler;
-import hudson.plugins.sctmexecutor.publisher.model.SCTMTestSuiteResult;
 import hudson.tasks.test.TestResult;
 
 import java.io.IOException;

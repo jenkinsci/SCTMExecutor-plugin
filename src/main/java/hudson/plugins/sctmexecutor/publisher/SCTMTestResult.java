@@ -1,4 +1,4 @@
-package hudson.plugins.sctmexecutor.publisher.model;
+package hudson.plugins.sctmexecutor.publisher;
 
 
 public class SCTMTestResult {

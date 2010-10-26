@@ -1,8 +1,6 @@
 package hudson.plugins.sctmexecutor.publisher;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.sctmexecutor.publisher.model.SCTMTestCaseResult;
-import hudson.plugins.sctmexecutor.publisher.model.SCTMTestSuiteResult;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 

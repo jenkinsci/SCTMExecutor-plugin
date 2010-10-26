@@ -5,7 +5,6 @@ import hudson.Launcher;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.Hudson;
-import hudson.plugins.sctmexecutor.publisher.model.SCTMTestSuiteResult;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Recorder;
 

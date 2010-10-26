@@ -36,7 +36,7 @@ THE SOFTWARE.
 	        <j:set var="result" value="${it.getTestResultForConfiguration(config)}"/>
           <tr>
             <td class="pane" style="text-align:left">${config}</td>
-            <td class="pane" style="text-align:right">${result.duration}</td>
+            <td class="pane" style="width:6em" data="${result.duration}">${result.durationString}</td>
             <td class="pane" style="text-align:right">
               <j:set var="state" value="${result.state}"/>
               <span class="result-${state}">

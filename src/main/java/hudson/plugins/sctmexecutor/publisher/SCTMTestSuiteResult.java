@@ -1,5 +1,6 @@
-package hudson.plugins.sctmexecutor.publisher.model;
+package hudson.plugins.sctmexecutor.publisher;
 
+import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.tasks.test.TabulatedResult;
 import hudson.tasks.test.TestObject;
@@ -93,6 +94,11 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
       duration += child.getDuration();
     }
     return duration;
+  }
+  
+  @Override
+  public String getDurationString() {
+    return Util.getTimeSpanString((long)getDuration());
   }
 
   @Override

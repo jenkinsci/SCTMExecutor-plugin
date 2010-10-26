@@ -1,5 +1,6 @@
-package hudson.plugins.sctmexecutor.publisher.model;
+package hudson.plugins.sctmexecutor.publisher;
 
+import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.tasks.test.TestObject;
 import hudson.tasks.test.TestResult;
@@ -95,6 +96,11 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
       duration += result.getDuration();
     }
     return duration;
+  }
+  
+  @Override
+  public String getDurationString() {
+    return Util.getTimeSpanString((long)getDuration());
   }
 
   @Override

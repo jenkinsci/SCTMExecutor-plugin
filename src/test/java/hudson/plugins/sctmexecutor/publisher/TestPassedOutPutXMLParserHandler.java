@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import hudson.plugins.sctmexecutor.publisher.handler.OutputXMLParserHandler;
-import hudson.plugins.sctmexecutor.publisher.model.SCTMTestCaseResult;
-import hudson.plugins.sctmexecutor.publisher.model.SCTMTestSuiteResult;
 
 import java.io.File;
 

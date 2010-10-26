@@ -2,11 +2,8 @@ package hudson.plugins.sctmexecutor.publisher;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import hudson.plugins.sctmexecutor.publisher.SCTMTestResult.TestState;
 import hudson.plugins.sctmexecutor.publisher.handler.OutputXMLParserHandler;
-import hudson.plugins.sctmexecutor.publisher.model.SCTMTestCaseResult;
-import hudson.plugins.sctmexecutor.publisher.model.SCTMTestResult;
-import hudson.plugins.sctmexecutor.publisher.model.SCTMTestSuiteResult;
-import hudson.plugins.sctmexecutor.publisher.model.SCTMTestResult.TestState;
 
 import java.io.File;
 
