@@ -36,6 +36,8 @@ public class SCTMResultParser {
       parseResultFile(filePath, rootSuite);
     }
     
+    rootSuite.calculateConfigurationResults();
+    
     return null; // TODO
   }
 

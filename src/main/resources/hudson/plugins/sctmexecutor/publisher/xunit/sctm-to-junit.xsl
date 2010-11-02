@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes"/>
   <xsl:template match="/">
     <xsl:element name="testsuite">
       <!-- xsl:attribute name="name" select="replace(/TestSuite/@TestItem,'(\p{Graph}*)(\\|/)','')"/-->
       <xsl:attribute name="name">
-        <xsl:value-of select="/TestSuite/@TestItem"/>
+        <!--xsl:value-of select="/TestSuite/@TestItem"/-->
+        <xsl:value-of select="replace(/TestSuite/@TestItem,'(\p{Graph}*)(\\|/)','')"/>
       </xsl:attribute>
       <xsl:attribute name="tests">
         <xsl:value-of select="/TestSuite/RunCount"/>
@@ -30,16 +31,17 @@
         <xsl:value-of select="./@TestItem"/>
       </xsl:attribute>
       <xsl:variable name="classname">
-        <xsl:for-each select="ancestor-or-self::TestSuite">
-          <xsl:value-of select="concat(translate(./@TestItem, '.', '_'), '.')"/>
+        <xsl:for-each select="ancestor-or-self::TestSuite" >
+          <xsl:value-of select="concat(./@TestItem, '.')"/>
         </xsl:for-each>
         <xsl:for-each select="ancestor-or-self::ResultElement">
-          <xsl:value-of select="concat(translate(./@TestItem, '.', '_'), '.')"/>
+          <xsl:value-of select="concat(./@TestItem, '.')"/>
         </xsl:for-each>
       </xsl:variable>
       
       <xsl:attribute name="classname">
-        <xsl:value-of select="substring($classname,0,string-length($classname))"/>
+        <!--xsl:value-of select="substring($classname,0,string-length($classname))"/-->
+        <xsl:value-of select="replace(substring($classname,0,string-length($classname)),'(\p{Graph}*)(\\|/)','')"/>
       </xsl:attribute>
       <xsl:attribute name="time">      
         <xsl:choose>

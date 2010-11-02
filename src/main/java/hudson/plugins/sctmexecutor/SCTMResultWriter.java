@@ -63,6 +63,8 @@ public class SCTMResultWriter implements ITestResultWriter {
     String name = testDefResult.getName();
     int testRunId = testDefResult.getTestRunId();
     
+    name.replaceAll("\\/:*?<>|", "_");
+    
     InputStream result = null;
     try {
       FilePath testDefResFolder = new FilePath(execDefResultFolder, name);
