@@ -26,6 +26,7 @@ public class TestFailedOutPutXMLParserHandler {
     rootSuite = new SCTMTestSuiteResult("root", null);
     OutputXMLParserHandler handler = new OutputXMLParserHandler(rootSuite , CONFIG_DUMMY);
     parser.parse(new File(TESTRESULTS_ROOTPATH+"failedTestResult/output.xml"), handler);
+    this.rootSuite.calculateConfigurationResults();
   }
   
   @Test

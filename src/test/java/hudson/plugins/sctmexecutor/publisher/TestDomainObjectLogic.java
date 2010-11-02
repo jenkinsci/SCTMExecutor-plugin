@@ -36,6 +36,7 @@ public class TestDomainObjectLogic {
     rootSuite.addChild(suite2);
     SCTMTestSuiteResult suite3 = new SCTMTestSuiteResult("suite3", null);
     rootSuite.addChild(suite3);
+    this.rootSuite.calculateConfigurationResults();
     
   }
   
