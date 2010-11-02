@@ -5,8 +5,11 @@ import hudson.model.AbstractBuild;
 import hudson.tasks.test.TestObject;
 import hudson.tasks.test.TestResult;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class SCTMTestCaseResult extends TestResult implements Comparable<SCTMTestCaseResult> {
@@ -137,6 +140,8 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
   }
 
   public Collection<String> getConfigurations() {
-    return this.configurationResults.keySet();
+    List<String> list = new ArrayList<String>(this.configurationResults.keySet());
+    Collections.sort(list);
+    return list;
   }
 }

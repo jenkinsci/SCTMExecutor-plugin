@@ -48,7 +48,7 @@ THE SOFTWARE.
               </j:forEach>
             </td>
             <td class="pane" style="width:6em" data="${p.duration}">${p.durationString}</td>
-            <j:forEach var="config" items="${p.getConfigurations()}" varStatus="status">
+            <j:forEach var="config" items="${it.getConfigurations()}" varStatus="status">
 	            <td class="pane" style="width:6em">
 	              <j:set var="result" value="${p.getTestResultForConfiguration(config)}"/>
 	              <j:choose>
