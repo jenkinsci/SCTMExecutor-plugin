@@ -76,28 +76,6 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   }
   
   Map<String, SCTMTestResult> getConfigurationResult() {
-//    Map<String, SCTMTestResult> suiteResult = new HashMap<String, SCTMTestResult>();
-//    for (TestResult result : this.childResults) {
-//      Map<String, SCTMTestResult> configurationResult = null;
-//      if (result instanceof SCTMTestCaseResult) {
-//        configurationResult = ((SCTMTestCaseResult)result).getConfigurationResult();
-//      } else if (result instanceof SCTMTestSuiteResult) {
-//        configurationResult = ((SCTMTestSuiteResult)result).getConfigurationResult();
-//      }
-//      if (configurationResult != null) {
-//        for (Entry<String, SCTMTestResult> childResult : configurationResult.entrySet()) {
-//          SCTMTestResult testResult = suiteResult.get(childResult.getKey());
-//          if (testResult == null)
-//            suiteResult.put(childResult.getKey(), new SCTMTestResult(childResult.getValue()));
-//          else {
-//            SCTMTestResult childTestResult = childResult.getValue();
-//            testResult.addSubTestCounts(childTestResult.getPassCount(), childTestResult.getSkipCount(), childTestResult.getFailCount());
-//            testResult.addSubDuration(childTestResult.getDuration());
-//          }
-//        }
-//      }
-//    }
-//    return suiteResult;
     return this.configurationResults;
   }
 
@@ -157,12 +135,12 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
 
   @Override
   public String getDisplayName() {
-    return getName();
+    return name;
   }
 
   @Override
   public String getName() {
-    return name;
+    return name.replaceAll("/|\\|:|\\x2A|\\x3F|<|>|\\x7c", "_");
   }
   
   @Override

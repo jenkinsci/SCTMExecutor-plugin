@@ -63,7 +63,7 @@ public class SCTMResultWriter implements ITestResultWriter {
     String name = testDefResult.getName();
     int testRunId = testDefResult.getTestRunId();
     
-    name.replaceAll("\\/:*?<>|", "_");
+    name = name.replaceAll("/|\\|:|\\x2A|\\x3F|<|>|\\x7c", "_"); // \/:*?<>| replace it because not allowed for file names
     
     InputStream result = null;
     try {
