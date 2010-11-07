@@ -191,7 +191,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   public SCTMTestSuiteResult getChildSuiteByName(String name) {
     for (TestResult child : this.childResults) {
       if ((child instanceof SCTMTestSuiteResult) &&
-          name.equals(child.getName()))
+          name.equals(child.getDisplayName()))
         return (SCTMTestSuiteResult)child;
     }
     return null;
@@ -200,7 +200,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   public SCTMTestCaseResult getChildTestByName(String name) {
     for (TestResult child : this.childResults) {
       if ((child instanceof SCTMTestCaseResult) &&
-          name.equals(child.getName()))
+          name.equals(child.getDisplayName()))
         return (SCTMTestCaseResult)child;
     }
     return null;
