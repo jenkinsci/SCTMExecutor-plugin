@@ -38,6 +38,7 @@ import com.borland.sctm.ws.planning.PlanningService;
 import com.borland.sctm.ws.planning.PlanningServiceServiceLocator;
 
 public class SCTMService implements ISCTMService {
+  /** @since SCTM 2010R2 **/ private static final int LOST_EXECUTIONSERVER = 12;
   private static final int MAX_LOGONRETRYCOUNT = 3;
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmservice");  //$NON-NLS-1$
   
@@ -181,7 +182,9 @@ public class SCTMService implements ISCTMService {
   @Override
   public boolean isFinished(ExecutionHandle handle) throws SCTMException {
     try {
-      return execService.getStateOfExecution(sessionId, handle) < 0;
+      int stateOfExecution = execService.getStateOfExecution(sessionId, handle);
+      return stateOfExecution < 0 ||
+             stateOfExecution == LOST_EXECUTIONSERVER; // since SCTM2010R2 we can detected when an execution server is lost and the execution must be aborted
     } catch (RemoteException e) {
       if (handleLostSessionException(e))
         return isFinished(handle);
