@@ -5,6 +5,7 @@ import hudson.FilePath;
 
 import java.io.File;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,8 +24,8 @@ public class TestStdResultWriter {
     root = new File(TMP_PATH);  
   }
   
-  @AfterClass
-  public static void despose() {
+  @After
+  public void despose() {
     for (String path : root.list()) {
       new File(root.getAbsolutePath()+"\\"+path).delete();
     }
@@ -84,6 +85,6 @@ public class TestStdResultWriter {
     thread1.join();
     thread2.join();
     
-    assertEquals(3, root.list().length);
+    assertEquals(2, root.list().length);
   }
 }
