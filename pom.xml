@@ -92,7 +92,7 @@
     <dependency>
       <groupId>org.jvnet.hudson.plugins</groupId>
       <artifactId>xunit</artifactId>
-      <version>1.10</version>
+      <version>1.12</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

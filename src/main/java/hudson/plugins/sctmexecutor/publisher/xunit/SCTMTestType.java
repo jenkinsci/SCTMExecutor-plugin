@@ -14,6 +14,11 @@ public class SCTMTestType extends TestType {
   public SCTMTestType(String pattern, boolean faildedIfNotNew, boolean deleteOutputFiles) {
     super(pattern, faildedIfNotNew, deleteOutputFiles);
   }
+  
+  @Override
+  public TestTypeDescriptor<? extends TestType> getDescriptor() {
+    return new SCTMTestType.DescriptorImpl();
+  }
 
   @Extension
   public static class DescriptorImpl extends TestTypeDescriptor<SCTMTestType> {
