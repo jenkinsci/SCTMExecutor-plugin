@@ -1,16 +1,36 @@
 package hudson.plugins.sctmexecutor.publisher;
 
+import hudson.XmlFile;
 import hudson.model.AbstractBuild;
+import hudson.tasks.junit.CaseResult;
+import hudson.tasks.junit.SuiteResult;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
+import hudson.util.HeapSpaceStringConverter;
+import hudson.util.XStream2;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.Collection;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kohsuke.stapler.StaplerProxy;
 
+import com.thoughtworks.xstream.XStream;
+
 public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction> implements StaplerProxy {
-  private final static Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor.publisher");
+  private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor.publisher");
+  private static final XStream XSTREAM = new XStream2();
+
+  static {
+      XSTREAM.alias("suite",SCTMTestSuiteResult.class);
+      XSTREAM.alias("case",SCTMTestCaseResult.class);
+      XSTREAM.registerConverter(new HeapSpaceStringConverter(),100);
+  }
+  
+//  private WeakReference<TestResult> testResult;
   private TestResult testResult;
 
   private int failCount;
@@ -19,9 +39,10 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
 
   protected SCTMResultAction(AbstractBuild<?, ?> owner, TestResult testResult) {
     super(owner);
-    this.testResult = testResult; //new WeakReference<TestResult>(testResult);
+//    this.testResult = new WeakReference<TestResult>(testResult);
+    this.testResult = testResult;
 
-    SCTMTestSuiteResult sctmTestSuiteResult = (SCTMTestSuiteResult) this.testResult;
+    SCTMTestSuiteResult sctmTestSuiteResult = (SCTMTestSuiteResult) this.testResult; //.get();
     failCount = sctmTestSuiteResult.getFailCount();
     skipCount = sctmTestSuiteResult.getSkipCount();
     totalCount = sctmTestSuiteResult.getTotalCount();
@@ -43,7 +64,7 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
   }
 
   public Collection<String> getConfigurations() {
-    TestResult result = this.testResult;
+    TestResult result = this.testResult; //.get();
     if (result instanceof SCTMTestCaseResult)
       return ((SCTMTestCaseResult) result).getConfigurations();
     else if (result instanceof SCTMTestSuiteResult)
@@ -65,21 +86,21 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
   @Override
   public TestResult getResult() {
     TestResult r;
-    if (testResult == null) {
+//    if (testResult == null) {
 //      r = load();
 //      testResult = new WeakReference<TestResult>(r);
-    } else {
-      r = testResult;
-    }
-
-//    if (totalCount == null) {
-//      totalCount = r.getTotalCount();
-//      failCount = r.getFailCount();
-//      skipCount = r.getSkipCount();
+//    } else {
+      r = testResult; //.get();
 //    }
-    return testResult;
+
+    if (totalCount == null) {
+      totalCount = r.getTotalCount();
+      failCount = r.getFailCount();
+      skipCount = r.getSkipCount();
+    }
+    return r;
   }
-//
+
 //  private TestResult load() {
 //    TestResult r;
 //    try {
@@ -92,9 +113,9 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
 //    return r;
 //  }
 
-//  private XmlFile getDataFile() {
-//    return new XmlFile(XSTREAM, new File(owner.getRootDir(), "junitResult.xml"));
-//  }
+  private XmlFile getDataFile() {
+    return new XmlFile(XSTREAM, new File(owner.getRootDir(), "junitResult.xml"));
+  }
 
   @Override
   public Object getTarget() {

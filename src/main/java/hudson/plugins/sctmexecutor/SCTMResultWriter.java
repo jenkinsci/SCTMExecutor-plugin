@@ -24,6 +24,8 @@ import com.borland.sctm.ws.execution.entities.TestDefinitionResult;
 import com.borland.sctm.ws.performer.SPNamedEntity;
 
 public class SCTMResultWriter implements ITestResultWriter {
+  private static final int PASSED = 1;
+
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
   
   private ISCTMService service;
@@ -70,16 +72,21 @@ public class SCTMResultWriter implements ITestResultWriter {
       FilePath testDefResFolder = new FilePath(execDefResultFolder, name);
       testDefResFolder.mkdirs();
       SPNamedEntity[] resultFiles = this.service.getResultFiles(testRunId);
+      boolean resultFileFound = false;
       for (SPNamedEntity resultFile : resultFiles) {
         String resultFileName = resultFile.getMsName();
         FilePath file = new FilePath(testDefResFolder, resultFileName);
         int miId = resultFile.getMiId();
         result = this.service.loadResultFile(miId);
-        if (resultFileName.matches("output.xml")) //$NON-NLS-1$
+        if (resultFileName.matches("output.xml")) { //$NON-NLS-1$
           completeAndWriteResultFile(result, file, execDefName, testDefResult.getName());
-        else
+          resultFileFound = true;
+        } else
           file.copyFrom(result);
       }
+      
+      if (resultFileFound)
+        writeDefaultResultFile(result, testDefResFolder, execDefName, testDefResult);
     } catch (Exception e) {
       String msg = MessageFormat.format(Messages.getString("SCTMResultWriter.err.err.createResultFolderTestDef"), testDefResult.getName(), testDefResult.getTestDefId()); //$NON-NLS-1$
       LOGGER.log(Level.FINE, msg, e);
@@ -95,6 +102,22 @@ public class SCTMResultWriter implements ITestResultWriter {
     }
   }
 
+  private void writeDefaultResultFile(InputStream result, FilePath testDefResultFolder, String execDefName, TestDefinitionResult testDefRes) throws IOException, InterruptedException {
+    Element root = new Element("TestSuite");
+    root.setAttribute("TestItem", execDefName);
+    addSubElements(root, 1, testDefRes.getDuration(), testDefRes.getStatus() == PASSED);
+    
+    Element test = new Element("Test");
+    test.setAttribute("TestItem", testDefRes.getName());
+    addSubElements(root, 1, testDefRes.getDuration(), testDefRes.getStatus() == PASSED);
+    root.addContent(test);
+    
+    FilePath resultFile = new FilePath(testDefResultFolder, "output.xml");
+    Document doc = new Document(root);
+    
+    writeResultFile(resultFile, doc);
+  }
+
   private void completeAndWriteResultFile(InputStream result, FilePath file, String execDefName, String testDefName) throws JDOMException, IOException, InterruptedException {
     Document document = new SAXBuilder().build(result);
     Element rootElement = document.getRootElement();
@@ -102,13 +125,17 @@ public class SCTMResultWriter implements ITestResultWriter {
     rootElement.removeContent();
     rootElement.setAttribute("TestItem", execDefName); //$NON-NLS-1$
     rootElement.removeAttribute("ExtId"); //$NON-NLS-1$
-    completeElement(oldRootElement, rootElement);
+    addSubElements(oldRootElement, rootElement);
     Element testDefElement = new Element("TestSuite"); //$NON-NLS-1$
-    completeElement(oldRootElement, testDefElement);
+    addSubElements(oldRootElement, testDefElement);
     testDefElement.setAttribute("TestItem", testDefName); //$NON-NLS-1$
     testDefElement.addContent(oldRootElement);
     rootElement.addContent(testDefElement);
     
+    writeResultFile(file, document);
+  }
+
+  private void writeResultFile(FilePath file, Document document) throws IOException, InterruptedException {
     XMLOutputter xmlWriter = new XMLOutputter(Format.getPrettyFormat());
     OutputStream out = null;
     try {
@@ -119,14 +146,22 @@ public class SCTMResultWriter implements ITestResultWriter {
         out.close();
     }
   }
-
-  private void completeElement(Element oldRootElement, Element testDefElement) {
-    addElement(testDefElement, "RunCount", oldRootElement.getChildText("RunCount")); //$NON-NLS-1$ //$NON-NLS-2$
-    addElement(testDefElement, "Timer", oldRootElement.getChildText("Timer")); //$NON-NLS-1$ //$NON-NLS-2$
-    addElement(testDefElement, "WasSuccess", oldRootElement.getChildText("WasSuccess")); //$NON-NLS-1$ //$NON-NLS-2$
+  
+  private void addSubElements(Element testDefElement, int runCount, long duration, boolean success) {
+    addCDataElement(testDefElement, "RunCount", String.valueOf(runCount)); //$NON-NLS-1$
+    if (!success)
+      addCDataElement(testDefElement, "ErrorCount", "1"); //$NON-NLS-1$ //$NON-NLS-2$
+    addCDataElement(testDefElement, "Timer", String.valueOf(duration)); //$NON-NLS-1$
+    addCDataElement(testDefElement, "WasSuccess", String.valueOf(success)); //$NON-NLS-1$
   }
 
-  private void addElement(Element testDefElement, String elementName, String value) {
+  private void addSubElements(Element oldRootElement, Element testDefElement) {
+    addCDataElement(testDefElement, "RunCount", oldRootElement.getChildText("RunCount")); //$NON-NLS-1$ //$NON-NLS-2$
+    addCDataElement(testDefElement, "Timer", oldRootElement.getChildText("Timer")); //$NON-NLS-1$ //$NON-NLS-2$
+    addCDataElement(testDefElement, "WasSuccess", oldRootElement.getChildText("WasSuccess")); //$NON-NLS-1$ //$NON-NLS-2$
+  }
+
+  private void addCDataElement(Element testDefElement, String elementName, String value) {
     Element elem = new Element(elementName);
     elem.addContent(new Text(value));
     testDefElement.addContent(elem);

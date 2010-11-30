@@ -97,9 +97,11 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   @Override
   public float getDuration() {
     float duration = 0;
-    for (TestResult child : this.childResults) {
-      duration += child.getDuration();
-    }
+//    for (TestResult child : this.childResults) {
+//      duration += child.getDuration();
+//    }
+    for (SCTMTestResult conf : this.getConfigurationResult().values())
+      duration += conf.getDuration();
     return duration;
   }
   

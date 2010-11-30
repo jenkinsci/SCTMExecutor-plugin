@@ -183,8 +183,7 @@ public class SCTMService implements ISCTMService {
   public boolean isFinished(ExecutionHandle handle) throws SCTMException {
     try {
       int stateOfExecution = execService.getStateOfExecution(sessionId, handle);
-      return stateOfExecution < 0 ||
-             stateOfExecution == LOST_EXECUTIONSERVER; // since SCTM2010R2 we can detected when an execution server is lost and the execution must be aborted
+      return stateOfExecution < 0;
     } catch (RemoteException e) {
       if (handleLostSessionException(e))
         return isFinished(handle);
