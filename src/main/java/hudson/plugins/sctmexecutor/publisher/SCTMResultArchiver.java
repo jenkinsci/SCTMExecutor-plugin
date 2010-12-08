@@ -55,11 +55,11 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
       return false;
     }
     
-    ExecutorService executor = Executors.newFixedThreadPool(4);
+//    ExecutorService executor = Executors.newFixedThreadPool(4);
     for (final FilePath resultFilePath : resultFiles) {
-      executor.execute(new Runnable() {
-        @Override
-        public void run() {
+//      executor.execute(new Runnable() {
+//        @Override
+//        public void run() {
           try {
             SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
             OutputXMLParserHandler handler = new OutputXMLParserHandler(rootSuite, rootSuite.getParent().getParent().getName());
@@ -69,14 +69,12 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
             LOGGER.log(Level.SEVERE, "SCTMResult cannot be parsed", e);
           }
           
-          synchronized (rootSuite) {
-            rootSuite.calculateConfigurationResults();      
-          }
-        }
-      });
+          rootSuite.calculateConfigurationResults();      
+//        }
+//      });
     }
     
-    executor.awaitTermination(10, TimeUnit.MINUTES);
+//    executor.awaitTermination(10, TimeUnit.MINUTES);
     
     build.getActions().add(new SCTMResultAction(build, rootSuite));
     return true; // TODO: provide a build result

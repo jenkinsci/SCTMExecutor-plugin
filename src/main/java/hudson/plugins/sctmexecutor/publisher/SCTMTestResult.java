@@ -2,7 +2,6 @@ package hudson.plugins.sctmexecutor.publisher;
 
 import hudson.Util;
 
-
 public class SCTMTestResult {
   public static enum TestState {
     FAILED("failed"),
@@ -72,14 +71,14 @@ public class SCTMTestResult {
       state = TestState.NOTESTS;
   }
   
-  void addSubTestCounts(int passed, int skipped, int failed) {
+  synchronized void addSubTestCounts(int passed, int skipped, int failed) {
     this.passCount += passed;
     this.skipCount += skipped;
     this.failCount += failed;
     calculateState();
   }
 
-  void addSubDuration(float duration) {
+  synchronized void addSubDuration(float duration) {
     this.duration += duration;
   }
   
@@ -88,19 +87,19 @@ public class SCTMTestResult {
     return String.format("%s in %fms", this.state, this.duration);
   }
 
-  public Object getTotalCount() {
+  public int getTotalCount() {
     return failCount+skipCount+passCount;
   }
 
-  public int getFailCount() {
+  public synchronized int getFailCount() {
     return failCount;
   }
   
-  public int getSkipCount() {
+  public synchronized int getSkipCount() {
     return skipCount;
   }
   
-  public int getPassCount() {
+  public synchronized int getPassCount() {
     return passCount;
   }
 
@@ -108,7 +107,7 @@ public class SCTMTestResult {
     return state;
   }
 
-  public float getDuration() {
+  public synchronized float getDuration() {
     return duration;
   }
   

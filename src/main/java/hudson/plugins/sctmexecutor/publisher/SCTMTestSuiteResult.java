@@ -51,7 +51,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
     return count;
   }
     
-  void calculateConfigurationResults() {
+  synchronized void calculateConfigurationResults() {
     for (TestResult result : this.childResults) {
       Map<String, SCTMTestResult> configurationResult = null;
       if (result instanceof SCTMTestCaseResult) {
@@ -75,7 +75,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
     }
   }
   
-  Map<String, SCTMTestResult> getConfigurationResult() {
+  synchronized Map<String, SCTMTestResult> getConfigurationResult() {
     return this.configurationResults;
   }
 
@@ -97,9 +97,6 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   @Override
   public float getDuration() {
     float duration = 0;
-//    for (TestResult child : this.childResults) {
-//      duration += child.getDuration();
-//    }
     for (SCTMTestResult conf : this.getConfigurationResult().values())
       duration += conf.getDuration();
     return duration;
