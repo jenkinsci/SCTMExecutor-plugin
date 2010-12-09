@@ -85,7 +85,7 @@ public class SCTMResultWriter implements ITestResultWriter {
           file.copyFrom(result);
       }
       
-      if (resultFileFound)
+      if (!resultFileFound)
         writeDefaultResultFile(result, testDefResFolder, execDefName, testDefResult);
     } catch (Exception e) {
       String msg = MessageFormat.format(Messages.getString("SCTMResultWriter.err.err.createResultFolderTestDef"), testDefResult.getName(), testDefResult.getTestDefId()); //$NON-NLS-1$
@@ -109,7 +109,7 @@ public class SCTMResultWriter implements ITestResultWriter {
     
     Element test = new Element("Test");
     test.setAttribute("TestItem", testDefRes.getName());
-    addSubElements(root, 1, testDefRes.getDuration(), testDefRes.getStatus() == PASSED);
+    addSubElements(test, 1, testDefRes.getDuration(), testDefRes.getStatus() == PASSED);
     root.addContent(test);
     
     FilePath resultFile = new FilePath(testDefResultFolder, "output.xml");

@@ -62,7 +62,7 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
 //        public void run() {
           try {
             SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-            OutputXMLParserHandler handler = new OutputXMLParserHandler(rootSuite, rootSuite.getParent().getParent().getName());
+            OutputXMLParserHandler handler = new OutputXMLParserHandler(rootSuite, resultFilePath.getParent().getParent().getName());
             parser.parse(resultFilePath.read(), handler);
           } catch (Exception e) {
             listener.fatalError(MessageFormat.format("FATAL ERROR: Result cannot be parsed, because: {0}", e.getMessage()));

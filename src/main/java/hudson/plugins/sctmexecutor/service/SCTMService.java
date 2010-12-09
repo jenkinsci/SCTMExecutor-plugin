@@ -38,7 +38,6 @@ import com.borland.sctm.ws.planning.PlanningService;
 import com.borland.sctm.ws.planning.PlanningServiceServiceLocator;
 
 public class SCTMService implements ISCTMService {
-  /** @since SCTM 2010R2 **/ private static final int LOST_EXECUTIONSERVER = 12;
   private static final int MAX_LOGONRETRYCOUNT = 3;
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmservice");  //$NON-NLS-1$
   
