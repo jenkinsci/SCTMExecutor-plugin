@@ -23,7 +23,7 @@ public class TestFailedOutPutXMLParserHandler {
   @Before
   public void setUp() throws Exception {
     SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-    rootSuite = new SCTMTestSuiteResult("root", null);
+    rootSuite = new SCTMTestSuiteResult("root");
     OutputXMLParserHandler handler = new OutputXMLParserHandler(rootSuite , CONFIG_DUMMY);
     parser.parse(new File(TESTRESULTS_ROOTPATH+"failedTestResult/output.xml"), handler);
     this.rootSuite.calculateConfigurationResults();

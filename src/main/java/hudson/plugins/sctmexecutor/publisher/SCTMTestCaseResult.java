@@ -2,6 +2,7 @@ package hudson.plugins.sctmexecutor.publisher;
 
 import hudson.Util;
 import hudson.model.AbstractBuild;
+import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestObject;
 import hudson.tasks.test.TestResult;
 
@@ -15,34 +16,34 @@ import java.util.Map;
 public final class SCTMTestCaseResult extends TestResult implements Comparable<SCTMTestCaseResult> {
   private static final long serialVersionUID = 120696130376606962L;
 
-  private AbstractBuild<?,?> owner;
   private TestObject parent;
-  private String name;
-  private Map<String, SCTMTestResult> configurationResults;
-  
-  public SCTMTestCaseResult(String name, AbstractBuild<?,?> owner) {
-    this(name, owner, new HashMap<String, SCTMTestResult>());
+  private final String name;
+  private final Map<String, SCTMTestResult> configurationResults;
+
+  private transient AbstractTestResultAction<SCTMResultAction> parentAction;
+
+  public SCTMTestCaseResult(String name) {
+    this(name, new HashMap<String, SCTMTestResult>());
   }
-  
-  SCTMTestCaseResult(String name, AbstractBuild<?,?> owner, Map<String, SCTMTestResult> configurationResults) {    
-    this.owner = owner;
+
+  SCTMTestCaseResult(String name, Map<String, SCTMTestResult> configurationResults) {
     this.name = name;
     this.configurationResults = configurationResults;
   }
-  
+
   private int getXCount(SCTMTestResult.TestState state) {
     int count = 0;
     for (SCTMTestResult result : this.configurationResults.values()) {
       switch (state) {
-        case PASSED:
-          count += result.getPassCount();
-          break;
-        case SKIPPED:
-          count += result.getSkipCount();
-          break;
-        case FAILED:
-          count += result.getFailCount();
-          break;
+      case PASSED:
+        count += result.getPassCount();
+        break;
+      case SKIPPED:
+        count += result.getSkipCount();
+        break;
+      case FAILED:
+        count += result.getFailCount();
+        break;
       }
     }
     return count;
@@ -66,7 +67,7 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
   public int getFailCount() {
     return getXCount(SCTMTestResult.TestState.FAILED);
   }
-  
+
   @Override
   public String getDisplayName() {
     return getName();
@@ -74,14 +75,14 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
 
   @Override
   public AbstractBuild<?, ?> getOwner() {
-    return owner;
+    return this.parentAction == null ? null : this.parentAction.owner;
   }
-  
+
   @Override
   public TestObject getParent() {
     return parent;
   }
-  
+
   @Override
   public void setParent(TestObject parent) {
     this.parent = parent;
@@ -91,7 +92,7 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
   public String getName() {
     return name.replaceAll("/|\\|:|\\x2A|\\x3F|<|>|\\x7c", "_");
   }
-  
+
   @Override
   public float getDuration() {
     float duration = 0f;
@@ -100,10 +101,10 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
     }
     return duration;
   }
-  
+
   @Override
   public String getDurationString() {
-    return Util.getTimeSpanString((long)getDuration());
+    return Util.getTimeSpanString((long) getDuration());
   }
 
   @Override
@@ -117,14 +118,20 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
   public int compareTo(SCTMTestCaseResult o) {
     if (this.name.equals(o.getName())) {
       if (parent != null)
-        return ((SCTMTestSuiteResult)parent).compareTo((SCTMTestSuiteResult)o.getParent());
+        return ((SCTMTestSuiteResult) parent).compareTo((SCTMTestSuiteResult) o.getParent());
     }
     return -1;
   }
-  
+
   @Override
   public String toString() {
     return String.format("TestCase [%s]", this.name);
+  }
+
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @Override
+  public void setParentAction(AbstractTestResultAction action) {
+    this.parentAction = action;
   }
 
   public void setParent(SCTMTestSuiteResult parent) {

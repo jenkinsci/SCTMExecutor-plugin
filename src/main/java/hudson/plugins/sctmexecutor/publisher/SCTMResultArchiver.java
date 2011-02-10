@@ -3,6 +3,7 @@ package hudson.plugins.sctmexecutor.publisher;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.BuildListener;
+import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.Hudson;
 import hudson.plugins.sctmexecutor.exceptions.SCTMArchiverException;
@@ -29,7 +30,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class SCTMResultArchiver extends Recorder implements Serializable {
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor");
-  
+
   @DataBoundConstructor
   public SCTMResultArchiver() {
   }
@@ -42,44 +43,50 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, final BuildListener listener)
       throws InterruptedException, IOException {
-    final SCTMTestSuiteResult rootSuite = new SCTMTestSuiteResult("root", build);
-    
+    final SCTMTestSuiteResult rootSuite = new SCTMTestSuiteResult("root");
+
     FilePath workspace = build.getWorkspace();
     FilePath resultRootPath = workspace.child(String.format("SCTMResults/%d", build.getNumber()));
     List<FilePath> resultFiles;
     try {
       resultFiles = findAllResultFiles(resultRootPath);
     } catch (SCTMArchiverException e) {
-      listener.fatalError(MessageFormat.format("FATAL ERROR: Cannot find any result files, because: {0}", e.getMessage()));
+      listener.fatalError(MessageFormat.format("FATAL ERROR: Cannot find any result files, because: {0}",
+          e.getMessage()));
       LOGGER.log(Level.SEVERE, "output.xml files not found", e);
+      build.setResult(Result.FAILURE);
       return false;
     }
-    
-//    ExecutorService executor = Executors.newFixedThreadPool(4);
+
+    ExecutorService executor = Executors.newFixedThreadPool(4);
     for (final FilePath resultFilePath : resultFiles) {
-//      executor.execute(new Runnable() {
-//        @Override
-//        public void run() {
+      executor.execute(new Runnable() {
+        @Override
+        public void run() {
           try {
             SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-            OutputXMLParserHandler handler = new OutputXMLParserHandler(rootSuite, resultFilePath.getParent().getParent().getName());
+            OutputXMLParserHandler handler = new OutputXMLParserHandler(rootSuite, resultFilePath.getParent()
+                .getParent().getName());
             parser.parse(resultFilePath.read(), handler);
           } catch (Exception e) {
-            listener.fatalError(MessageFormat.format("FATAL ERROR: Result cannot be parsed, because: {0}", e.getMessage()));
+            listener.fatalError(MessageFormat.format("FATAL ERROR: Result cannot be parsed, because: {0}",
+                e.getMessage()));
             LOGGER.log(Level.SEVERE, "SCTMResult cannot be parsed", e);
           }
-          
-          rootSuite.calculateConfigurationResults();      
-//        }
-//      });
+
+          rootSuite.calculateConfigurationResults();
+        }
+      });
     }
-    
-//    executor.awaitTermination(10, TimeUnit.MINUTES);
-    
-    build.getActions().add(new SCTMResultAction(build, rootSuite));
-    return true; // TODO: provide a build result
+
+    executor.shutdown();
+    executor.awaitTermination(10, TimeUnit.MINUTES);
+
+    build.getActions().add(new SCTMResultAction(build, rootSuite, listener));
+    build.setResult(rootSuite.getFailCount() > 0 ? Result.UNSTABLE : Result.SUCCESS);
+    return true;
   }
-  
+
   private List<FilePath> findAllResultFiles(FilePath rootPath) throws SCTMArchiverException, InterruptedException {
     List<FilePath> resultFilePath = new ArrayList<FilePath>();
     try {
@@ -95,7 +102,7 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
     } catch (IOException e) {
       throw new SCTMArchiverException(e);
     }
-    
+
     return resultFilePath;
   }
 

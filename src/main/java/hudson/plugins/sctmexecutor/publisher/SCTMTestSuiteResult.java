@@ -3,6 +3,7 @@ package hudson.plugins.sctmexecutor.publisher;
 import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.tasks.test.TabulatedResult;
+import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestObject;
 import hudson.tasks.test.TestResult;
 
@@ -20,15 +21,15 @@ import org.kohsuke.stapler.StaplerResponse;
 public final class SCTMTestSuiteResult extends TabulatedResult implements Comparable<SCTMTestSuiteResult> {
   private static final long serialVersionUID = -5725371200267573341L;
 
-  private AbstractBuild<?, ?> owner;
   private TestObject parent;
-  private String name;
-  private Collection<TestResult> childResults;
-  private Map<String, SCTMTestResult> configurationResults;
+  private final String name;
+  private final Collection<TestResult> childResults;
+  private final Map<String, SCTMTestResult> configurationResults;
 
-  public SCTMTestSuiteResult(String name, AbstractBuild<?, ?> owner) {
+  private transient AbstractTestResultAction<SCTMResultAction> parentAction;
+
+  public SCTMTestSuiteResult(String name) {
     this.name = name;
-    this.owner = owner;
     this.childResults = new ArrayList<TestResult>();
     this.configurationResults = new HashMap<String, SCTMTestResult>();
   }
@@ -37,28 +38,28 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
     int count = 0;
     for (SCTMTestResult result : this.getConfigurationResult().values()) {
       switch (state) {
-        case PASSED:
-          count += result.getPassCount();
-          break;
-        case SKIPPED:
-          count += result.getSkipCount();
-          break;
-        case FAILED:
-          count += result.getFailCount();
-          break;
+      case PASSED:
+        count += result.getPassCount();
+        break;
+      case SKIPPED:
+        count += result.getSkipCount();
+        break;
+      case FAILED:
+        count += result.getFailCount();
+        break;
       }
     }
     return count;
   }
-    
+
   synchronized void calculateConfigurationResults() {
     for (TestResult result : this.childResults) {
       Map<String, SCTMTestResult> configurationResult = null;
       if (result instanceof SCTMTestCaseResult) {
-        configurationResult = ((SCTMTestCaseResult)result).getConfigurationResult();
+        configurationResult = ((SCTMTestCaseResult) result).getConfigurationResult();
       } else if (result instanceof SCTMTestSuiteResult) {
         ((SCTMTestSuiteResult) result).calculateConfigurationResults();
-        configurationResult = ((SCTMTestSuiteResult)result).getConfigurationResult();
+        configurationResult = ((SCTMTestSuiteResult) result).getConfigurationResult();
       }
       if (configurationResult != null) {
         for (Entry<String, SCTMTestResult> childResult : configurationResult.entrySet()) {
@@ -67,14 +68,15 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
             configurationResults.put(childResult.getKey(), new SCTMTestResult(childResult.getValue()));
           else {
             SCTMTestResult childTestResult = childResult.getValue();
-            testResult.addSubTestCounts(childTestResult.getPassCount(), childTestResult.getSkipCount(), childTestResult.getFailCount());
+            testResult.addSubTestCounts(childTestResult.getPassCount(), childTestResult.getSkipCount(),
+                childTestResult.getFailCount());
             testResult.addSubDuration(childTestResult.getDuration());
           }
         }
       }
     }
   }
-  
+
   synchronized Map<String, SCTMTestResult> getConfigurationResult() {
     return this.configurationResults;
   }
@@ -93,7 +95,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   public int getFailCount() {
     return getXCount(SCTMTestResult.TestState.FAILED);
   }
-  
+
   @Override
   public float getDuration() {
     float duration = 0;
@@ -101,15 +103,15 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
       duration += conf.getDuration();
     return duration;
   }
-  
+
   @Override
   public String getDurationString() {
-    return Util.getTimeSpanString((long)getDuration());
+    return Util.getTimeSpanString((long) getDuration());
   }
 
   @Override
   public Collection<? extends TestResult> getChildren() {
-    return this.childResults;
+    return Collections.unmodifiableCollection(this.childResults);
   }
 
   @Override
@@ -119,14 +121,14 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
 
   @Override
   public AbstractBuild<?, ?> getOwner() {
-    return owner;
+    return this.parentAction == null ? null : this.parentAction.owner;
   }
 
   @Override
   public TestObject getParent() {
     return parent;
   }
-  
+
   @Override
   public void setParent(TestObject parent) {
     this.parent = parent;
@@ -141,7 +143,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   public String getName() {
     return name.replaceAll("/|\\|:|\\x2A|\\x3F|<|>|\\x7c", "_");
   }
-  
+
   @Override
   public TestResult findCorrespondingResult(String id) {
     String myID = safe(getName());
@@ -150,9 +152,9 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
     else {
       TestResult testResult = null;
       for (TestResult result : this.childResults) {
-         testResult = result.findCorrespondingResult(id);
-         if (testResult != null)
-           return testResult;
+        testResult = result.findCorrespondingResult(id);
+        if (testResult != null)
+          return testResult;
       }
     }
     return null;
@@ -162,7 +164,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   public int compareTo(SCTMTestSuiteResult o) {
     if (this.name.equals(o.getName())) {
       if (parent != null)
-        return ((SCTMTestSuiteResult)parent).compareTo((SCTMTestSuiteResult)o.getParent());
+        return ((SCTMTestSuiteResult) parent).compareTo((SCTMTestSuiteResult) o.getParent());
     }
     return -1;
   }
@@ -182,25 +184,32 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   public String toString() {
     return String.format("TestSuite [%s]", this.name);
   }
-  
-  public void addChild(TestResult test) {
+
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @Override
+  public void setParentAction(AbstractTestResultAction action) {
+    this.parentAction = action;
+    for (TestResult result : this.childResults) {
+      result.setParentAction(action);
+    }
+  }
+
+  public synchronized void addChild(TestResult test) {
     childResults.add(test);
   }
 
-  public SCTMTestSuiteResult getChildSuiteByName(String name) {
+  public synchronized SCTMTestSuiteResult getChildSuiteByName(String name) {
     for (TestResult child : this.childResults) {
-      if ((child instanceof SCTMTestSuiteResult) &&
-          name.equals(child.getDisplayName()))
-        return (SCTMTestSuiteResult)child;
+      if ((child instanceof SCTMTestSuiteResult) && name.equals(child.getDisplayName()))
+        return (SCTMTestSuiteResult) child;
     }
     return null;
   }
 
-  public SCTMTestCaseResult getChildTestByName(String name) {
+  public synchronized SCTMTestCaseResult getChildTestByName(String name) {
     for (TestResult child : this.childResults) {
-      if ((child instanceof SCTMTestCaseResult) &&
-          name.equals(child.getDisplayName()))
-        return (SCTMTestCaseResult)child;
+      if ((child instanceof SCTMTestCaseResult) && name.equals(child.getDisplayName()))
+        return (SCTMTestCaseResult) child;
     }
     return null;
   }

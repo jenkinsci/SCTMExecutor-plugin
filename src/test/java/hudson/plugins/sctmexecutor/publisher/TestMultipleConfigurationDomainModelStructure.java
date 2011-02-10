@@ -23,7 +23,7 @@ public class TestMultipleConfigurationDomainModelStructure {
   @Before
   public void setUp() throws Exception {
     SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-    rootSuite = new SCTMTestSuiteResult("root", null);
+    rootSuite = new SCTMTestSuiteResult("root");
     OutputXMLParserHandler handler = new OutputXMLParserHandler(rootSuite , "win7");
     parser.parse(new File(TESTRESULTS_ROOTPATH+"specialTestResult/output_Win7.xml"), handler);
     handler = new OutputXMLParserHandler(rootSuite , "winxp");

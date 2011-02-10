@@ -1,9 +1,8 @@
 package hudson.plugins.sctmexecutor.publisher;
 
 import hudson.XmlFile;
+import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
-import hudson.tasks.junit.CaseResult;
-import hudson.tasks.junit.SuiteResult;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 import hudson.util.HeapSpaceStringConverter;
@@ -25,27 +24,53 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
   private static final XStream XSTREAM = new XStream2();
 
   static {
-      XSTREAM.alias("suite",SCTMTestSuiteResult.class);
-      XSTREAM.alias("case",SCTMTestCaseResult.class);
-      XSTREAM.registerConverter(new HeapSpaceStringConverter(),100);
+    XSTREAM.alias("suite", SCTMTestSuiteResult.class);
+    XSTREAM.alias("case", SCTMTestCaseResult.class);
+    XSTREAM.registerConverter(new HeapSpaceStringConverter(), 100);
   }
-  
-//  private WeakReference<TestResult> testResult;
-  private TestResult testResult;
+
+  private transient WeakReference<TestResult> testResult;
 
   private int failCount;
   private int skipCount;
   private Integer totalCount;
 
-  protected SCTMResultAction(AbstractBuild<?, ?> owner, TestResult testResult) {
+  protected SCTMResultAction(AbstractBuild<?, ?> owner, TestResult testResult, BuildListener listener) {
     super(owner);
-//    this.testResult = new WeakReference<TestResult>(testResult);
-    this.testResult = testResult;
+    setResult(testResult, listener);
+  }
 
-    SCTMTestSuiteResult sctmTestSuiteResult = (SCTMTestSuiteResult) this.testResult; //.get();
+  private synchronized void setResult(TestResult testResult, BuildListener listener) {
+    SCTMTestSuiteResult sctmTestSuiteResult = (SCTMTestSuiteResult) testResult;
     failCount = sctmTestSuiteResult.getFailCount();
     skipCount = sctmTestSuiteResult.getSkipCount();
     totalCount = sctmTestSuiteResult.getTotalCount();
+
+    try {
+      getDataFile().write(testResult);
+    } catch (IOException e) {
+      String msg = "Failed to save the SCTM test result.";
+      LOGGER.log(Level.SEVERE, msg, e);
+      listener.fatalError(msg);
+    }
+    this.testResult = new WeakReference<TestResult>(testResult);
+  }
+
+  private XmlFile getDataFile() {
+    return new XmlFile(XSTREAM, new File(owner.getRootDir(), "sctmResult.xml"));
+  }
+
+  private TestResult load() {
+    TestResult r;
+    try {
+      r = (TestResult) getDataFile().read();
+      r.setParentAction(this);
+    } catch (IOException e) {
+      LOGGER.log(Level.WARNING, "Failed to load " + getDataFile(), e);
+      r = new SCTMTestCaseResult("dummy"); // return a dummy
+      r.setParentAction(this);
+    }
+    return r;
   }
 
   @Override
@@ -63,16 +88,6 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
     return "sctmresult";
   }
 
-  public Collection<String> getConfigurations() {
-    TestResult result = this.testResult; //.get();
-    if (result instanceof SCTMTestCaseResult)
-      return ((SCTMTestCaseResult) result).getConfigurations();
-    else if (result instanceof SCTMTestSuiteResult)
-      return ((SCTMTestSuiteResult) result).getConfigurations();
-    else
-      throw new IllegalStateException("Unknown result type.");
-  }
-
   @Override
   public int getFailCount() {
     return failCount;
@@ -86,12 +101,16 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
   @Override
   public TestResult getResult() {
     TestResult r;
-//    if (testResult == null) {
-//      r = load();
-//      testResult = new WeakReference<TestResult>(r);
-//    } else {
-      r = testResult; //.get();
-//    }
+    if (testResult == null) {
+      r = load();
+      testResult = new WeakReference<TestResult>(r);
+    } else {
+      r = testResult.get();
+      if (r == null) {
+        r = load();
+        testResult = new WeakReference<TestResult>(r);
+      }
+    }
 
     if (totalCount == null) {
       totalCount = r.getTotalCount();
@@ -101,25 +120,19 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
     return r;
   }
 
-//  private TestResult load() {
-//    TestResult r;
-//    try {
-//      r = (TestResult) getDataFile().read();
-//    } catch (IOException e) {
-//      LOGGER.log(Level.WARNING, "Failed to load " + getDataFile(), e);
-//      r = new SCTMTestCaseResult("dummy", null); // return a dummy
-//    }
-//    r.freeze(this);
-//    return r;
-//  }
-
-  private XmlFile getDataFile() {
-    return new XmlFile(XSTREAM, new File(owner.getRootDir(), "junitResult.xml"));
-  }
-
   @Override
   public Object getTarget() {
     return getResult();
+  }
+
+  public Collection<String> getConfigurations() {
+    TestResult result = this.testResult.get();
+    if (result instanceof SCTMTestCaseResult)
+      return ((SCTMTestCaseResult) result).getConfigurations();
+    else if (result instanceof SCTMTestSuiteResult)
+      return ((SCTMTestSuiteResult) result).getConfigurations();
+    else
+      throw new IllegalStateException("Unknown result type.");
   }
 
 }
