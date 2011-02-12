@@ -74,13 +74,13 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
             LOGGER.log(Level.SEVERE, "SCTMResult cannot be parsed", e);
           }
 
-          rootSuite.calculateConfigurationResults();
         }
       });
     }
 
     executor.shutdown();
     executor.awaitTermination(10, TimeUnit.MINUTES);
+    rootSuite.calculateConfigurationResults();
 
     build.getActions().add(new SCTMResultAction(build, rootSuite, listener));
     build.setResult(rootSuite.getFailCount() > 0 ? Result.UNSTABLE : Result.SUCCESS);
