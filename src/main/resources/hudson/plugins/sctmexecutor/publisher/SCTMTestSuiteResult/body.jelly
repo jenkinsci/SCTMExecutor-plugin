@@ -38,14 +38,15 @@ THE SOFTWARE.
           <tr onMouseOver="this.bgColor='#f5f5f5';" onMouseOut="this.bgColor='#FFFFFF';">
             <td class="pane">
               <a href="${p.safeName}">
-                <span style="${p.previousResult==null?'font-weight:bold':''}">
+                <!--<span style="${p.previousResult==null?'font-weight:bold':''}">-->
                   <st:out value="${p.name}" />
-                </span>
+                <!--</span>-->
               </a>
               <st:nbsp/>
-              <j:forEach var="badge" items="${p.testActions}">
+              <!--<j:forEach var="badge" items="${p.testActions}">
                 <st:include it="${badge}" page="badge.jelly" optional="true"/>
               </j:forEach>
+              -->
             </td>
             <td class="pane" style="width:6em" data="${p.duration}">${p.durationString}</td>
             <j:forEach var="config" items="${it.getConfigurations()}" varStatus="status">
