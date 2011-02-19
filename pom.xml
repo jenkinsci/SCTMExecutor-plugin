@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.jvnet.hudson.plugins</groupId>
+    <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.395</version>
+    <version>1.396</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <groupId>hudson.plugins.sctmexecutor</groupId>
@@ -28,6 +28,28 @@
       <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
     </repository>
   </distributionManagement>
+  <repositories>
+    <repository>
+      <id>maven.glassfish.org</id>
+      <url>http://maven.glassfish.org/content/groups/public</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>maven.jenkins-ci.org</id>
+      <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
   <reporting>
     <excludeDefaults>true</excludeDefaults>
     <plugins>
@@ -55,9 +77,9 @@
     </plugins>
   </reporting>
   <scm>
-  	<connection>scm:svn:http://svn.jenkins-ci.org/trunk/hudson/plugins/SCTMExecutor</connection>
-  	<developerConnection>scm:svn:http://svn.jenkins-ci.org/trunk/hudson/plugins/SCTMExecutor</developerConnection>
-  	<url>http://fisheye.jenkins-ci.org/browse/Hudson/trunk/hudson/plugins/SCTMExecutor</url>
+    <connection>scm:svn:https://svn.jenkins-ci.org/trunk/hudson/plugins/SCTMExecutor</connection>
+    <developerConnection>scm:svn:https://svn.jenkins-ci.org/trunk/hudson/plugins/SCTMExecutor</developerConnection>
+    <url>http://fisheye.jenkins-ci.org/browse/Hudson/trunk/hudson/plugins/SCTMExecutor</url>
   </scm>
   <dependencies>
     <dependency>
@@ -100,9 +122,11 @@
       <type>jar</type>
     </dependency>
     <dependency>
-      <groupId>org.jvnet.hudson.plugins</groupId>
-      <artifactId>xunit</artifactId>
-      <version>1.13</version>
+    	<groupId>com.thalesgroup.jenkins-ci.plugins</groupId>
+    	<artifactId>xunit</artifactId>
+    	<version>[1.14,)</version>
+    	<type>jar</type>
+    	<scope>compile</scope>
     </dependency>
   </dependencies>
   <developers>
