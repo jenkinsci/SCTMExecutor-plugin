@@ -80,7 +80,7 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
 
   @Override
   public String getIconFileName() {
-    return "gear2.gif";
+    return "/plugin/SCTMExecutor/images/sctmResult.jpg";
   }
 
   @Override
