@@ -136,22 +136,22 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
 
   @Override
   public TestResult getPreviousResult() {
-    // AbstractBuild<?, ?> build = getOwner();
-    // if (build == null)
-    // return null;
-    //
-    // do {
-    // build = build.getPreviousBuild();
-    // if (build != null) {
-    // SCTMResultAction action = build.getAction(SCTMResultAction.class);
-    // if (action != null) {
-    // TestResult result = action.findCorrespondingResult(this.getId());
-    // if (result != null)
-    // return result;
-    // }
-    // } else
-    return null; // no more builds in the past
-    // } while (true);
+    AbstractBuild<?, ?> build = getOwner();
+    if (build == null)
+      return null;
+
+    do {
+      build = build.getPreviousBuild();
+      if (build != null) {
+        SCTMResultAction action = build.getAction(SCTMResultAction.class);
+        if (action != null) {
+          TestResult result = action.findCorrespondingResult(this.getId());
+          if (result != null)
+            return result;
+        }
+      } else
+        return null; // no more builds in the past
+    } while (true);
   }
 
   public void setParent(SCTMTestSuiteResult parent) {
