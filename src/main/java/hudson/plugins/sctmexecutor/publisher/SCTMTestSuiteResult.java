@@ -141,7 +141,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
 
   @Override
   public String getName() {
-    return name.replaceAll("/|\\|:|\\x2A|\\x3F|<|>|\\x7c", "_");
+    return name.replaceAll("/|\\|:|\\x2A|\\x3F|<|>|\\x7c|#", "_");
   }
 
   @Override

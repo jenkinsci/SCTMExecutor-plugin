@@ -21,7 +21,6 @@ public class OutputXMLParserHandler extends DefaultHandler {
   private final String configuration;
 
   private boolean nunitSuiteFound;
-  private boolean testCase;
   private boolean wasSuccessElement;
   private boolean timerElement;
   private boolean messageElement;
@@ -64,7 +63,6 @@ public class OutputXMLParserHandler extends DefaultHandler {
         this.resultStack.push(child);
       }
     } else if ("Test".equals(qName)) {
-      this.testCase = true;
       String name = attributes.getValue("TestItem");
       SCTMTestSuiteResult suite = (SCTMTestSuiteResult) this.resultStack.peek();
       SCTMTestCaseResult child = suite.getChildTestByName(name);
@@ -119,7 +117,6 @@ public class OutputXMLParserHandler extends DefaultHandler {
     } else if ("Test".equals(qName)) {
       SCTMTestCaseResult result = (SCTMTestCaseResult) this.resultStack.pop();
       result.addConfigurationResult(this.configuration, new SCTMTestResult(state, duration, errorMessage.toString()));
-      this.testCase = false;
     } else if ("Timer".equals(qName)) {
       timerElement = false;
     } else if ("WasSuccess".equals(qName)) {

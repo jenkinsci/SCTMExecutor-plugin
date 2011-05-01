@@ -90,7 +90,7 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
 
   @Override
   public String getName() {
-    return name.replaceAll("/|\\|:|\\x2A|\\x3F|<|>|\\x7c", "_");
+    return name.replaceAll("/|\\|:|\\x2A|\\x3F|<|>|\\x7c|#", "_");
   }
 
   @Override
