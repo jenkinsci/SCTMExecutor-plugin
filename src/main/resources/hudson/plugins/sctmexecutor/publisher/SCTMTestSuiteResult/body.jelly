@@ -45,24 +45,30 @@ THE SOFTWARE.
             <td class="pane" style="width:6em" data="${p.duration}">${p.durationString}</td>
             <j:forEach var="config" items="${it.getConfigurations()}" varStatus="status">
 	            <j:set var="result" value="${p.getTestResultForConfiguration(config)}"/>
-	            <j:set var="prev" value="${p.previousResult().getTestResultForConfiguration(config)}"/>
-	            <td class="pane" style="width:6em" tooltip="
+	            <!--<j:set var="prev" value="${p.previousResult().getTestResultForConfiguration(config)}"/>
+	              <td class="pane" style="width:6em" tooltip="
 	                &lt;div style=a.tip:hover span&gt;
 	                  Total: ${result.getTotalCount()} (${h.getDiffString(result.getTotalCount()-prev.getTotalCount())}) &lt;br/&gt;
 	                  Failed: ${result.getFailCount()} (${h.getDiffString(result.getFailCount()-prev.getFailCount())}) &lt;br/&gt;
 	                  Skipped: ${result.getSkipCount()} (${h.getDiffString(result.getSkipCount()-prev.getSkipCount())}) &lt;br/&gt;
 	                  Passed: ${result.getPassCount()} (${h.getDiffString(result.getPassCount()-prev.getPassCount())}) &lt;br/&gt;
+	                &lt;/div&gt;"> -->
+	            <td class="pane" style="width:6em" tooltip="
+	                &lt;div style=a.tip:hover span&gt;
+	                  Total: ${result.getTotalCount()} &lt;br/&gt;
+	                  Failed: ${result.getFailCount()} &lt;br/&gt;
+	                  Skipped: ${result.getSkipCount()} &lt;br/&gt;
+	                  Passed: ${result.getPassCount()} &lt;br/&gt;
 	                &lt;/div&gt;">
 	              <j:choose>
 	                <j:when test="${result.getTotalCount() > 1}">
+	                  ${result.calculateBar()}
 			              <div style="width:100%; height:1em; background-color: #729FCF">
 						          <!-- Failed tests part of the bar. -->
-						          <j:set var="failWidth" value="${result.failCount*100/result.totalCount}"/>
-                      <div style="width:${failWidth}%; height: 1em; background-color: #EF2929; float: left"/>
+                      <div style="width:${result.getFailWidth()}%; height: 1em; background-color: #EF2929; float: left"/>
 						          
 						          <!-- Skipped tests part of the bar. -->
-						          <j:set var="skipWidth" value="${result.skipCount*100/result.totalCount}"/>
-						          <div style="width:${skipWidth}%; height: 1em; background-color: #FCE94F; float: left"/>
+						          <div style="width:${result.getSkipWidth()}%; height: 1em; background-color: #FCE94F; float: left"/>
 					        	</div>
 			            </j:when>
 			            <j:otherwise>
