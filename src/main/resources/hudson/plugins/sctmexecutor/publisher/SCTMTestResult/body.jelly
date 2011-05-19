@@ -24,29 +24,8 @@ THE SOFTWARE.
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-    <h2>Configuration result for: ${it.name}</h2>
-    <table class="pane sortable" id="testresult">
-      <tr>
-        <td class="pane-header">Configuration</td>
-        <td class="pane-header" style="width:5em">${%Duration}</td>
-        <td class="pane-header" style="width:5em">State</td>
-      </tr>
-      <tbody>
-	      <j:forEach var="config" items="${it.getConfigurations()}">
-	        <j:set var="result" value="${it.getTestResultForConfiguration(config)}"/>
-          <tr onMouseOver="this.bgColor='#f5f5f5';" onMouseOut="this.bgColor='#FFFFFF';">
-            <td class="pane" style="text-align:left">${config}</td>
-            <td class="pane" style="width:6em" data="${result.duration}">${result.getDurationString()}</td>
-            <td class="pane" style="text-align:right">
-              <j:set var="state" value="${result.state}"/>
-              <a href="${result.safeName}">
-	              <span class="result-${state}">
-	                ${state.message}
-	              </span>
-              </a>
-            </td>
-          </tr>
-        </j:forEach>
-      </tbody>
-    </table>
+    <h2>Result: ${it.state}</h2>
+    <h2>Message:</h2>
+    <div>${it.errormessage}</div>
+    
 </j:jelly>

@@ -34,7 +34,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
     this.configurationResults = new HashMap<String, SCTMTestResult>();
   }
 
-  private int getXCount(SCTMTestResult.TestState state) {
+  private int getXCount(TestState state) {
     int count = 0;
     for (SCTMTestResult result : this.getConfigurationResult().values()) {
       switch (state) {
@@ -83,17 +83,17 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
 
   @Override
   public int getPassCount() {
-    return getXCount(SCTMTestResult.TestState.PASSED);
+    return getXCount(TestState.PASSED);
   }
 
   @Override
   public int getSkipCount() {
-    return getXCount(SCTMTestResult.TestState.SKIPPED);
+    return getXCount(TestState.SKIPPED);
   }
 
   @Override
   public int getFailCount() {
-    return getXCount(SCTMTestResult.TestState.FAILED);
+    return getXCount(TestState.FAILED);
   }
 
   @Override
@@ -141,12 +141,17 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
 
   @Override
   public String getName() {
-    return name.replaceAll("/|\\|:|\\x2A|\\x3F|<|>|\\x7c|#", "_");
+    return name;
+  }
+
+  @Override
+  public String getSafeName() {
+    return safe(name).replaceAll("/|\\|:|\\x2A|\\x3F|<|>|\\x7c|#", "_");
   }
 
   @Override
   public TestResult findCorrespondingResult(String id) {
-    String myID = safe(getName());
+    String myID = getSafeName();
     if (myID.equals(id))
       return this;
     else {
@@ -172,7 +177,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   @Override
   public Object getDynamic(String token, StaplerRequest req, StaplerResponse rsp) {
     for (TestResult testResult : this.childResults) {
-      if (testResult.getName().equals(token))
+      if (testResult.getSafeName().equals(token))
         return testResult;
       else
         testResult.getDynamic(token, req, rsp);

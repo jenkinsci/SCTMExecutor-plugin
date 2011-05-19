@@ -1,7 +1,5 @@
 package hudson.plugins.sctmexecutor.publisher;
 
-import hudson.plugins.sctmexecutor.publisher.SCTMTestResult.TestState;
-
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

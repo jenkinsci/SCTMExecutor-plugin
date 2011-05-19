@@ -1,29 +1,13 @@
 package hudson.plugins.sctmexecutor.publisher;
 
 import hudson.Util;
+import hudson.model.AbstractBuild;
+import hudson.tasks.test.TestObject;
+import hudson.tasks.test.TestResult;
 
 import org.apache.commons.lang.mutable.MutableDouble;
 
-public class SCTMTestResult {
-  public static enum TestState {
-    FAILED("failed"), SKIPPED("skipped"), PASSED("passed"), NOTESTS("no tests found");
-
-    private String state;
-
-    private TestState(String state) {
-      this.state = state;
-    }
-
-    @Override
-    public String toString() {
-      return state;
-    }
-
-    public String getMessage() {
-      return state;
-    }
-  }
-
+public class SCTMTestResult extends TestResult implements Comparable<SCTMTestResult> {
   private static final int MIN_BAR_WIDTH = 5;
 
   private TestState state = TestState.NOTESTS;
@@ -32,9 +16,12 @@ public class SCTMTestResult {
   private int passCount;
   private float duration;
   private final String errorMessage;
+  private String name;
   private transient int passWidth;
   private transient int skipWidth;
   private transient int failWidth;
+
+  private TestObject parent;
 
   public SCTMTestResult(TestState state, float duration, String errormsg) {
     super();
@@ -60,6 +47,7 @@ public class SCTMTestResult {
     this.passCount = value.getPassCount();
     this.duration = value.getDuration();
     this.errorMessage = value.getErrorMessage();
+    this.name = value.getName();
 
     calculateState();
   }
@@ -123,18 +111,22 @@ public class SCTMTestResult {
     return String.format("%s in %fms", this.state, this.duration);
   }
 
+  @Override
   public int getTotalCount() {
     return failCount + skipCount + passCount;
   }
 
+  @Override
   public synchronized int getFailCount() {
     return failCount;
   }
 
+  @Override
   public synchronized int getSkipCount() {
     return skipCount;
   }
 
+  @Override
   public synchronized int getPassCount() {
     return passCount;
   }
@@ -155,16 +147,67 @@ public class SCTMTestResult {
     return state;
   }
 
+  @Override
   public synchronized float getDuration() {
     return duration;
   }
 
+  @Override
   public String getDurationString() {
     return Util.getTimeSpanString((long) duration);
   }
 
   public String getErrorMessage() {
     return errorMessage;
+  }
+
+  @Override
+  public String getDisplayName() {
+    return name;
+  }
+
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public String getSafeName() {
+    String name = getName();
+    if (name == null)
+      return null;
+    return safe(name);
+  }
+
+  @Override
+  public int compareTo(SCTMTestResult o) {
+    return equals(o) ? 0 : -1;
+  }
+
+  @Override
+  public AbstractBuild<?, ?> getOwner() {
+    return this.parent.getOwner();
+  }
+
+  @Override
+  public TestObject getParent() {
+    return this.parent;
+  }
+
+  @Override
+  public void setParent(TestObject parent) {
+    this.parent = parent;
+  }
+
+  @Override
+  public TestResult findCorrespondingResult(String id) {
+    if (id.equals(this.getSafeName()))
+      return this;
+    return null;
+  }
+
+  void setName(String name) {
+    this.name = name;
   }
 
 }

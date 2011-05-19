@@ -73,9 +73,11 @@ THE SOFTWARE.
 			            </j:when>
 			            <j:otherwise>
 			              <j:set var="state" value="${result.state}"/>
-			              <span class="result-${state}">
-			                ${state.message}
-			              </span>
+			              <a href="${result.safeName}">
+				              <span class="result-${state}">
+				                ${state.message}
+				              </span>
+			              </a>
 			            </j:otherwise>
 	              </j:choose>
 	            </td>

@@ -31,7 +31,7 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
     this.configurationResults = configurationResults;
   }
 
-  private int getXCount(SCTMTestResult.TestState state) {
+  private int getXCount(TestState state) {
     int count = 0;
     for (SCTMTestResult result : this.configurationResults.values()) {
       switch (state) {
@@ -55,22 +55,22 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
 
   @Override
   public int getPassCount() {
-    return getXCount(SCTMTestResult.TestState.PASSED);
+    return getXCount(TestState.PASSED);
   }
 
   @Override
   public int getSkipCount() {
-    return getXCount(SCTMTestResult.TestState.SKIPPED);
+    return getXCount(TestState.SKIPPED);
   }
 
   @Override
   public int getFailCount() {
-    return getXCount(SCTMTestResult.TestState.FAILED);
+    return getXCount(TestState.FAILED);
   }
 
   @Override
   public String getDisplayName() {
-    return getName();
+    return getSafeName();
   }
 
   @Override
@@ -90,7 +90,12 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
 
   @Override
   public String getName() {
-    return name.replaceAll("/|\\|:|\\x2A|\\x3F|<|>|\\x7c|#", "_");
+    return name;
+  }
+
+  @Override
+  public String getSafeName() {
+    return safe(name).replaceAll("/|\\|:|\\x2A|\\x3F|<|>|\\x7c|#", "_");
   }
 
   @Override
@@ -109,14 +114,14 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
 
   @Override
   public TestResult findCorrespondingResult(String id) {
-    if (id.equals(safe(getName())))
+    if (id.equals(getSafeName()))
       return this;
     return null;
   }
 
   @Override
   public int compareTo(SCTMTestCaseResult o) {
-    if (this.name.equals(o.getName())) {
+    if (this.name.equals(o.getSafeName())) {
       if (parent != null)
         return ((SCTMTestSuiteResult) parent).compareTo((SCTMTestSuiteResult) o.getParent());
     }
@@ -159,6 +164,8 @@ public final class SCTMTestCaseResult extends TestResult implements Comparable<S
   }
 
   public void addConfigurationResult(String configuration, SCTMTestResult testResult) {
+    testResult.setName(this.getName());
+    testResult.setParent(this);
     this.configurationResults.put(configuration, testResult);
   }
 

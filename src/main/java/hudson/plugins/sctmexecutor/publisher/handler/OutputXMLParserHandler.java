@@ -2,8 +2,8 @@ package hudson.plugins.sctmexecutor.publisher.handler;
 
 import hudson.plugins.sctmexecutor.publisher.SCTMTestCaseResult;
 import hudson.plugins.sctmexecutor.publisher.SCTMTestResult;
-import hudson.plugins.sctmexecutor.publisher.SCTMTestResult.TestState;
 import hudson.plugins.sctmexecutor.publisher.SCTMTestSuiteResult;
+import hudson.plugins.sctmexecutor.publisher.TestState;
 import hudson.tasks.test.TestResult;
 
 import java.util.Stack;

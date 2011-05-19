@@ -1,13 +1,11 @@
 package hudson.plugins.sctmexecutor.publisher;
 
-
-import static org.junit.Assert.*;
-import hudson.plugins.sctmexecutor.publisher.SCTMTestResult.TestState;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import hudson.plugins.sctmexecutor.publisher.handler.OutputXMLParserHandler;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collections;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -24,10 +22,10 @@ public class TestMultipleConfigurationDomainModelStructure {
   public void setUp() throws Exception {
     SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
     rootSuite = new SCTMTestSuiteResult("root");
-    OutputXMLParserHandler handler = new OutputXMLParserHandler(rootSuite , "win7");
-    parser.parse(new File(TESTRESULTS_ROOTPATH+"specialTestResult/output_Win7.xml"), handler);
-    handler = new OutputXMLParserHandler(rootSuite , "winxp");
-    parser.parse(new File(TESTRESULTS_ROOTPATH+"specialTestResult/output_Winxp.xml"), handler);
+    OutputXMLParserHandler handler = new OutputXMLParserHandler(rootSuite, "win7");
+    parser.parse(new File(TESTRESULTS_ROOTPATH + "specialTestResult/output_Win7.xml"), handler);
+    handler = new OutputXMLParserHandler(rootSuite, "winxp");
+    parser.parse(new File(TESTRESULTS_ROOTPATH + "specialTestResult/output_Winxp.xml"), handler);
     this.rootSuite.calculateConfigurationResults();
   }
 
@@ -38,7 +36,7 @@ public class TestMultipleConfigurationDomainModelStructure {
     assertEquals(2, this.rootSuite.getConfigurations().size());
     assertEquals(Arrays.asList("win7", "winxp"), this.rootSuite.getConfigurations());
     assertEquals(50000.0f, this.rootSuite.getDuration(), 0.1);
-    
+
     SCTMTestResult result = this.rootSuite.getTestResultForConfiguration("win7");
     assertEquals(8, result.getTotalCount());
     assertEquals(8, result.getPassCount());
@@ -46,11 +44,11 @@ public class TestMultipleConfigurationDomainModelStructure {
     assertEquals(0, result.getFailCount());
     assertEquals(TestState.PASSED, result.getState());
     assertEquals(25000.0f, result.getDuration(), 0.1);
-    
+
     SCTMTestSuiteResult suite = this.rootSuite.getChildSuiteByName("Calculator- High/Low");
     assertNotNull(suite);
     assertEquals("Calculator- High/Low", suite.getDisplayName());
-    assertEquals("Calculator- High_Low", suite.getName());
+    assertEquals("Calculator- High_Low", suite.getSafeName());
     assertEquals(16, suite.getTotalCount());
     assertEquals(1, suite.getChildren().size());
     assertEquals(2, suite.getConfigurations().size());
