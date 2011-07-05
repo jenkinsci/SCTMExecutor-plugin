@@ -6,16 +6,16 @@ import org.junit.Test;
 
 public class TestSCTMTestResult {
 
-  private static SCTMTestResult dummyResult;
+  private static SCTMTestConfigurationResult dummyResult;
 
   @BeforeClass
   public static void setUp() throws Exception {
-    dummyResult = new SCTMTestResult(TestState.NOTESTS, 0, "");
+    dummyResult = new SCTMTestConfigurationResult("", TestState.NOTESTS, 0, "");
   }
 
   @Test
   public void testEmptyTestResult() throws Exception {
-    SCTMTestResult result = dummyResult;
+    SCTMTestConfigurationResult result = dummyResult;
 
     Assert.assertEquals(0, result.getFailWidth());
     Assert.assertEquals(0, result.getSkipWidth());
@@ -25,8 +25,8 @@ public class TestSCTMTestResult {
 
   @Test
   public void testNotModifiedTestResult() throws Exception {
-    SCTMTestResult result = new SCTMTestResult(dummyResult);
-    result.addSubTestCounts(1, 1, 1);
+    SCTMTestConfigurationResult result = new SCTMTestConfigurationResult(dummyResult);
+    result.addSubTests(1, 1, 1, 0);
     result.calculateBar();
 
     Assert.assertEquals(33, result.getFailWidth());
@@ -37,20 +37,21 @@ public class TestSCTMTestResult {
 
   @Test
   public void testNotModifiedTestResultWithNoFaild() throws Exception {
-    SCTMTestResult result = new SCTMTestResult(dummyResult);
-    result.addSubTestCounts(80, 20, 0);
+    SCTMTestConfigurationResult result = new SCTMTestConfigurationResult(dummyResult);
+    result.addSubTests(80, 20, 0, 0.5f);
     result.calculateBar();
 
     Assert.assertEquals(0, result.getFailWidth());
     Assert.assertEquals(20, result.getSkipWidth());
     Assert.assertEquals(80, result.getPassWidth());
     Assert.assertEquals(100, result.getFailWidth() + result.getSkipWidth() + result.getPassWidth());
+    Assert.assertEquals(0.5f, result.getDuration(), 0.01f);
   }
 
   @Test
   public void testNotModifiedTestResultWithNoSkiped() throws Exception {
-    SCTMTestResult result = new SCTMTestResult(dummyResult);
-    result.addSubTestCounts(80, 0, 20);
+    SCTMTestConfigurationResult result = new SCTMTestConfigurationResult(dummyResult);
+    result.addSubTests(80, 0, 20, 0);
     result.calculateBar();
 
     Assert.assertEquals(20, result.getFailWidth());
@@ -61,8 +62,8 @@ public class TestSCTMTestResult {
 
   @Test
   public void testNotModifiedTestResultWithNoPassed() throws Exception {
-    SCTMTestResult result = new SCTMTestResult(dummyResult);
-    result.addSubTestCounts(0, 20, 80);
+    SCTMTestConfigurationResult result = new SCTMTestConfigurationResult(dummyResult);
+    result.addSubTests(0, 20, 80, 0);
     result.calculateBar();
 
     Assert.assertEquals(80, result.getFailWidth());
@@ -73,8 +74,8 @@ public class TestSCTMTestResult {
 
   @Test
   public void testModifiedFailWidth() throws Exception {
-    SCTMTestResult result = new SCTMTestResult(dummyResult);
-    result.addSubTestCounts(80, 19, 1);
+    SCTMTestConfigurationResult result = new SCTMTestConfigurationResult(dummyResult);
+    result.addSubTests(80, 19, 1, 0);
     result.calculateBar();
 
     Assert.assertEquals(5, result.getFailWidth());
@@ -85,8 +86,8 @@ public class TestSCTMTestResult {
 
   @Test
   public void testModifiedFailWidth2() throws Exception {
-    SCTMTestResult result = new SCTMTestResult(dummyResult);
-    result.addSubTestCounts(108, 0, 1);
+    SCTMTestConfigurationResult result = new SCTMTestConfigurationResult(dummyResult);
+    result.addSubTests(108, 0, 1, 0);
     result.calculateBar();
 
     Assert.assertEquals(5, result.getFailWidth());
@@ -97,8 +98,8 @@ public class TestSCTMTestResult {
 
   @Test
   public void testModifiedSkipWidth() throws Exception {
-    SCTMTestResult result = new SCTMTestResult(dummyResult);
-    result.addSubTestCounts(80, 1, 19);
+    SCTMTestConfigurationResult result = new SCTMTestConfigurationResult(dummyResult);
+    result.addSubTests(80, 1, 19, 0);
     result.calculateBar();
 
     Assert.assertEquals(19, result.getFailWidth());
@@ -109,8 +110,8 @@ public class TestSCTMTestResult {
 
   @Test
   public void testModifiedPassWidth() throws Exception {
-    SCTMTestResult result = new SCTMTestResult(dummyResult);
-    result.addSubTestCounts(1, 80, 19);
+    SCTMTestConfigurationResult result = new SCTMTestConfigurationResult(dummyResult);
+    result.addSubTests(1, 80, 19, 0);
     result.calculateBar();
 
     Assert.assertEquals(19, result.getFailWidth());
@@ -121,18 +122,18 @@ public class TestSCTMTestResult {
 
   @Test
   public void testMultibleAddSubTests() throws Exception {
-    SCTMTestResult result = new SCTMTestResult(dummyResult);
-    result.addSubTestCounts(1, 1, 1);
+    SCTMTestConfigurationResult result = new SCTMTestConfigurationResult(dummyResult);
+    result.addSubTests(1, 1, 1, 0);
     result.calculateBar();
     Assert.assertEquals(33, result.getFailWidth());
     Assert.assertEquals(33, result.getSkipWidth());
     Assert.assertEquals(33, result.getPassWidth());
     Assert.assertEquals(99, result.getFailWidth() + result.getSkipWidth() + result.getPassWidth());
 
-    result.addSubTestCounts(0, 39, 10);
-    result.addSubTestCounts(0, 1, 0);
-    result.addSubTestCounts(0, 30, 0);
-    result.addSubTestCounts(0, 9, 8);
+    result.addSubTests(0, 39, 10, 0);
+    result.addSubTests(0, 1, 0, 0);
+    result.addSubTests(0, 30, 0, 0);
+    result.addSubTests(0, 9, 8, 0);
     result.calculateBar();
     Assert.assertEquals(19, result.getFailWidth());
     Assert.assertEquals(76, result.getSkipWidth());

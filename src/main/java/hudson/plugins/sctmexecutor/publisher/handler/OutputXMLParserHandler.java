@@ -1,11 +1,14 @@
 package hudson.plugins.sctmexecutor.publisher.handler;
 
+import hudson.plugins.sctmexecutor.publisher.AbstractSCTMTest;
 import hudson.plugins.sctmexecutor.publisher.SCTMTestCaseResult;
-import hudson.plugins.sctmexecutor.publisher.SCTMTestResult;
+import hudson.plugins.sctmexecutor.publisher.SCTMTestConfigurationResult;
 import hudson.plugins.sctmexecutor.publisher.SCTMTestSuiteResult;
 import hudson.plugins.sctmexecutor.publisher.TestState;
 import hudson.tasks.test.TestResult;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.logging.Logger;
 
@@ -28,6 +31,7 @@ public class OutputXMLParserHandler extends DefaultHandler {
 
   private TestState state = TestState.SKIPPED;
   private float duration;
+  private List<String> multiLineBuffer;
   private StringBuilder errorMessage = new StringBuilder();
 
   public OutputXMLParserHandler(SCTMTestSuiteResult suiteResult, String configuration) {
@@ -65,7 +69,7 @@ public class OutputXMLParserHandler extends DefaultHandler {
     } else if ("Test".equals(qName)) {
       String name = attributes.getValue("TestItem");
       SCTMTestSuiteResult suite = (SCTMTestSuiteResult) this.resultStack.peek();
-      SCTMTestCaseResult child = suite.getChildTestByName(name);
+      AbstractSCTMTest child = suite.getChildTestByName(name);
       if (child == null) {
         child = new SCTMTestCaseResult(name);
         suite.addChild(child);
@@ -84,8 +88,12 @@ public class OutputXMLParserHandler extends DefaultHandler {
       wasSuccessElement = true;
     } else if ("Message".equals(qName)) {
       messageElement = true;
+      multiLineBuffer = new ArrayList<String>();
+      multiLineBuffer.add("<b>Error: </b>");
     } else if ("Info".equals(qName)) {
       infoElement = true;
+      multiLineBuffer = new ArrayList<String>();
+      multiLineBuffer.add("<b>Stacktrace: </b>");
     }
   }
 
@@ -100,12 +108,8 @@ public class OutputXMLParserHandler extends DefaultHandler {
         duration = f * 1000; // because the result for nunit is given in s
       else
         duration = f;
-    } else if (messageElement) {
-      errorMessage.append("<b>Error: </b><br/>");
-      errorMessage.append(item);
-    } else if (infoElement) {
-      errorMessage.append("<b>Stacktrace: </b><br/>");
-      errorMessage.append(item);
+    } else if (messageElement || infoElement) {
+      multiLineBuffer.add(item);
     }
   }
 
@@ -116,15 +120,26 @@ public class OutputXMLParserHandler extends DefaultHandler {
         this.resultStack.pop();
     } else if ("Test".equals(qName)) {
       SCTMTestCaseResult result = (SCTMTestCaseResult) this.resultStack.pop();
-      result.addConfigurationResult(this.configuration, new SCTMTestResult(state, duration, errorMessage.toString()));
+      result.addConfigurationResult(this.configuration, new SCTMTestConfigurationResult(this.configuration, state,
+          duration, errorMessage.toString()));
     } else if ("Timer".equals(qName)) {
       timerElement = false;
     } else if ("WasSuccess".equals(qName)) {
       wasSuccessElement = false;
     } else if ("Message".equals(qName)) {
       messageElement = false;
+      appendBuffer(multiLineBuffer, errorMessage);
     } else if ("Info".equals(qName)) {
       infoElement = false;
+      appendBuffer(multiLineBuffer, errorMessage);
     }
+  }
+
+  private static void appendBuffer(List<String> multiLineBuffer, StringBuilder errorMessage) {
+    errorMessage.append("<p>");
+    for (String line : multiLineBuffer) {
+      errorMessage.append(line);
+    }
+    errorMessage.append("</p><br/>");
   }
 }

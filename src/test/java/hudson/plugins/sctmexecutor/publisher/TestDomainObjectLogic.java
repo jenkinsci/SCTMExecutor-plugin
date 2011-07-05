@@ -15,23 +15,23 @@ public class TestDomainObjectLogic {
   public void setup() {
     rootSuite = new SCTMTestSuiteResult("root");
     SCTMTestSuiteResult suite1 = new SCTMTestSuiteResult("suite1");
-    SCTMTestCaseResult test1 = new SCTMTestCaseResult("case1", new HashMap<String, SCTMTestResult>());
-    test1.addConfigurationResult("config1", new SCTMTestResult(TestState.PASSED, 1, ""));
-    test1.addConfigurationResult("config2", new SCTMTestResult(TestState.SKIPPED, 1, ""));
-    test1.addConfigurationResult("config3", new SCTMTestResult(TestState.FAILED, 1, ""));
+    SCTMTestCaseResult test1 = new SCTMTestCaseResult("case1", new HashMap<String, SCTMTestConfigurationResult>());
+    test1.addConfigurationResult("config1", new SCTMTestConfigurationResult("config1", TestState.PASSED, 1, ""));
+    test1.addConfigurationResult("config2", new SCTMTestConfigurationResult("config2", TestState.SKIPPED, 1, ""));
+    test1.addConfigurationResult("config3", new SCTMTestConfigurationResult("config3", TestState.FAILED, 1, ""));
     suite1.addChild(test1);
     rootSuite.addChild(suite1);
     SCTMTestSuiteResult suite2 = new SCTMTestSuiteResult("suite2");
     SCTMTestSuiteResult subsuite = new SCTMTestSuiteResult("suite2.1");
-    SCTMTestCaseResult test2 = new SCTMTestCaseResult("case2", new HashMap<String, SCTMTestResult>());
-    test2.addConfigurationResult("config1", new SCTMTestResult(TestState.PASSED, 2, ""));
-    test2.addConfigurationResult("config2", new SCTMTestResult(TestState.SKIPPED, 2, ""));
-    test2.addConfigurationResult("config3", new SCTMTestResult(TestState.FAILED, 2, ""));
+    SCTMTestCaseResult test2 = new SCTMTestCaseResult("case2", new HashMap<String, SCTMTestConfigurationResult>());
+    test2.addConfigurationResult("config1", new SCTMTestConfigurationResult("config1", TestState.PASSED, 2, ""));
+    test2.addConfigurationResult("config2", new SCTMTestConfigurationResult("config2", TestState.SKIPPED, 2, ""));
+    test2.addConfigurationResult("config3", new SCTMTestConfigurationResult("config3", TestState.FAILED, 2, ""));
     subsuite.addChild(test2);
-    SCTMTestCaseResult test3 = new SCTMTestCaseResult("case3", new HashMap<String, SCTMTestResult>());
-    test3.addConfigurationResult("config1", new SCTMTestResult(TestState.PASSED, 3, ""));
-    test3.addConfigurationResult("config2", new SCTMTestResult(TestState.SKIPPED, 3, ""));
-    test3.addConfigurationResult("config3", new SCTMTestResult(TestState.FAILED, 3, ""));
+    SCTMTestCaseResult test3 = new SCTMTestCaseResult("case3", new HashMap<String, SCTMTestConfigurationResult>());
+    test3.addConfigurationResult("config1", new SCTMTestConfigurationResult("config1", TestState.PASSED, 3, ""));
+    test3.addConfigurationResult("config2", new SCTMTestConfigurationResult("config2", TestState.SKIPPED, 3, ""));
+    test3.addConfigurationResult("config3", new SCTMTestConfigurationResult("config3", TestState.FAILED, 3, ""));
     subsuite.addChild(test3);
     suite2.addChild(subsuite);
     rootSuite.addChild(suite2);
@@ -47,7 +47,7 @@ public class TestDomainObjectLogic {
     assertEquals("case1", test1.getSafeName());
     assertEquals(3, test1.getDuration(), 0.1);
 
-    SCTMTestResult result = test1.getTestResultForConfiguration("config1");
+    SCTMTestConfigurationResult result = test1.getTestResultForConfiguration("config1");
     assertEquals(1, result.getPassCount());
     assertEquals(0, result.getSkipCount());
     assertEquals(0, result.getFailCount());
@@ -75,7 +75,7 @@ public class TestDomainObjectLogic {
     assertEquals("suite1", suite1.getSafeName());
     assertEquals(3, suite1.getDuration(), 0.1);
 
-    SCTMTestResult result = suite1.getTestResultForConfiguration("config1");
+    SCTMTestConfigurationResult result = suite1.getTestResultForConfiguration("config1");
     assertEquals(1, result.getPassCount());
     assertEquals(0, result.getSkipCount());
     assertEquals(0, result.getFailCount());
@@ -101,7 +101,7 @@ public class TestDomainObjectLogic {
   public void testRootResult() throws Exception {
     assertEquals(18, rootSuite.getDuration(), 0.1);
 
-    SCTMTestResult result = this.rootSuite.getTestResultForConfiguration("config1");
+    SCTMTestConfigurationResult result = this.rootSuite.getTestResultForConfiguration("config1");
     assertEquals(3, result.getPassCount());
     assertEquals(0, result.getSkipCount());
     assertEquals(0, result.getFailCount());
@@ -127,7 +127,7 @@ public class TestDomainObjectLogic {
   public void testEmptySuiteResult() throws Exception {
     SCTMTestSuiteResult suite3 = this.rootSuite.getChildSuiteByName("suite3");
     assertEquals("suite3", suite3.getSafeName());
-    SCTMTestResult result = suite3.getTestResultForConfiguration("config1");
+    AbstractSCTMTest result = suite3.getTestResultForConfiguration("config1");
     assertNull(result);
 
     result = suite3.getTestResultForConfiguration("config2");

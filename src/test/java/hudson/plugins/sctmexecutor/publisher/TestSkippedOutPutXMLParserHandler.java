@@ -67,7 +67,7 @@ public class TestSkippedOutPutXMLParserHandler {
     assertEquals(0, suite.getPassCount());
     assertEquals(0.0, suite.getDuration(), 0.1);
 
-    SCTMTestCaseResult test = suite.getChildTestByName("RepeatButtonTest.CustomAttributesFindTest");
+    AbstractSCTMTest test = suite.getChildTestByName("RepeatButtonTest.CustomAttributesFindTest");
     assertEquals(0, test.getFailCount());
     assertEquals(1, test.getSkipCount());
     assertEquals(0, test.getPassCount());
@@ -83,11 +83,11 @@ public class TestSkippedOutPutXMLParserHandler {
   @Test
   public void testTestResult() throws Exception {
     SCTMTestSuiteResult suite = this.rootSuite.getChildSuiteByName("Test").getChildSuiteByName("RepeatButtonTest");
-    SCTMTestResult suiteResult = suite.getTestResultForConfiguration(CONFIG_DUMMY);
+    SCTMTestConfigurationResult suiteResult = suite.getTestResultForConfiguration(CONFIG_DUMMY);
     assertEquals(TestState.SKIPPED, suiteResult.getState());
 
     SCTMTestCaseResult test = suite.getChildTestByName("RepeatButtonTest.CustomAttributesFindTest");
-    SCTMTestResult caseResult = test.getTestResultForConfiguration(CONFIG_DUMMY);
+    SCTMTestConfigurationResult caseResult = test.getTestResultForConfiguration(CONFIG_DUMMY);
     assertEquals(TestState.SKIPPED, caseResult.getState());
 
     test = suite.getChildTestByName("RepeatButtonTest.RepeatButtonTest");

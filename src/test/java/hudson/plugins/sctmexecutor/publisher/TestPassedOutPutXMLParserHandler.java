@@ -43,7 +43,7 @@ public class TestPassedOutPutXMLParserHandler {
     assertEquals(3, suite.getTotalCount());
     assertEquals(2, suite.getChildren().size());
 
-    SCTMTestCaseResult test = suite.getChildTestByName("TestCase3");
+    AbstractSCTMTest test = suite.getChildTestByName("TestCase3");
     assertNotNull(test);
     assertEquals("TestCase3", test.getSafeName());
     assertEquals(1, test.getTotalCount());
@@ -79,7 +79,7 @@ public class TestPassedOutPutXMLParserHandler {
     assertEquals(2, suite.getPassCount());
     assertEquals(6000.0, suite.getDuration(), 0.1);
 
-    SCTMTestCaseResult test = suite.getChildTestByName("TestCase1");
+    AbstractSCTMTest test = suite.getChildTestByName("TestCase1");
     assertEquals(0, test.getFailCount());
     assertEquals(0, test.getSkipCount());
     assertEquals(1, test.getPassCount());

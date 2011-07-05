@@ -18,25 +18,26 @@ import java.util.Map.Entry;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-public final class SCTMTestSuiteResult extends TabulatedResult implements Comparable<SCTMTestSuiteResult> {
+public final class SCTMTestSuiteResult extends TabulatedResult implements ISCTMMultipleConfigurationTest,
+    Comparable<SCTMTestSuiteResult> {
   private static final long serialVersionUID = -5725371200267573341L;
 
   private TestObject parent;
   private final String name;
   private final Collection<TestResult> childResults;
-  private final Map<String, SCTMTestResult> configurationResults;
+  private final Map<String, SCTMTestConfigurationResult> configurationResults;
 
   private transient AbstractTestResultAction<SCTMResultAction> parentAction;
 
   public SCTMTestSuiteResult(String name) {
     this.name = name;
     this.childResults = new ArrayList<TestResult>();
-    this.configurationResults = new HashMap<String, SCTMTestResult>();
+    this.configurationResults = new HashMap<String, SCTMTestConfigurationResult>();
   }
 
   private int getXCount(TestState state) {
     int count = 0;
-    for (SCTMTestResult result : this.getConfigurationResult().values()) {
+    for (AbstractSCTMTest result : this.getConfigurationResult().values()) {
       switch (state) {
       case PASSED:
         count += result.getPassCount();
@@ -54,7 +55,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
 
   synchronized void calculateConfigurationResults() {
     for (TestResult result : this.childResults) {
-      Map<String, SCTMTestResult> configurationResult = null;
+      Map<String, SCTMTestConfigurationResult> configurationResult = null;
       if (result instanceof SCTMTestCaseResult) {
         configurationResult = ((SCTMTestCaseResult) result).getConfigurationResult();
       } else if (result instanceof SCTMTestSuiteResult) {
@@ -62,22 +63,23 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
         configurationResult = ((SCTMTestSuiteResult) result).getConfigurationResult();
       }
       if (configurationResult != null) {
-        for (Entry<String, SCTMTestResult> childResult : configurationResult.entrySet()) {
-          SCTMTestResult testResult = configurationResults.get(childResult.getKey());
-          if (testResult == null)
-            configurationResults.put(childResult.getKey(), new SCTMTestResult(childResult.getValue()));
-          else {
-            SCTMTestResult childTestResult = childResult.getValue();
-            testResult.addSubTestCounts(childTestResult.getPassCount(), childTestResult.getSkipCount(),
-                childTestResult.getFailCount());
-            testResult.addSubDuration(childTestResult.getDuration());
+        for (Entry<String, SCTMTestConfigurationResult> childResult : configurationResult.entrySet()) {
+          SCTMTestConfigurationResult testResult = configurationResults.get(childResult.getKey());
+          if (testResult == null) {
+            SCTMTestConfigurationResult confResult = new SCTMTestConfigurationResult(childResult.getValue());
+            confResult.setParent(this);
+            configurationResults.put(childResult.getKey(), confResult);
+          } else {
+            AbstractSCTMTest childTestResult = childResult.getValue();
+            testResult.addSubTests(childTestResult.getPassCount(), childTestResult.getSkipCount(),
+                childTestResult.getFailCount(), childTestResult.getDuration());
           }
         }
       }
     }
   }
 
-  synchronized Map<String, SCTMTestResult> getConfigurationResult() {
+  synchronized Map<String, SCTMTestConfigurationResult> getConfigurationResult() {
     return this.configurationResults;
   }
 
@@ -99,7 +101,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   @Override
   public float getDuration() {
     float duration = 0;
-    for (SCTMTestResult conf : this.getConfigurationResult().values())
+    for (AbstractSCTMTest conf : this.getConfigurationResult().values())
       duration += conf.getDuration();
     return duration;
   }
@@ -179,8 +181,13 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
     for (TestResult testResult : this.childResults) {
       if (testResult.getSafeName().equals(token))
         return testResult;
-      else
+      else {
+        for (SCTMTestConfigurationResult configuration : this.configurationResults.values()) {
+          if (configuration.getSafeName().equals(token))
+            return configuration;
+        }
         testResult.getDynamic(token, req, rsp);
+      }
     }
     return super.getDynamic(token, req, rsp);
   }
@@ -194,9 +201,6 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
   @Override
   public void setParentAction(AbstractTestResultAction action) {
     this.parentAction = action;
-    for (TestResult result : this.childResults) {
-      result.setParentAction(action);
-    }
   }
 
   @Override
@@ -239,12 +243,22 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements Compar
     return null;
   }
 
-  public SCTMTestResult getTestResultForConfiguration(String configuration) {
+  @Override
+  public String getConfigurationForResult(SCTMTestConfigurationResult configurationResult) {
+    for (Entry<String, SCTMTestConfigurationResult> entry : this.getConfigurationResult().entrySet()) {
+      if (entry.getValue().equals(configurationResult))
+        return entry.getKey();
+    }
+    return null;
+  }
+
+  public SCTMTestConfigurationResult getTestResultForConfiguration(String configuration) {
     return this.getConfigurationResult().get(configuration);
   }
 
+  @Override
   public Collection<String> getConfigurations() {
-    List<String> list = new ArrayList<String>(getConfigurationResult().keySet());
+    List<String> list = new ArrayList<String>(this.configurationResults.keySet());
     Collections.sort(list);
     return list;
   }

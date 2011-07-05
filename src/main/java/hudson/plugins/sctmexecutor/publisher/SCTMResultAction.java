@@ -26,6 +26,7 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
   static {
     XSTREAM.alias("suite", SCTMTestSuiteResult.class);
     XSTREAM.alias("case", SCTMTestCaseResult.class);
+    XSTREAM.alias("configuration", SCTMTestConfigurationResult.class);
     XSTREAM.registerConverter(new HeapSpaceStringConverter(), 100);
   }
 
@@ -64,13 +65,33 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
     TestResult r;
     try {
       r = (TestResult) getDataFile().read();
-      r.setParentAction(this);
+      maintainTestResult(r);
     } catch (IOException e) {
       LOGGER.log(Level.WARNING, "Failed to load " + getDataFile(), e);
       r = new SCTMTestCaseResult("dummy"); // return a dummy
       r.setParentAction(this);
     }
     return r;
+  }
+
+  private void maintainTestResult(TestResult r) {
+    if (r instanceof ISCTMMultipleConfigurationTest)
+      maintainTestResult((ISCTMMultipleConfigurationTest) r);
+    if (r instanceof SCTMTestSuiteResult) {
+      for (TestResult suite : ((SCTMTestSuiteResult) r).getChildren()) {
+        maintainTestResult(suite);
+      }
+    }
+  }
+
+  private void maintainTestResult(ISCTMMultipleConfigurationTest r) {
+    ((TestResult) r).setParentAction(this);
+    for (String configurationName : r.getConfigurations()) {
+      SCTMTestConfigurationResult configurationResult = r.getTestResultForConfiguration(configurationName);
+      configurationResult.setConfigurationName(configurationName);
+      configurationResult.setParent((TestResult) r);
+      configurationResult.setParentAction(this);
+    }
   }
 
   @Override
@@ -85,7 +106,7 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
 
   @Override
   public String getUrlName() {
-    return "sctmresult";
+    return "sctmreport";
   }
 
   @Override
@@ -127,12 +148,10 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
 
   public Collection<String> getConfigurations() {
     TestResult result = this.testResult.get();
-    if (result instanceof SCTMTestCaseResult)
-      return ((SCTMTestCaseResult) result).getConfigurations();
-    else if (result instanceof SCTMTestSuiteResult)
-      return ((SCTMTestSuiteResult) result).getConfigurations();
+    if (result instanceof ISCTMMultipleConfigurationTest)
+      return ((ISCTMMultipleConfigurationTest) result).getConfigurations();
     else
-      throw new IllegalStateException("Unknown result type.");
+      throw new IllegalStateException("Result type has not configurations as child.");
   }
 
 }

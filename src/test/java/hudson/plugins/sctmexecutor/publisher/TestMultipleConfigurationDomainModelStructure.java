@@ -37,7 +37,7 @@ public class TestMultipleConfigurationDomainModelStructure {
     assertEquals(Arrays.asList("win7", "winxp"), this.rootSuite.getConfigurations());
     assertEquals(50000.0f, this.rootSuite.getDuration(), 0.1);
 
-    SCTMTestResult result = this.rootSuite.getTestResultForConfiguration("win7");
+    SCTMTestConfigurationResult result = this.rootSuite.getTestResultForConfiguration("win7");
     assertEquals(8, result.getTotalCount());
     assertEquals(8, result.getPassCount());
     assertEquals(0, result.getSkipCount());
