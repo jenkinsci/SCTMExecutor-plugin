@@ -9,6 +9,7 @@ import hudson.util.HeapSpaceStringConverter;
 import hudson.util.XStream2;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -49,26 +50,34 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
 
     try {
       getDataFile().write(testResult);
+      this.testResult = new WeakReference<TestResult>(testResult);
+    } catch (FileNotFoundException e) {
+      this.testResult = new WeakReference<TestResult>(new SCTMTestSuiteResult("Empty Result"));
     } catch (IOException e) {
+      this.testResult = new WeakReference<TestResult>(new SCTMTestSuiteResult("Empty Result"));
       String msg = "Failed to save the SCTM test result.";
       LOGGER.log(Level.SEVERE, msg, e);
       listener.fatalError(msg);
     }
-    this.testResult = new WeakReference<TestResult>(testResult);
   }
 
   private XmlFile getDataFile() {
-    return new XmlFile(XSTREAM, new File(owner.getRootDir(), "sctmResult.xml"));
+    File resultFile = new File(owner.getRootDir(), "sctmResult.xml");
+    return new XmlFile(XSTREAM, resultFile);
   }
 
   private TestResult load() {
     TestResult r;
+    XmlFile resultFile = getDataFile();
     try {
-      r = (TestResult) getDataFile().read();
-      maintainTestResult(r);
+      if (resultFile.exists()) {
+        r = (TestResult) resultFile.read();
+        maintainTestResult(r);
+      } else
+        throw new FileNotFoundException("Cannot find a valid result file at: " + resultFile.getFile().getPath());
     } catch (IOException e) {
-      LOGGER.log(Level.WARNING, "Failed to load " + getDataFile(), e);
-      r = new SCTMTestCaseResult("dummy"); // return a dummy
+      LOGGER.log(Level.WARNING, "Failed to load " + resultFile, e);
+      r = new SCTMTestCaseResult("Empty result"); // return a dummy
       r.setParentAction(this);
     }
     return r;
