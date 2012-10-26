@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestSuite TestItem="4Test.pln" ExtId="4Test.pln">
+  <RunCount>3</RunCount>
+  <Timer>9000.0</Timer>
+  <WasSuccess>true</WasSuccess>
+  <TestSuite TestItem="SubSuite.pln" ExtId="4Test.pln/SubSuite.pln">
+    <RunCount>3</RunCount>
+    <Timer>9000.0</Timer>
+    <WasSuccess>true</WasSuccess>
+    <TestSuite TestItem="TestSYSDirFunctions.t" ExtId="4Test.pln/SubSuite.pln/TestFile.t">
+      <RunCount>2</RunCount>
+      <Timer>6000.0</Timer>
+      <WasSuccess>true</WasSuccess>
+      <Test TestItem="TestCase1" ExtId="4Test.pln/SubSuite.pln/TestFile.t/TestCase1">
+        <RunCount>1</RunCount>
+        <Timer>3000.0</Timer>
+        <WasSuccess>true</WasSuccess>
+      </Test>
+      <Test TestItem="TestCase2" ExtId="4Test.pln/SubSuite.pln/TestFile.t/TestCase2">
+        <RunCount>1</RunCount>
+        <Timer>3000.0</Timer>
+        <WasSuccess>true</WasSuccess>
+      </Test>
+    </TestSuite>
+    <Test TestItem="TestCase3" ExtId="4Test.pln/SubSuite.pln/TestFile.t/TestCase">
+      <RunCount>1</RunCount>
+      <Timer>3000.0</Timer>
+      <WasSuccess>true</WasSuccess>
+    </Test>
+  </TestSuite>
+  <TestSuite TestItem="c:\Temp\lib\NTF\tests\SilkTest.Ntf.Test.Awt.dll" ExtId="c:\Temp\lib\NTF\tests\SilkTest.Ntf.Test.Awt.dll">
+    <RunCount>1</RunCount>
+    <Timer>0.0</Timer>
+    <WasSuccess>true</WasSuccess>
+  </TestSuite>
+</TestSuite>
+
