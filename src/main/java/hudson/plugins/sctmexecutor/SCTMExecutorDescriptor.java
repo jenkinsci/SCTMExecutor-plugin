@@ -38,7 +38,8 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   private String serviceURL;
   private String user;
   private String password;
-//  private transients ISCTMService service;
+
+  // private transients ISCTMService service;
 
   public SCTMExecutorDescriptor() {
     super(SCTMExecutor.class);
@@ -68,11 +69,11 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
 
     String version = null;
     switch (optValue) {
-      case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
-        jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$
-      case SCTMExecutor.OPT_USE_LATEST_SCTM_BUILDNUMBER:
-      case SCTMExecutor.OPT_USE_THIS_BUILD_NUMBER:
-        version = buildNumberUsageOption.getString("productVersion"); //$NON-NLS-1$
+    case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
+      jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$
+    case SCTMExecutor.OPT_USE_LATEST_SCTM_BUILDNUMBER:
+    case SCTMExecutor.OPT_USE_THIS_BUILD_NUMBER:
+      version = buildNumberUsageOption.getString("productVersion"); //$NON-NLS-1$
     }
 
     return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults,
@@ -156,12 +157,12 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   }
 
   public Collection<String> getAllVersions(String execdefIds) {
-//    try {
-//      int execDefId = Utils.csvToIntList(execdefIds).get(0);
-//      return this.service.getAllVersions(execDefId);
-//    } catch (SCTMException e) {
-//      LOGGER.warning("No versions available for product.");
-//    }
+    // try {
+    // int execDefId = Utils.csvToIntList(execdefIds).get(0);
+    // return this.service.getAllVersions(execDefId);
+    // } catch (SCTMException e) {
+    // LOGGER.warning("No versions available for product.");
+    // }
     return Collections.emptyList();
   }
 
@@ -195,12 +196,12 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     return new TestConnectionValidator().check(serviceURL, user, password);
   }
 
-//  public FormValidation doCheckVersion(StaplerRequest req, StaplerResponse rsp,
-//      @QueryParameter("version") final String version, @QueryParameter("execDefIds") final String execDefIds) {
-//    Collection<String> allVersions = getAllVersions(execDefIds);
-//    return allVersions.contains(version) ? FormValidation.ok() : FormValidation.warning(MessageFormat.format(
-//        "The given version ({0}) ist not available on SCTM. Choose one from the following: {1}", version, allVersions));
-//  }
+  // public FormValidation doCheckVersion(StaplerRequest req, StaplerResponse rsp,
+  // @QueryParameter("version") final String version, @QueryParameter("execDefIds") final String execDefIds) {
+  // Collection<String> allVersions = getAllVersions(execDefIds);
+  // return allVersions.contains(version) ? FormValidation.ok() : FormValidation.warning(MessageFormat.format(
+  // "The given version ({0}) ist not available on SCTM. Choose one from the following: {1}", version, allVersions));
+  // }
 
   @SuppressWarnings("rawtypes")
   @Override

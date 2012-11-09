@@ -1,14 +1,12 @@
 package hudson.plugins.sctmexecutor.publisher.handler;
 
 import hudson.plugins.sctmexecutor.publisher.AbstractSCTMTest;
+import hudson.plugins.sctmexecutor.publisher.TestState;
 import hudson.plugins.sctmexecutor.publisher.SCTMTestCaseResult;
 import hudson.plugins.sctmexecutor.publisher.SCTMTestConfigurationResult;
 import hudson.plugins.sctmexecutor.publisher.SCTMTestSuiteResult;
-import hudson.plugins.sctmexecutor.publisher.TestState;
 import hudson.tasks.test.TestResult;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 import java.util.logging.Logger;
 
@@ -31,7 +29,6 @@ public class OutputXMLParserHandler extends DefaultHandler {
 
   private TestState state = TestState.SKIPPED;
   private float duration;
-  private List<String> multiLineBuffer;
   private StringBuilder errorMessage = new StringBuilder();
 
   public OutputXMLParserHandler(SCTMTestSuiteResult suiteResult, String configuration) {
@@ -88,12 +85,10 @@ public class OutputXMLParserHandler extends DefaultHandler {
       wasSuccessElement = true;
     } else if ("Message".equals(qName)) {
       messageElement = true;
-      multiLineBuffer = new ArrayList<String>();
-      multiLineBuffer.add("<b>Error: </b>");
+      errorMessage.append("<b>Error: </b>");
     } else if ("Info".equals(qName)) {
       infoElement = true;
-      multiLineBuffer = new ArrayList<String>();
-      multiLineBuffer.add("<b>Stacktrace: </b>");
+      errorMessage.append("\n\n<b>Stacktrace: </b>");
     }
   }
 
@@ -109,7 +104,7 @@ public class OutputXMLParserHandler extends DefaultHandler {
       else
         duration = f;
     } else if (messageElement || infoElement) {
-      multiLineBuffer.add(item);
+      errorMessage.append(item);
     }
   }
 
@@ -121,25 +116,15 @@ public class OutputXMLParserHandler extends DefaultHandler {
     } else if ("Test".equals(qName)) {
       SCTMTestCaseResult result = (SCTMTestCaseResult) this.resultStack.pop();
       result.addConfigurationResult(this.configuration, new SCTMTestConfigurationResult(this.configuration, state,
-          duration, errorMessage.toString()));
+          duration, errorMessage.toString()));// .replace("&#xd;", "\n")));
     } else if ("Timer".equals(qName)) {
       timerElement = false;
     } else if ("WasSuccess".equals(qName)) {
       wasSuccessElement = false;
     } else if ("Message".equals(qName)) {
       messageElement = false;
-      appendBuffer(multiLineBuffer, errorMessage);
     } else if ("Info".equals(qName)) {
       infoElement = false;
-      appendBuffer(multiLineBuffer, errorMessage);
     }
-  }
-
-  private static void appendBuffer(List<String> multiLineBuffer, StringBuilder errorMessage) {
-    errorMessage.append("<p>");
-    for (String line : multiLineBuffer) {
-      errorMessage.append(line);
-    }
-    errorMessage.append("</p><br/>");
   }
 }

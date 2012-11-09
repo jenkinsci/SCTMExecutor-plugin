@@ -30,15 +30,15 @@ public class TestFailedOutPutXMLParserHandler {
 
   @Test
   public void testParsedStructure() throws Exception {
-    assertEquals(5, this.rootSuite.getTotalCount());
+    assertEquals(7, this.rootSuite.getTotalCount());
     assertEquals(1, this.rootSuite.getChildren().size());
 
     SCTMTestSuiteResult plan = this.rootSuite.getChildSuiteByName("plan.pln");
     assertNotNull(plan);
     assertEquals("plan.pln", plan.getSafeName());
-    assertEquals(5, plan.getTotalCount());
-    assertEquals(5, plan.getTestResultForConfiguration(CONFIG_DUMMY).getTotalCount());
-    assertEquals(4, plan.getChildren().size());
+    assertEquals(7, plan.getTotalCount());
+    assertEquals(7, plan.getTestResultForConfiguration(CONFIG_DUMMY).getTotalCount());
+    assertEquals(5, plan.getChildren().size());
 
     SCTMTestSuiteResult suite = plan.getChildSuiteByName("codeField.t");
     assertNotNull(suite);
@@ -108,10 +108,10 @@ public class TestFailedOutPutXMLParserHandler {
 
   @Test
   public void testFailedTestRun() throws Exception {
-    assertEquals(3, rootSuite.getFailCount());
+    assertEquals(4, rootSuite.getFailCount());
     assertEquals(0, rootSuite.getSkipCount());
-    assertEquals(2, rootSuite.getPassCount());
-    assertEquals(62160.0, rootSuite.getDuration(), 0.1);
+    assertEquals(3, rootSuite.getPassCount());
+    assertEquals(62189.8, rootSuite.getDuration(), 0.1);
 
     SCTMTestSuiteResult suite = rootSuite.getChildSuiteByName("plan.pln").getChildSuiteByName("codeField.t");
     assertEquals(1, suite.getFailCount());
@@ -164,17 +164,45 @@ public class TestFailedOutPutXMLParserHandler {
     assertNotNull(test);
     SCTMTestConfigurationResult configurationResult = test.getTestResultForConfiguration(CONFIG_DUMMY);
     assertNotNull(configurationResult);
-    String errormsg = configurationResult.getErrorMessage();
+    String errormsg = configurationResult.getErrorDetails();
   }
 
   @Test
-  public void testErrorMessage() throws Exception {
+  public void testJUnitErrorMessage() throws Exception {
     SCTMTestCaseResult test = this.rootSuite.getChildSuiteByName("plan.pln")
         .getChildSuiteByName("calculator.test.ParameterizedCalcTest").getChildTestByName("testAdd[0]");
     assertNotNull(test);
     SCTMTestConfigurationResult configurationResult = test.getTestResultForConfiguration(CONFIG_DUMMY);
     assertNotNull(configurationResult);
-    String errormsg = configurationResult.getErrorMessage();
+    String errormsg = configurationResult.getErrorDetails();
+    // assertThat(errormsg, StringContains.containsString("<b>Error: </b><br/>"
+    // + "The object is not ready for user interaction because it is not enabled.<br/><br/>"
+    // + "<b>Stacktrace: </b><br/>"));
+    System.out.println(errormsg);
+  }
+
+  @Test
+  public void testNUnitErrorMessage() throws Exception {
+    SCTMTestCaseResult test = this.rootSuite.getChildSuiteByName("plan.pln").getChildSuiteByName("WpfTest")
+        .getChildTestByName("Test.Integration.WpfTest.DoubleTest");
+    assertNotNull(test);
+    SCTMTestConfigurationResult configurationResult = test.getTestResultForConfiguration(CONFIG_DUMMY);
+    assertNotNull(configurationResult);
+    String errormsg = configurationResult.getErrorDetails();
+    // assertThat(errormsg, StringContains.containsString("<b>Error: </b><br/>"
+    // + "The object is not ready for user interaction because it is not enabled.<br/><br/>"
+    // + "<b>Stacktrace: </b><br/>"));
+    System.out.println(errormsg);
+  }
+
+  @Test
+  public void test4TestErrorMessage() throws Exception {
+    SCTMTestCaseResult test = this.rootSuite.getChildSuiteByName("plan.pln").getChildSuiteByName("table.t")
+        .getChildTestByName("TableTest");
+    assertNotNull(test);
+    SCTMTestConfigurationResult configurationResult = test.getTestResultForConfiguration(CONFIG_DUMMY);
+    assertNotNull(configurationResult);
+    String errormsg = configurationResult.getErrorDetails();
     // assertThat(errormsg, StringContains.containsString("<b>Error: </b><br/>"
     // + "The object is not ready for user interaction because it is not enabled.<br/><br/>"
     // + "<b>Stacktrace: </b><br/>"));

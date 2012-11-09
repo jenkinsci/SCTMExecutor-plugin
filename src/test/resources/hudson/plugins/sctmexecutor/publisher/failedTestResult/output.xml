@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/silkroot/xsl/output.xsl"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/silkroot/xsl/output.xsl"?>
 <TestSuite TestItem="plan.pln" ExtId="plan.pln">
   <RunCount>5</RunCount>
   <ErrorCount>3</ErrorCount>
   <Timer>62160.0</Timer>
   <WasSuccess>false</WasSuccess>
-
   <TestSuite TestItem="codeField.t" ExtId="plan.pln/codeField.t">
     <RunCount>1</RunCount>
     <ErrorCount>2</ErrorCount>
@@ -12,31 +12,29 @@
     <WasSuccess>false</WasSuccess>
     <Test TestItem="codeField" ExtId="plan.pln/codeField.t/codeField">
       <RunCount>1</RunCount>
-
       <ErrorCount>2</ErrorCount>
       <Timer>21000.0</Timer>
       <WasSuccess>false</WasSuccess>
       <Incident>
         <Message>Log Error: Could not find object '//Tree[@automationId='shellcont/shell']'.</Message>
         <Severity>Error</Severity>
-
         <Detail>
           <TestName>Info</TestName>
-          <Info>Print: Occurred in Find&#xD;
-Print: Called from CodeField at CodeField.t(6)</Info>
+          <Info>
+          Print: Occurred in Find&#xD; 
+          Print: Called from CodeField at CodeField.t(6)</Info>
         </Detail>
       </Incident>
       <Incident>
         <Message>Log Error: &lt;&lt;&lt;&lt; Click to View Bitmap of Error cmd /C" start C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\SCC_ExecServer_19124_19125\PerfProjects\PerfPrj_45_1270803017013\CodeField105147.bmp"</Message>
-
         <Severity>Error</Severity>
         <Detail>
           <TestName>Info</TestName>
-          <Info>Print: Occurred in CaptureDesktop at ..\common.inc(150)&#xD;
-Print: Called from TestCaseExit at frame.inc(16)&#xD;
-Print: Called from CodeField at CodeField.t(6)</Info>
+          <Info>
+          Print: Occurred in CaptureDesktop at ..\common.inc(150)&#xD; 
+          Print: Called from TestCaseExit at frame.inc(16)&#xD; 
+          Print: Called from CodeField at CodeField.t(6)</Info>
         </Detail>
-
       </Incident>
     </Test>
   </TestSuite>
@@ -63,26 +61,23 @@ Print: Called from CodeField at CodeField.t(6)</Info>
       <Incident>
         <Message>Log Error: Could not find object '//Tree[@automationId='shellcont/shell']'.</Message>
         <Severity>Error</Severity>
-
         <Detail>
           <TestName>Info</TestName>
-          <Info>Print: Occurred in Find&#xD;
-Print: Called from Table at frame.inc(64)&#xD;
-Print: Called from DefaultTestCaseEnter at defaults.inc(540)&#xD;
-Print: Called from TestCaseEnter at frame.inc(8)&#xD;
-Print: Called from TableTest at table.t(3)</Info>
+          <Info>Print: Occurred in Find&#xD; 
+          Print: Called from Table at frame.inc(64)&#xD; 
+          Print: Called from DefaultTestCaseEnter at defaults.inc(540)&#xD; 
+          Print: Called from TestCaseEnter at frame.inc(8)&#xD; 
+          Print: Called from TableTest at table.t(3)</Info>
         </Detail>
-
       </Incident>
       <Incident>
         <Message>Log Error: &lt;&lt;&lt;&lt; Click to View Bitmap of Error cmd /C" start C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\SCC_ExecServer_19124_19125\PerfProjects\PerfPrj_45_1270803017013\TableTest105225.bmp"</Message>
         <Severity>Error</Severity>
         <Detail>
           <TestName>Info</TestName>
-
-          <Info>Print: Occurred in CaptureDesktop at ..\common.inc(150)&#xD;
-Print: Called from TestCaseExit at frame.inc(16)&#xD;
-Print: Called from TableTest at table.t(3)</Info>
+          <Info>Print: Occurred in CaptureDesktop at ..\common.inc(150)&#xD; 
+          Print: Called from TestCaseExit at frame.inc(16)&#xD; 
+          Print: Called from TableTest at table.t(3)</Info>
         </Detail>
       </Incident>
     </Test>
@@ -107,52 +102,81 @@ Print: Called from TableTest at table.t(3)</Info>
         <Message>The object is not ready for user interaction because it is not enabled.</Message>
         <Severity>Error</Severity>
         <Detail>
-          <TestName>testBusyWaitSync(com.borland.jtf.browser.script.AutoSynchronization)</TestName>
-          <Info>com.borland.silktest.jtf.common.ObjectNotEnabledException: The object is not ready for user interaction because it is not enabled.&#xD;
-  at com.borland.silktest.jtf.Agent.executeBrowserBaseState(Agent.java:502)&#xD;
-  at com.borland.silktest.jtf.BrowserBaseState.execute(BrowserBaseState.java:242)&#xD;
-  at com.borland.jtf.browser.script.BaseStates.ieDefaultBaseState(BaseStates.java:11)&#xD;
-  at com.borland.jtf.browser.script.AutoSynchronization.baseState(AutoSynchronization.java:44)&#xD;
-  at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)&#xD;
-  at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)&#xD;
-  at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)&#xD;
-  at java.lang.reflect.Method.invoke(Method.java:597)&#xD;
-  at org.junit.internal.runners.MethodRoadie.runBefores(MethodRoadie.java:122)&#xD;
-  at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:86)&#xD;
-  at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)&#xD;
-  at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)&#xD;
-  at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)&#xD;
-  at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)&#xD;
-  at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)&#xD;
-  at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)&#xD;
-  at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)&#xD;
-  at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)&#xD;
-  at org.junit.internal.runners.CompositeRunner.runChildren(CompositeRunner.java:33)&#xD;
-  at org.junit.runners.Suite.access$000(Suite.java:26)&#xD;
-  at org.junit.runners.Suite$1.run(Suite.java:93)&#xD;
-  at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)&#xD;
-  at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)&#xD;
-  at org.junit.runners.Suite.run(Suite.java:91)&#xD;
-  at com.borland.testutils.DynamicTestSuite.run(DynamicTestSuite.java:111)&#xD;
-  at org.junit.internal.runners.CompositeRunner.runChildren(CompositeRunner.java:33)&#xD;
-  at org.junit.internal.runners.CompositeRunner.run(CompositeRunner.java:28)&#xD;
-  at org.junit.runner.JUnitCore.run(JUnitCore.java:130)&#xD;
-  at org.junit.runner.JUnitCore.run(JUnitCore.java:109)&#xD;
-  at org.junit.runner.JUnitCore.run(JUnitCore.java:100)&#xD;
-  at com.segue.tm.plugins.testlaunch.junit.ju4support.JU4Helper.executeJunitTest(JU4Helper.java:88)&#xD;
-  at com.segue.tm.plugins.testlaunch.junit.ju4support.JU4Helper.executeJU4TestClassOrMethodOnly(JU4Helper.java:42)&#xD;
-  at com.segue.tm.plugins.testlaunch.junit.ju4support.JUnit4CmdLineWrapper.executeTestClassOrMethod(JUnit4CmdLineWrapper.java:47)&#xD;
-  at com.segue.tm.plugins.testlaunch.junit.ju4support.JUnit4CmdLineWrapper.main(JUnit4CmdLineWrapper.java:81)</Info>
+          <TestName>testBusyWaitSync(com.xxx.AutoSynchronization)</TestName>
+          <Info>com.xxx.common.ObjectNotEnabledException: The object is not ready for user interaction because it is not enabled.&#xD; 
+            at com.xxx.executeBrowserBaseState(Agent.java:502)&#xD; 
+            at com.xxx.execute(BrowserBaseState.java:242)&#xD; 
+            at com.xxx.ieDefaultBaseState(BaseStates.java:11)&#xD; 
+            at com.xxx.AutoSynchronization.baseState(AutoSynchronization.java:44)&#xD; 
+            at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)&#xD; 
+            at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)&#xD; 
+            at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)&#xD; 
+            at java.lang.reflect.Method.invoke(Method.java:597)&#xD; 
+            at org.junit.internal.runners.MethodRoadie.runBefores(MethodRoadie.java:122)&#xD; 
+            at org.junit.internal.runners.MethodRoadie.runBeforesThenTestThenAfters(MethodRoadie.java:86)&#xD; 
+            at org.junit.internal.runners.MethodRoadie.runTest(MethodRoadie.java:77)&#xD; 
+            at org.junit.internal.runners.MethodRoadie.run(MethodRoadie.java:42)&#xD; 
+            at org.junit.internal.runners.JUnit4ClassRunner.invokeTestMethod(JUnit4ClassRunner.java:88)&#xD; 
+            at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)&#xD; 
+            at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)&#xD; 
+            at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)&#xD; 
+            at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)&#xD; 
+            at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)&#xD; 
+            at org.junit.internal.runners.CompositeRunner.runChildren(CompositeRunner.java:33)&#xD; 
+            at org.junit.runners.Suite.access$000(Suite.java:26)&#xD; 
+            at org.junit.runners.Suite$1.run(Suite.java:93)&#xD; 
+            at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)&#xD; 
+            at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)&#xD; 
+            at org.junit.runners.Suite.run(Suite.java:91)&#xD; 
+            at com.xxx.testutils.DynamicTestSuite.run(DynamicTestSuite.java:111)&#xD; 
+            at org.junit.internal.runners.CompositeRunner.runChildren(CompositeRunner.java:33)&#xD; 
+            at org.junit.internal.runners.CompositeRunner.run(CompositeRunner.java:28)&#xD; 
+            at org.junit.runner.JUnitCore.run(JUnitCore.java:130)&#xD; 
+            at org.junit.runner.JUnitCore.run(JUnitCore.java:109)&#xD; 
+            at org.junit.runner.JUnitCore.run(JUnitCore.java:100)&#xD; 
+            at com.segue.tm.plugins.testlaunch.junit.ju4support.JU4Helper.executeJunitTest(JU4Helper.java:88)&#xD; 
+            at com.segue.tm.plugins.testlaunch.junit.ju4support.JU4Helper.executeJU4TestClassOrMethodOnly(JU4Helper.java:42)&#xD; 
+            at com.segue.tm.plugins.testlaunch.junit.ju4support.JUnit4CmdLineWrapper.executeTestClassOrMethod(JUnit4CmdLineWrapper.java:47)&#xD; 
+            at com.segue.tm.plugins.testlaunch.junit.ju4support.JUnit4CmdLineWrapper.main(JUnit4CmdLineWrapper.java:81)</Info>
         </Detail>
       </Incident>
       <Incident>
         <Severity>Error</Severity>
         <Detail>
-          <TestName>testBusyWaitSync(com.borland.jtf.browser.script.AutoSynchronization)</TestName>
-          <Info>com.borland.silktest.jtf.common.ObjectNotEnabledException: The object is not ready for user interaction because it is not enabled.&#xD;</Info>
+          <TestName>testBusyWaitSync(com.xxx.AutoSynchronization)</TestName>
+          <Info>com.xxx.common.ObjectNotEnabledException: The object is not ready for user interaction because it is not enabled.&#xD;</Info>
         </Detail>
       </Incident>
     </Test>
   </ResultElement>
+  <TestSuite TestItem="WpfTest" ExtId="WpfTest">
+    <Timer>29.888</Timer>
+    <WasSuccess>false</WasSuccess>
+    <Test TestItem="Test.Integration.WpfTest.DoubleTest" ExtId="Test.Integration.WpfTest.DoubleTest">
+      <RunCount>1</RunCount>
+      <Asserts>0</Asserts>
+      <Timer>18.844</Timer>
+      <WasSuccess>false</WasSuccess>
+      <Incident>
+        <Message>InvalidObjectHandleException : The handle for this object has been invalidated.</Message>
+        <Severity>Failure</Severity>
+        <Detail>
+          <TestName>Test.Integration.WpfTest.DoubleTest</TestName>
+          <Info>
+          at Communicator.SendMessage(Message message) 
+          at Agent.SendMessage(Message message) 
+          at Agent.Find(TestObject parent, String resolveExpression, FindOptions options) 
+          at Test.Integration.WpfTest.OpenBasicControlsDialog() in D:\ws\Test.Integration\WpfTest.vb:line 51 
+          at Test.Integration.WpfTest.OpenBasicControlsTab(String tabName) in D:\ws\Test.Integration\WpfTest.vb:line 58 
+          at Test.Integration.WpfTest.DoubleTest() in D:\ws\Test.Integration\WpfTest.vb:line 34</Info>
+        </Detail>
+      </Incident>
+    </Test>
+    <Test TestItem="Test.Integration.WpfTest.PointAndRectTest" ExtId="Test.Integration.WpfTest.PointAndRectTest">
+      <RunCount>1</RunCount>
+      <Asserts>2</Asserts>
+      <Timer>11.044</Timer>
+      <WasSuccess>true</WasSuccess>
+    </Test>
+  </TestSuite>
 </TestSuite>
-

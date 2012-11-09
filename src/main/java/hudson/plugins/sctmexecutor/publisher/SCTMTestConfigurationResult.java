@@ -14,13 +14,13 @@ public final class SCTMTestConfigurationResult extends AbstractSCTMTest {
   private int passCount;
   private float duration;
 
-  private final String errorMessage;
+  private String errorMessage;
   private transient int passWidth;
   private transient int skipWidth;
   private transient int failWidth;
 
   SCTMTestConfigurationResult(SCTMTestConfigurationResult value) {
-    this(value.getConfigurationName(), value.getState(), value.getDuration(), value.getErrorMessage());
+    this(value.getConfigurationName(), value.getState(), value.getDuration(), value.getErrorDetails());
     this.duration = value.getDuration();
     this.failCount = value.getFailCount();
     this.skipCount = value.getSkipCount();
@@ -119,9 +119,10 @@ public final class SCTMTestConfigurationResult extends AbstractSCTMTest {
     }
   }
 
-  void addSubTests(int passCount, int skipCount, int failCount, float duration) {
+  void addSubTests(int passCount, int skipCount, int failCount, float duration, String errorMessage) {
     updateTestCount(failCount + getFailCount(), skipCount + getSkipCount(), passCount + getPassCount());
     updateDuration(duration + getDuration());
+    this.errorMessage += errorMessage;
   }
 
   @Override
@@ -162,7 +163,8 @@ public final class SCTMTestConfigurationResult extends AbstractSCTMTest {
     return passWidth;
   }
 
-  public String getErrorMessage() {
+  @Override
+  public String getErrorDetails() {
     return errorMessage;
   }
 

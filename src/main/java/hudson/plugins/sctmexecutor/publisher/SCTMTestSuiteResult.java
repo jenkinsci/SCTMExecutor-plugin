@@ -72,7 +72,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements ISCTMM
           } else {
             AbstractSCTMTest childTestResult = childResult.getValue();
             testResult.addSubTests(childTestResult.getPassCount(), childTestResult.getSkipCount(),
-                childTestResult.getFailCount(), childTestResult.getDuration());
+                childTestResult.getFailCount(), childTestResult.getDuration(), childTestResult.getErrorDetails());
           }
         }
       }

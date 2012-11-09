@@ -24,8 +24,12 @@ THE SOFTWARE.
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-    <h2>Result: </h2>${it.state}
+    <h2>Result: 
+	    <span class="result-${it.state}">
+		    ${it.state}
+		  </span>
+	  </h2>
     <h2>Message:</h2>
-    <div>${it.errorMessage}</div>
+    <p>${it.errorDetails}</p>
     
 </j:jelly>

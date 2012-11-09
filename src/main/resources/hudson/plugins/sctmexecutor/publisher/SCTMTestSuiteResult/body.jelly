@@ -51,7 +51,7 @@ THE SOFTWARE.
 	                  Total: ${result.getTotalCount()} (${h.getDiffString(result.getTotalCount()-prev.getTotalCount())}) &lt;br/&gt;
 	                  Failed: ${result.getFailCount()} (${h.getDiffString(result.getFailCount()-prev.getFailCount())}) &lt;br/&gt;
 	                  Skipped: ${result.getSkipCount()} (${h.getDiffString(result.getSkipCount()-prev.getSkipCount())}) &lt;br/&gt;
-	                  Passed: ${result.getPassCount()} (${h.getDiffString(result.getPassCount()-prev.getPassCount())}) &lt;br/&gt;
+	                  Passed: ${result.getPassCount()} (${h.getDiffString(result.getPassCount()-prev.getPassCount())}) &lt;br/&gt; 
 	                &lt;/div&gt;"> -->
 	            <td class="pane" style="width:6em" tooltip="
 	                &lt;div style=a.tip:hover span&gt;
@@ -59,6 +59,7 @@ THE SOFTWARE.
 	                  Failed: ${result.getFailCount()} &lt;br/&gt;
 	                  Skipped: ${result.getSkipCount()} &lt;br/&gt;
 	                  Passed: ${result.getPassCount()} &lt;br/&gt;
+	                  Duration: ${result.getDurationString()} &lt;br/&gt;
 	                &lt;/div&gt;">
 	              <j:choose>
 	                <j:when test="${result.getTotalCount() > 1}">
