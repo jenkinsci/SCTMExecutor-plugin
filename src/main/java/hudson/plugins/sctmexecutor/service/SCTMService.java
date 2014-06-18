@@ -23,12 +23,12 @@ import org.apache.commons.httpclient.methods.GetMethod;
 
 import com.borland.sctm.ws.administration.MainEntities;
 import com.borland.sctm.ws.administration.MainEntitiesServiceLocator;
+import com.borland.sctm.ws.execution.ExecutionHandle;
+import com.borland.sctm.ws.execution.ExecutionNode;
+import com.borland.sctm.ws.execution.ExecutionResult;
 import com.borland.sctm.ws.execution.ExecutionWebService;
 import com.borland.sctm.ws.execution.ExecutionWebServiceServiceLocator;
-import com.borland.sctm.ws.execution.entities.ExecutionHandle;
-import com.borland.sctm.ws.execution.entities.ExecutionNode;
-import com.borland.sctm.ws.execution.entities.ExecutionResult;
-import com.borland.sctm.ws.execution.entities.PropertyValue;
+import com.borland.sctm.ws.execution.PropertyValue;
 import com.borland.sctm.ws.logon.SystemService;
 import com.borland.sctm.ws.logon.SystemServiceServiceLocator;
 import com.borland.sctm.ws.performer.PerformerService;
@@ -139,7 +139,7 @@ public class SCTMService implements ISCTMService {
     String productId = planningService.getProperty(sessionId, testContainerId, "_node_properties_ProductID_pk_fk").getValue(); //$NON-NLS-1$
     String productName = adminService.getProductNameById(sessionId, Integer.valueOf(productId));
     return productName;
-  }
+  }  
 
   /* (non-Javadoc)
    * @see hudson.plugins.sctmexecutor.service.ISCTMService#start(int)
@@ -322,14 +322,42 @@ public class SCTMService implements ISCTMService {
   }
 
   @Override
-  public String getProductName(int nodeId) throws SCTMException {
+  public String getProductName(int execDefId) throws SCTMException {
     try {
-      return getProductName(getExecDefNode(nodeId));
+      return getProductName(getExecDefNode(execDefId));
     } catch (RemoteException e) {
       if (handleLostSessionException(e))
-        return getProductName(nodeId);
+        return getProductName(execDefId);
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
       throw new SCTMException(MessageFormat.format(Messages.getString("SCTMService.err.commonFatalError"), e.getMessage())); //$NON-NLS-1$
     }
+  }
+  
+  @Override
+  public String getProductVersion(int execDefId) throws SCTMException {
+    try {
+      return getExecutionNodePropertyValue(getExecDefNode(execDefId), "PROP_VERSIONNAME"); //$NON-NLS-1$  
+	} catch (RemoteException e) {
+	  if (handleLostSessionException(e)) {
+        return getProductVersion(execDefId);
+	  }
+      LOGGER.log(Level.SEVERE, e.getMessage(), e);
+      throw new SCTMException(MessageFormat.format(Messages.getString("SCTMService.err.commonFatalError"), e.getMessage())); //$NON-NLS-1$
+	}	  
+  }
+    
+  @Override
+  public void setExecutionParameter(int execDefId, String parameterName, String parameterValue) throws SCTMException {
+    try {
+      execService.setParameter(this.sessionId, execDefId, parameterName, parameterValue); //$NON-NLS-1$ TODO
+    } catch (RemoteException e) {
+      if (handleLostSessionException(e)) {
+        setExecutionParameter(execDefId, parameterName, parameterValue);        
+      }
+      else {
+        LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        throw new SCTMException(MessageFormat.format(Messages.getString("SCTMService.err.commonFatalError"), e.getMessage())); //$NON-NLS-1$
+      }
+    }    
   }
 }

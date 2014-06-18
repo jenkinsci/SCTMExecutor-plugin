@@ -4,8 +4,8 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
-import hudson.plugins.sctmexecutor.validators.EmptySingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.NumberCSVSingleFieldValidator;
+import hudson.plugins.sctmexecutor.validators.ParametersSingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.TestConnectionValidator;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
@@ -55,7 +55,8 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
     String execDefIds = formData.getString("execDefIds"); //$NON-NLS-1$
     int projectId = formData.getInt("projectId"); //$NON-NLS-1$
-    int delay = getOptionalIntValue(formData.getString("delay"), 0); //$NON-NLS-1$
+    int delay = getOptionalIntValue(formData.getString("delay"), 0); //$NON-NLS-1$        
+    String params = formData.getString("params");    
     boolean contOnErr = formData.getBoolean("continueOnError"); //$NON-NLS-1$
     boolean collectResults = formData.getBoolean("collectResults"); //$NON-NLS-1$
     boolean ignoreSetupCleanup = formData.getBoolean("ignoreSetupCleanup"); //$NON-NLS-1$
@@ -67,18 +68,12 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     else
       optValue = buildNumberUsageOption.getInt("value");//$NON-NLS-1$
 
-    String version = null;
-    switch (optValue) {
-    case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
-      jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$
-    case SCTMExecutor.OPT_USE_LATEST_SCTM_BUILDNUMBER:
-    case SCTMExecutor.OPT_USE_THIS_BUILD_NUMBER:
-      version = buildNumberUsageOption.getString("productVersion"); //$NON-NLS-1$
+    if (optValue == SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER) {
+      jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$    
     }
 
-    return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults,
-        ignoreSetupCleanup, version);
-  }
+    return new SCTMExecutor(projectId, execDefIds, delay, params, optValue, jobName, contOnErr, collectResults, ignoreSetupCleanup);
+  }  
 
   private int getOptionalIntValue(String value, int defaultValue) {
     try {
@@ -166,27 +161,35 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     return Collections.emptyList();
   }
 
-  public FormValidation doCheckUser(StaplerRequest req, StaplerResponse rsp, @QueryParameter("value") final String value) {
-    return new EmptySingleFieldValidator().check(value);
+  public FormValidation doCheckUser(@QueryParameter final String value) {
+    return FormValidation.validateRequired(value);
   }
 
-  public FormValidation doCheckPassword(StaplerRequest req, StaplerResponse rsp,
-      @QueryParameter("value") final String value) {
-    return new EmptySingleFieldValidator().check(value);
+  public FormValidation doCheckPassword(@QueryParameter final String value) {
+    return FormValidation.validateRequired(value);
   }
 
-  public FormValidation doCheckExecDefIds(StaplerRequest req, StaplerResponse rsp,
-      @QueryParameter("value") final String value) {
+  public FormValidation doCheckExecDefIds(@QueryParameter final String value) {
+    FormValidation requiredness = FormValidation.validateRequired(value);
+    if (requiredness.kind != FormValidation.Kind.OK) {
+      return requiredness;
+    }
     return new NumberCSVSingleFieldValidator().check(value);
   }
 
-  public FormValidation doCheckProjectId(StaplerRequest req, StaplerResponse rsp,
-      @QueryParameter("value") final String value) {
+  public FormValidation doCheckProjectId(@QueryParameter final String value) {
+    FormValidation requiredness = FormValidation.validateRequired(value);
+    if (requiredness.kind != FormValidation.Kind.OK) {
+      return requiredness;
+    }
     return FormValidation.validateNonNegativeInteger(value);
   }
+  
+  public FormValidation doCheckParams(@QueryParameter final String value) {
+    return new ParametersSingleFieldValidator().check(value);
+  }
 
-  public FormValidation doCheckDelay(StaplerRequest rep, StaplerResponse rsp,
-      @QueryParameter("value") final String value) {
+  public FormValidation doCheckDelay(@QueryParameter final String value) {
     return FormValidation.validateNonNegativeInteger(value);
   }
 

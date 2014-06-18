@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.borland.sctm.ws.execution.entities.ExecutionHandle;
-import com.borland.sctm.ws.execution.entities.ExecutionResult;
+import com.borland.sctm.ws.execution.ExecutionHandle;
+import com.borland.sctm.ws.execution.ExecutionResult;
 import com.borland.sctm.ws.performer.SPNamedEntity;
 
 public class SCTMReRunProxy implements ISCTMService {
@@ -166,16 +166,16 @@ public class SCTMReRunProxy implements ISCTMService {
     return doGetExecDefinitionName(execDefId, MAXRERUN);
   }
 
-  private String doGetExecDefinitionName(int nodeId, int tryCount) throws SCTMException {
+  private String doGetExecDefinitionName(int execDefId, int tryCount) throws SCTMException {
     try {
-      return this.target.getExecDefinitionName(nodeId);
+      return this.target.getExecDefinitionName(execDefId);
     } catch (SCTMException e) {
       if (tryCount > 0) {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
         LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.noBuildNoOnSCTM"), tryMore)); //$NON-NLS-1$
-        return doGetExecDefinitionName(nodeId, --tryCount);
+        return doGetExecDefinitionName(execDefId, --tryCount);
       } else
         throw e;
     }
@@ -186,24 +186,35 @@ public class SCTMReRunProxy implements ISCTMService {
     return doGetAllVersions(execDefId, MAXRERUN);
   }
 
-  private Collection<String> doGetAllVersions(int nodeId, int tryCount) throws SCTMException {
+  private Collection<String> doGetAllVersions(int execDefId, int tryCount) throws SCTMException {
     try {
-      return this.target.getAllVersions(nodeId);
+      return this.target.getAllVersions(execDefId);
     } catch (SCTMException e) {
       if (tryCount > 0) {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.noVersionOnSCTM"), tryMore, nodeId)); //$NON-NLS-1$
-        return doGetAllVersions(nodeId, --tryCount);
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.noVersionOnSCTM"), tryMore, execDefId)); //$NON-NLS-1$
+        return doGetAllVersions(execDefId, --tryCount);
       } else
         throw e;
     }
   }
 
   @Override
-  public String getProductName(int nodeId) throws SCTMException {
-    return doGetProductName(nodeId, MAXRERUN);
+  public String getProductName(int execDefId) throws SCTMException {
+    return doGetProductName(execDefId, MAXRERUN);
+  }
+  
+  @Override
+  public String getProductVersion(int execDefId) throws SCTMException {    
+    return doGetProductVersion(execDefId, MAXRERUN);
+  }
+  
+  @Override
+  public void setExecutionParameter(int execDefId, String parameterName, String parameterValue) throws SCTMException {
+    doSetExecutionParameter(execDefId, parameterName, parameterValue, MAXRERUN);
+    
   }
 
   @Override
@@ -211,18 +222,49 @@ public class SCTMReRunProxy implements ISCTMService {
     return doGetResultFiles(testDefRunId, MAXRERUN);
   }
   
-  private String doGetProductName(int nodeId, int tryCount) throws SCTMException {
+  private String doGetProductName(int execDefId, int tryCount) throws SCTMException {
     try {
-      return this.target.getProductName(nodeId);
+      return this.target.getProductName(execDefId);
     } catch (SCTMException e) {
       if (tryCount > 0) {
         String tryMore = ""; //$NON-NLS-1$
         if (tryCount > 1)
           tryMore = "Try once more."; //$NON-NLS-1$
-        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.noProductOnSCTM"), tryMore, nodeId)); //$NON-NLS-1$
-        return doGetProductName(nodeId, --tryCount);
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.noProductOnSCTM"), tryMore, execDefId)); //$NON-NLS-1$
+        return doGetProductName(execDefId, --tryCount);
       } else
         throw e;
+    }
+  }  
+  
+  private String doGetProductVersion(int execDefId, int tryCount) throws SCTMException {
+    try {
+      return this.target.getProductVersion(execDefId);
+    } catch (SCTMException e) {
+      if (tryCount > 0) {
+        String tryMore = ""; //$NON-NLS-1$
+        if (tryCount > 1)
+          tryMore = "Try once more."; //$NON-NLS-1$
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.noVersionOnSCTM"), tryMore, execDefId)); //$NON-NLS-1$
+        return doGetProductVersion(execDefId, --tryCount);
+      } else
+        throw e;
+    }
+  }
+  
+  private void doSetExecutionParameter(int execDefId, String parameterName, String parameterValue, int tryCount) throws SCTMException {
+    try {
+      this.target.setExecutionParameter(execDefId, parameterName, parameterValue);
+    } catch (SCTMException e) {
+      if (tryCount > 0) {
+        String tryMore = ""; //$NON-NLS-1$
+        if (tryCount > 1)
+          tryMore = "Try once more."; //$NON-NLS-1$
+        LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.addParamFailed"), tryMore, execDefId, parameterName, parameterValue)); //$NON-NLS-1$
+        doGetProductVersion(execDefId, --tryCount);
+      } else {
+        throw e;
+      }
     }
   }
   

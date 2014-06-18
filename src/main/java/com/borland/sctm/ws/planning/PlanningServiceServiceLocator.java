@@ -22,7 +22,7 @@ public class PlanningServiceServiceLocator extends org.apache.axis.client.Servic
     }
 
     // Use to get a proxy class for tmplanning
-    private java.lang.String tmplanning_address = "http://10.5.2.6/Services1.0/services/tmplanning";
+    private java.lang.String tmplanning_address = "http://www-silkcentral/Services1.0/services/tmplanning";
 
     public java.lang.String gettmplanningAddress() {
         return tmplanning_address;
@@ -105,7 +105,7 @@ public class PlanningServiceServiceLocator extends org.apache.axis.client.Servic
     }
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("http://atlis-tm/Services1.0/services/tmplanning", "PlanningServiceService");
+        return new javax.xml.namespace.QName("http://www-silkcentral/Services1.0/services/tmplanning", "PlanningServiceService");
     }
 
     private java.util.HashSet ports = null;
@@ -113,7 +113,7 @@ public class PlanningServiceServiceLocator extends org.apache.axis.client.Servic
     public java.util.Iterator getPorts() {
         if (ports == null) {
             ports = new java.util.HashSet();
-            ports.add(new javax.xml.namespace.QName("http://atlis-tm/Services1.0/services/tmplanning", "tmplanning"));
+            ports.add(new javax.xml.namespace.QName("http://www-silkcentral/Services1.0/services/tmplanning", "tmplanning"));
         }
         return ports.iterator();
     }

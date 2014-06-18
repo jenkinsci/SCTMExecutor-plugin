@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,42 +36,47 @@ public final class SCTMExecutor extends Builder {
   static final int OPT_USE_THIS_BUILD_NUMBER = 2;
   static final int OPT_USE_SPECIFICJOB_BUILDNUMBER = 3;
   static final int OPT_USE_LATEST_SCTM_BUILDNUMBER = 4;
+  static final int OPT_USE_CUSTOM_BUILDNUMBER = 5;
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
 
   private final int projectId;
   private final String execDefIds;
   private final int delay;
+  private final String params;
   private final int buildNumberUsageOption;
   private final String jobName;
   private final boolean continueOnError;
   private final boolean collectResults;
   private final boolean ignoreSetupCleanup;
-  private String productVersion;
-
+  
   private boolean succeed;
   private String product;
+  private String productVersion;
 
   @DataBoundConstructor
-  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption,
-      final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup, String productVersion) {
+  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final String params, 
+      final int buildNumberUsageOption, final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
     this.delay = delay;
+    this.params = params;
     this.buildNumberUsageOption = buildNumberUsageOption;
     this.jobName = jobName;
     this.continueOnError = contOnErr;
     this.collectResults = collectResults;
-    this.ignoreSetupCleanup = ignoreSetupCleanup;
-    this.productVersion = productVersion;
+    this.ignoreSetupCleanup = ignoreSetupCleanup;    
   }
 
   private ISCTMService createSctmService(final int projectId, List<Integer> execDefIdList) throws SCTMException {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
     ISCTMService service = null;
-    service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor
-        .getPassword(), projectId));
-    this.product = service.getProductName(execDefIdList.get(0));
+    service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor.getPassword(), projectId));
+    
+    int firstExecDefId = execDefIdList.get(0); //used to collect global definitions for all executions
+    this.product = service.getProductName(firstExecDefId);
+    this.productVersion = service.getProductVersion(firstExecDefId);
+    
     return service;
   }
 
@@ -96,6 +103,10 @@ public final class SCTMExecutor extends Builder {
 
   public String getJobName() {
     return this.jobName;
+  }  
+
+  public String getParams() {
+    return params;
   }
 
   public boolean isContinueOnError() {
@@ -108,11 +119,7 @@ public final class SCTMExecutor extends Builder {
 
   public boolean isCollectResults() {
     return this.collectResults;
-  }
-  
-  public String getProductVersion() {
-    return productVersion;
-  }
+  }  
   
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
@@ -127,15 +134,14 @@ public final class SCTMExecutor extends Builder {
 
       Collection<Thread> executions = new ArrayList<Thread>(execDefIdList.size());
       int buildNumber = -1;
-      buildNumber = getOrAddBuildNumber(build, listener, execDefIdList.get(0), service);
+      buildNumber = getOrAddBuildNumber(build, listener, service);
       for (Integer execDefId : execDefIdList) {
         ITestResultWriter resultWriter = null;
         if (collectResults)
 //          resultWriter = new StdXMLResultWriter(rootDir, serviceURL, String.valueOf(build.number),
 //              this.ignoreSetupCleanup);
           resultWriter = new SCTMResultWriter(rootDir, service, ignoreSetupCleanup);
-        Runnable resultCollector = new ExecutionRunnable(service, execDefId, buildNumber, resultWriter, listener
-            .getLogger());
+        Runnable resultCollector = new ExecutionRunnable(service, execDefId, splitToMap(params), buildNumber, resultWriter, listener.getLogger());
 
         Thread t = new Thread(resultCollector);
         executions.add(t);
@@ -158,7 +164,7 @@ public final class SCTMExecutor extends Builder {
     return continueOnError || succeed;
   }
 
-  private int getOrAddBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, int nodeId, ISCTMService service) throws SCTMException {
+  private int getOrAddBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, ISCTMService service) throws SCTMException {
     switch (this.buildNumberUsageOption) {
     case OPT_USE_THIS_BUILD_NUMBER:
     case OPT_USE_SPECIFICJOB_BUILDNUMBER:
@@ -167,6 +173,8 @@ public final class SCTMExecutor extends Builder {
         buildnumber = build.number;
       else if (this.buildNumberUsageOption == OPT_USE_SPECIFICJOB_BUILDNUMBER)
         buildnumber = getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
+      else if (this.buildNumberUsageOption == OPT_USE_CUSTOM_BUILDNUMBER)
+        buildnumber = -1; //TODO implement this functionality
       
       try {
         if (!service.buildNumberExists(product, productVersion, buildnumber)) {
@@ -223,5 +231,20 @@ public final class SCTMExecutor extends Builder {
     } else
       buildResults.mkdirs();
     return buildResults;
+  }
+  
+  private Map<String, String> splitToMap(String content) {    
+    Map<String, String> map = new LinkedHashMap<String, String>();   
+    
+    if (content != null && !content.isEmpty()) {      
+        for (String keyValue: content.split(" *[,\n] *")) {
+          String[] pair = keyValue.split(" *= *", 2);
+          map.put(pair[0], pair.length == 1 ? "" : pair[1]);          
+          
+          System.out.println("KeyValue=" + keyValue);          
+        }
+    }
+    
+    return map;
   }
 }

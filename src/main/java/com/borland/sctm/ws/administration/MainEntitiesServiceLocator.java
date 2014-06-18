@@ -22,7 +22,7 @@ public class MainEntitiesServiceLocator extends org.apache.axis.client.Service i
     }
 
     // Use to get a proxy class for sccentities
-    private java.lang.String sccentities_address = "http://10.5.2.6//axislegacy/sccentities";
+    private java.lang.String sccentities_address = "http://www-silkcentral/axislegacy/sccentities";
 
     public java.lang.String getsccentitiesAddress() {
         return sccentities_address;
@@ -105,7 +105,7 @@ public class MainEntitiesServiceLocator extends org.apache.axis.client.Service i
     }
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("http://10.5.2.6//axislegacy/sccentities", "MainEntitiesService");
+        return new javax.xml.namespace.QName("http://www-silkcentral/axislegacy/sccentities", "MainEntitiesService");
     }
 
     private java.util.HashSet ports = null;
@@ -113,7 +113,7 @@ public class MainEntitiesServiceLocator extends org.apache.axis.client.Service i
     public java.util.Iterator getPorts() {
         if (ports == null) {
             ports = new java.util.HashSet();
-            ports.add(new javax.xml.namespace.QName("http://10.5.2.6//axislegacy/sccentities", "sccentities"));
+            ports.add(new javax.xml.namespace.QName("http://www-silkcentral/axislegacy/sccentities", "sccentities"));
         }
         return ports.iterator();
     }

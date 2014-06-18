@@ -5,15 +5,15 @@ import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 import java.io.InputStream;
 import java.util.Collection;
 
-import com.borland.sctm.ws.execution.entities.ExecutionHandle;
-import com.borland.sctm.ws.execution.entities.ExecutionResult;
+import com.borland.sctm.ws.execution.ExecutionHandle;
+import com.borland.sctm.ws.execution.ExecutionResult;
 import com.borland.sctm.ws.performer.SPNamedEntity;
 
 public interface ISCTMService {
 
-  public Collection<ExecutionHandle> start(int executionId) throws SCTMException;
+  public Collection<ExecutionHandle> start(int execDefId) throws SCTMException;
 
-  public Collection<ExecutionHandle> start(int executionId, String buildNumber) throws SCTMException;
+  public Collection<ExecutionHandle> start(int execDefId, String buildNumber) throws SCTMException;
 
   public boolean isFinished(ExecutionHandle handle) throws SCTMException;
 
@@ -33,6 +33,10 @@ public interface ISCTMService {
 
   public Collection<String> getAllVersions(int execDefId) throws SCTMException;
 
-  public String getProductName(int integer) throws SCTMException;
+  public String getProductName(int execDefId) throws SCTMException;
+  
+  public String getProductVersion(int execDefId) throws SCTMException;
+  
+  public void setExecutionParameter(int execDefId, String parameterName, String parameterValue) throws SCTMException;
 
 }

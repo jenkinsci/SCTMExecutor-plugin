@@ -22,7 +22,7 @@ public class PerformerServiceServiceLocator extends org.apache.axis.client.Servi
     }
 
     // Use to get a proxy class for tmperformer
-    private java.lang.String tmperformer_address = "http://atlis-tm/Services1.0/services/tmperformer";
+    private java.lang.String tmperformer_address = "http://www-silkcentral/Services1.0/services/tmperformer";
 
     public java.lang.String gettmperformerAddress() {
         return tmperformer_address;

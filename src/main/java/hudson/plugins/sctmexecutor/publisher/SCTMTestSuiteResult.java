@@ -252,6 +252,7 @@ public final class SCTMTestSuiteResult extends TabulatedResult implements ISCTMM
     return null;
   }
 
+  @Override
   public SCTMTestConfigurationResult getTestResultForConfiguration(String configuration) {
     return this.getConfigurationResult().get(configuration);
   }

@@ -9,8 +9,8 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.borland.sctm.ws.execution.entities.ExecutionResult;
-import com.borland.sctm.ws.execution.entities.TestDefinitionResult;
+import com.borland.sctm.ws.execution.ExecutionResult;
+import com.borland.sctm.ws.execution.TestDefinitionResult;
 
 public class TestStdResultWriter {
   

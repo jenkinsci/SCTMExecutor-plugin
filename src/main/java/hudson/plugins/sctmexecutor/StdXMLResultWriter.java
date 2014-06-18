@@ -15,8 +15,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.borland.sctm.ws.execution.entities.ExecutionResult;
-import com.borland.sctm.ws.execution.entities.TestDefinitionResult;
+import com.borland.sctm.ws.execution.ExecutionResult;
+import com.borland.sctm.ws.execution.TestDefinitionResult;
 
 final class StdXMLResultWriter implements ITestResultWriter {
   private static final int NOT_EXECUTED = 3;
@@ -36,7 +36,7 @@ final class StdXMLResultWriter implements ITestResultWriter {
     this.sctmHost = serviceURL.substring(0, serviceURL.indexOf("/", "http://".length())) + "/silk/DEF"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     this.ignoreSetupCleanup = ignoreSetupCleanup;
   }
-
+  
   @Override
   public void write(ExecutionResult result) {
     int done = 3;

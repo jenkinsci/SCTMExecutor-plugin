@@ -9,13 +9,14 @@ import java.io.PrintStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
 
-import com.borland.sctm.ws.execution.entities.ExecutionHandle;
-import com.borland.sctm.ws.execution.entities.ExecutionResult;
-import com.borland.sctm.ws.execution.entities.TestDefinitionResult;
+import com.borland.sctm.ws.execution.ExecutionHandle;
+import com.borland.sctm.ws.execution.ExecutionResult;
+import com.borland.sctm.ws.execution.TestDefinitionResult;
 
 public class TestResultCollector {
   
@@ -30,7 +31,7 @@ public class TestResultCollector {
     ITestResultWriter resultWriterMock = EasyMock.createStrictMock(ITestResultWriter.class);
     resultWriterMock.write(result);
     
-    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, DEFAULT_BUILDNUMBER, resultWriterMock, new PrintStream("test.log"));
+    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, new HashMap<String, String>(),DEFAULT_BUILDNUMBER, resultWriterMock, new PrintStream("test.log"));
     aut.setResultCollectingDelay(1);
     
     EasyMock.replay(serviceMock);
@@ -56,7 +57,7 @@ public class TestResultCollector {
     ITestResultWriter resultWriterMock = EasyMock.createStrictMock(ITestResultWriter.class);
     resultWriterMock.write(result);
     
-    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, 1234, resultWriterMock, new PrintStream("test.log"));
+    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, new HashMap<String, String>(), 1234, resultWriterMock, new PrintStream("test.log"));
     aut.setResultCollectingDelay(1);
     
     EasyMock.replay(serviceMock);
@@ -74,7 +75,7 @@ public class TestResultCollector {
     ISCTMService serviceMock = EasyMock.createStrictMock(ISCTMService.class);
     EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andThrow(new RemoteException());
     
-    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, DEFAULT_BUILDNUMBER, null, new PrintStream("test.log"));
+    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, new HashMap<String, String>(), DEFAULT_BUILDNUMBER, null, new PrintStream("test.log"));
     aut.setResultCollectingDelay(1);
     
     EasyMock.replay(serviceMock);
@@ -91,7 +92,7 @@ public class TestResultCollector {
     EasyMock.expect(serviceMock.isFinished((ExecutionHandle) EasyMock.notNull())).andReturn(true);
     EasyMock.expect(serviceMock.getExecutionResult((ExecutionHandle)EasyMock.notNull())).andThrow(new RemoteException());
     
-    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, DEFAULT_BUILDNUMBER, null, new PrintStream("test.log"));
+    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, new HashMap<String, String>(), DEFAULT_BUILDNUMBER, null, new PrintStream("test.log"));
     aut.setResultCollectingDelay(1);
     
     EasyMock.replay(serviceMock);

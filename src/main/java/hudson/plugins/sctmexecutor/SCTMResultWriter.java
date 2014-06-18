@@ -19,8 +19,8 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
-import com.borland.sctm.ws.execution.entities.ExecutionResult;
-import com.borland.sctm.ws.execution.entities.TestDefinitionResult;
+import com.borland.sctm.ws.execution.ExecutionResult;
+import com.borland.sctm.ws.execution.TestDefinitionResult;
 import com.borland.sctm.ws.performer.SPNamedEntity;
 
 public class SCTMResultWriter implements ITestResultWriter {
@@ -37,7 +37,7 @@ public class SCTMResultWriter implements ITestResultWriter {
     this.service = service;
     this.ignoreSetupCleanup = ignoreSetupCleanup;
   }
-
+  
   @Override
   public void write(ExecutionResult result) throws SCTMException {
     try {
