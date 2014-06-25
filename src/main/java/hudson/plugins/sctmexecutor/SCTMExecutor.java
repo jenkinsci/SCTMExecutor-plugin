@@ -23,6 +23,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jenkins.model.Jenkins;
+
+import org.jenkinsci.plugins.tokenmacro.MacroEvaluationException;
+import org.jenkinsci.plugins.tokenmacro.TokenMacro;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -119,14 +123,17 @@ public final class SCTMExecutor extends Builder {
 
   public boolean isCollectResults() {
     return this.collectResults;
-  }  
+  } 
   
   @Override
-  public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
-      throws InterruptedException, IOException {
+  public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
     List<Integer> execDefIdList = Utils.csvToIntList(this.execDefIds);
+        
+    //Replace macros from input
+    Map<String, String> paramsMap = splitToMap(expandMacros(build, listener, this.params));
+        
     try {
       ISCTMService service = createSctmService(projectId, execDefIdList);
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
@@ -137,17 +144,20 @@ public final class SCTMExecutor extends Builder {
       buildNumber = getOrAddBuildNumber(build, listener, service);
       for (Integer execDefId : execDefIdList) {
         ITestResultWriter resultWriter = null;
-        if (collectResults)
+        if (collectResults) {
 //          resultWriter = new StdXMLResultWriter(rootDir, serviceURL, String.valueOf(build.number),
 //              this.ignoreSetupCleanup);
           resultWriter = new SCTMResultWriter(rootDir, service, ignoreSetupCleanup);
-        Runnable resultCollector = new ExecutionRunnable(service, execDefId, splitToMap(params), buildNumber, resultWriter, listener.getLogger());
+        }
+        
+        Runnable resultCollector = new ExecutionRunnable(service, execDefId, paramsMap, buildNumber, resultWriter, listener.getLogger());
 
         Thread t = new Thread(resultCollector);
         executions.add(t);
         t.start();
-        if (delay > 0 && execDefIdList.size() > 1)
+        if (delay > 0 && execDefIdList.size() > 1) {
           Thread.sleep(delay * 1000);
+        }
       }
 
       for (Thread t : executions) {
@@ -164,17 +174,18 @@ public final class SCTMExecutor extends Builder {
     return continueOnError || succeed;
   }
 
-  private int getOrAddBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, ISCTMService service) throws SCTMException {
+  private int getOrAddBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, ISCTMService service) throws SCTMException, IOException, InterruptedException {
     switch (this.buildNumberUsageOption) {
     case OPT_USE_THIS_BUILD_NUMBER:
     case OPT_USE_SPECIFICJOB_BUILDNUMBER:
       int buildnumber = -1;
-      if (this.buildNumberUsageOption == OPT_USE_THIS_BUILD_NUMBER)
+      if (this.buildNumberUsageOption == OPT_USE_THIS_BUILD_NUMBER) {
         buildnumber = build.number;
-      else if (this.buildNumberUsageOption == OPT_USE_SPECIFICJOB_BUILDNUMBER)
+      } else if (this.buildNumberUsageOption == OPT_USE_SPECIFICJOB_BUILDNUMBER) {
         buildnumber = getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
-      else if (this.buildNumberUsageOption == OPT_USE_CUSTOM_BUILDNUMBER)
+      } else if (this.buildNumberUsageOption == OPT_USE_CUSTOM_BUILDNUMBER) {
         buildnumber = -1; //TODO implement this functionality
+      }
       
       try {
         if (!service.buildNumberExists(product, productVersion, buildnumber)) {
@@ -237,7 +248,7 @@ public final class SCTMExecutor extends Builder {
     Map<String, String> map = new LinkedHashMap<String, String>();   
     
     if (content != null && !content.isEmpty()) {      
-        for (String keyValue: content.split(" *[,\n] *")) {
+        for (String keyValue: content.split(" *\n *")) {
           String[] pair = keyValue.split(" *= *", 2);
           map.put(pair[0], pair.length == 1 ? "" : pair[1]);          
           
@@ -246,5 +257,15 @@ public final class SCTMExecutor extends Builder {
     }
     
     return map;
+  }
+  
+  private String expandMacros(AbstractBuild<?, ?> build, BuildListener listener, final String template) throws IOException, InterruptedException {
+    String result = template;
+    try {
+      result = TokenMacro.expandAll(build, listener, template);
+    } catch (MacroEvaluationException e) {
+      listener.getLogger().println(MessageFormat.format(Messages.getString("SCTMExecutor.err.expandMacros"), e.getMessage()));
+    }
+    return result;
   }
 }

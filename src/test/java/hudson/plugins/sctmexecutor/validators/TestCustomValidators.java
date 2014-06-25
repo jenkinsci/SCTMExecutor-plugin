@@ -7,33 +7,25 @@ import org.junit.Test;
 
 
 public class TestCustomValidators {
-  @Test
-  public void testEmptySingleFieldValidator() throws Exception {
-    FormValidation fv = new EmptySingleFieldValidator().check(null);
-    assertEquals(FormValidation.Kind.ERROR, fv.kind);
-    
-    fv = new EmptySingleFieldValidator().check("");
-    assertEquals(FormValidation.Kind.ERROR, fv.kind);
-    
-    fv = new EmptySingleFieldValidator().check("blafasl");
-    assertEquals(FormValidation.Kind.OK, fv.kind);
-  }
   
   @Test
-  public void testNumberCSVSingleFieldValidator() throws Exception {
-    FormValidation fv = new NumberCSVSingleFieldValidator().check(null);
+  public void testNumberListSingleFieldValidator() throws Exception {
+    FormValidation fv = new NumberListSingleFieldValidator().check(null);
     assertEquals(FormValidation.Kind.ERROR, fv.kind);
     
-    fv = new NumberCSVSingleFieldValidator().check("");
+    fv = new NumberListSingleFieldValidator().check("");
     assertEquals(FormValidation.Kind.ERROR, fv.kind);
     
-    fv = new NumberCSVSingleFieldValidator().check("dfsdfsdf");
+    fv = new NumberListSingleFieldValidator().check("dfsdfsdf");
     assertEquals(FormValidation.Kind.ERROR, fv.kind);
     
-    fv = new NumberCSVSingleFieldValidator().check("1");
+    fv = new NumberListSingleFieldValidator().check("1");
     assertEquals(FormValidation.Kind.OK, fv.kind);
     
-    fv = new NumberCSVSingleFieldValidator().check("1,2,3");
+    fv = new NumberListSingleFieldValidator().check("1,2,3");
+    assertEquals(FormValidation.Kind.OK, fv.kind);
+    
+    fv = new NumberListSingleFieldValidator().check("1 2 3");
     assertEquals(FormValidation.Kind.OK, fv.kind);
   }
 }

@@ -4,8 +4,8 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
 import hudson.model.Hudson;
-import hudson.plugins.sctmexecutor.validators.NumberCSVSingleFieldValidator;
-import hudson.plugins.sctmexecutor.validators.ParametersSingleFieldValidator;
+import hudson.plugins.sctmexecutor.validators.NumberListSingleFieldValidator;
+import hudson.plugins.sctmexecutor.validators.ParameterListSingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.TestConnectionValidator;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
@@ -81,7 +81,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     } catch (NumberFormatException e) {
       return defaultValue;
     }
-  }
+  }  
 
   @Override
   public boolean configure(StaplerRequest req, JSONObject formData) throws hudson.model.Descriptor.FormException {
@@ -174,7 +174,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     if (requiredness.kind != FormValidation.Kind.OK) {
       return requiredness;
     }
-    return new NumberCSVSingleFieldValidator().check(value);
+    return new NumberListSingleFieldValidator().check(value);
   }
 
   public FormValidation doCheckProjectId(@QueryParameter final String value) {
@@ -186,7 +186,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   }
   
   public FormValidation doCheckParams(@QueryParameter final String value) {
-    return new ParametersSingleFieldValidator().check(value);
+    return new ParameterListSingleFieldValidator().check(value);
   }
 
   public FormValidation doCheckDelay(@QueryParameter final String value) {
@@ -197,14 +197,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
       @QueryParameter("serviceURL") final String serviceURL, @QueryParameter("user") final String user,
       @QueryParameter("password") final String password) {
     return new TestConnectionValidator().check(serviceURL, user, password);
-  }
-
-  // public FormValidation doCheckVersion(StaplerRequest req, StaplerResponse rsp,
-  // @QueryParameter("version") final String version, @QueryParameter("execDefIds") final String execDefIds) {
-  // Collection<String> allVersions = getAllVersions(execDefIds);
-  // return allVersions.contains(version) ? FormValidation.ok() : FormValidation.warning(MessageFormat.format(
-  // "The given version ({0}) ist not available on SCTM. Choose one from the following: {1}", version, allVersions));
-  // }
+  }  
 
   @SuppressWarnings("rawtypes")
   @Override
