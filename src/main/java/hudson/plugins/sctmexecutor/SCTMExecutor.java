@@ -16,14 +16,11 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jenkins.model.Jenkins;
 
 import org.jenkinsci.plugins.tokenmacro.MacroEvaluationException;
 import org.jenkinsci.plugins.tokenmacro.TokenMacro;
@@ -129,10 +126,15 @@ public final class SCTMExecutor extends Builder {
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
-    List<Integer> execDefIdList = Utils.csvToIntList(this.execDefIds);
-        
+    
+    if(projectId == 0 || execDefIds == null || execDefIds.isEmpty()) {
+      listener.getLogger().println(Messages.getString("SCTMExecutor.err.invalidConfig"));
+      return false;
+    }
+    
+    List<Integer> execDefIdList = Utils.splitToIntList(this.execDefIds);        
     //Replace macros from input
-    Map<String, String> paramsMap = splitToMap(expandMacros(build, listener, this.params));
+    Map<String, String> paramsMap = Utils.splitToMap(expandMacros(build, listener, this.params));
         
     try {
       ISCTMService service = createSctmService(projectId, execDefIdList);
@@ -242,22 +244,7 @@ public final class SCTMExecutor extends Builder {
     } else
       buildResults.mkdirs();
     return buildResults;
-  }
-  
-  private Map<String, String> splitToMap(String content) {    
-    Map<String, String> map = new LinkedHashMap<String, String>();   
-    
-    if (content != null && !content.isEmpty()) {      
-        for (String keyValue: content.split(" *\n *")) {
-          String[] pair = keyValue.split(" *= *", 2);
-          map.put(pair[0], pair.length == 1 ? "" : pair[1]);          
-          
-          System.out.println("KeyValue=" + keyValue);          
-        }
-    }
-    
-    return map;
-  }
+  }  
   
   private String expandMacros(AbstractBuild<?, ?> build, BuildListener listener, final String template) throws IOException, InterruptedException {
     String result = template;

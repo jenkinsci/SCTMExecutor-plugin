@@ -52,16 +52,16 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   }
 
   @Override
-  public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+  public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {    
+    int projectId = formData.optInt("projectId"); //$NON-NLS-1$
     String execDefIds = formData.getString("execDefIds"); //$NON-NLS-1$
-    int projectId = formData.getInt("projectId"); //$NON-NLS-1$
-    int delay = getOptionalIntValue(formData.getString("delay"), 0); //$NON-NLS-1$        
     String params = formData.getString("params");    
+    int delay = formData.optInt("delay"); //$NON-NLS-1$        
     boolean contOnErr = formData.getBoolean("continueOnError"); //$NON-NLS-1$
     boolean collectResults = formData.getBoolean("collectResults"); //$NON-NLS-1$
     boolean ignoreSetupCleanup = formData.getBoolean("ignoreSetupCleanup"); //$NON-NLS-1$
     String jobName = ""; //$NON-NLS-1$
-    JSONObject buildNumberUsageOption = (JSONObject) formData.get("buildNumberUsageOption"); //$NON-NLS-1$
+    JSONObject buildNumberUsageOption = formData.optJSONObject("buildNumberUsageOption"); //$NON-NLS-1$
     int optValue;
     if (buildNumberUsageOption == null)
       optValue = SCTMExecutor.OPT_NO_BUILD_NUMBER;
@@ -73,14 +73,6 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     }
 
     return new SCTMExecutor(projectId, execDefIds, delay, params, optValue, jobName, contOnErr, collectResults, ignoreSetupCleanup);
-  }  
-
-  private int getOptionalIntValue(String value, int defaultValue) {
-    try {
-      return Integer.parseInt(value);
-    } catch (NumberFormatException e) {
-      return defaultValue;
-    }
   }  
 
   @Override
