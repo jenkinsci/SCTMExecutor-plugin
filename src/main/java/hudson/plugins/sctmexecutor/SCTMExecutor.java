@@ -46,6 +46,7 @@ public final class SCTMExecutor extends Builder {
   private final String params;
   private final int buildNumberUsageOption;
   private final String jobName;
+  private final String customBuildNumber;
   private final boolean continueOnError;
   private final boolean collectResults;
   private final boolean ignoreSetupCleanup;
@@ -55,14 +56,15 @@ public final class SCTMExecutor extends Builder {
   private String productVersion;
 
   @DataBoundConstructor
-  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final String params, 
-      final int buildNumberUsageOption, final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup) {
+  public SCTMExecutor(final int projectId, final String execDefIds, final String params, final int delay, final int buildNumberUsageOption, 
+      final String jobName, final String customBuildNumber, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
-    this.delay = delay;
     this.params = params;
+    this.delay = delay;
     this.buildNumberUsageOption = buildNumberUsageOption;
     this.jobName = jobName;
+    this.customBuildNumber = customBuildNumber;
     this.continueOnError = contOnErr;
     this.collectResults = collectResults;
     this.ignoreSetupCleanup = ignoreSetupCleanup;    
@@ -108,13 +110,17 @@ public final class SCTMExecutor extends Builder {
 
   public String getParams() {
     return params;
+  }  
+
+  public String getCustomBuildNumber() {
+    return customBuildNumber;
   }
 
   public boolean isContinueOnError() {
     return this.continueOnError;
   }
 
-  public boolean isignoreSetupCleanup() {
+  public boolean isIgnoreSetupCleanup() {
     return this.ignoreSetupCleanup;
   }
 
@@ -142,7 +148,7 @@ public final class SCTMExecutor extends Builder {
       FilePath rootDir = createResultDir(build.number, build, listener);
 
       Collection<Thread> executions = new ArrayList<Thread>(execDefIdList.size());
-      int buildNumber = -1;
+      String buildNumber = null;
       buildNumber = getOrAddBuildNumber(build, listener, service);
       for (Integer execDefId : execDefIdList) {
         ITestResultWriter resultWriter = null;
@@ -176,47 +182,49 @@ public final class SCTMExecutor extends Builder {
     return continueOnError || succeed;
   }
 
-  private int getOrAddBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, ISCTMService service) throws SCTMException, IOException, InterruptedException {
+  private String getOrAddBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, ISCTMService service) throws SCTMException, IOException, InterruptedException {
     switch (this.buildNumberUsageOption) {
     case OPT_USE_THIS_BUILD_NUMBER:
     case OPT_USE_SPECIFICJOB_BUILDNUMBER:
-      int buildnumber = -1;
+    case OPT_USE_CUSTOM_BUILDNUMBER:
+      String buildnumber = null;
       if (this.buildNumberUsageOption == OPT_USE_THIS_BUILD_NUMBER) {
-        buildnumber = build.number;
+        buildnumber = String.valueOf(build.number);
       } else if (this.buildNumberUsageOption == OPT_USE_SPECIFICJOB_BUILDNUMBER) {
         buildnumber = getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
       } else if (this.buildNumberUsageOption == OPT_USE_CUSTOM_BUILDNUMBER) {
-        buildnumber = -1; //TODO implement this functionality
+        buildnumber = expandMacros(build, listener, customBuildNumber); //TODO implement this functionality
       }
       
       try {
         if (!service.buildNumberExists(product, productVersion, buildnumber)) {
           listener.getLogger().println(MessageFormat.format(Messages.getString("SCTMExecutor.msg.info.addBuildNumber"), buildnumber)); //$NON-NLS-1$
-          if (!service.addBuildNumber(product, productVersion, buildnumber))
-            buildnumber = -1;
+          if (!service.addBuildNumber(product, productVersion, buildnumber)) {
+            buildnumber = null;
+          }
         } else
           listener.getLogger().println(MessageFormat.format(Messages.getString("SCTMExecutor.msg.info.buildnumberExists"), buildnumber)); //$NON-NLS-1$
       } catch (IllegalArgumentException e) {
         listener.error(e.getMessage());
-        buildnumber = -1;
+        buildnumber = null;
       }
       return buildnumber;
     case OPT_USE_LATEST_SCTM_BUILDNUMBER:
       return service.getLatestSCTMBuildnumber(product, productVersion);      
     default:
-      return -1;
+      return null;
     }
   }
 
   @SuppressWarnings("rawtypes")
-  private int getBuildNumberFromUpStreamProject(String projectName, Set<AbstractProject> upstreamProjects,
+  private String getBuildNumberFromUpStreamProject(String projectName, Set<AbstractProject> upstreamProjects,
       BuildListener listener) {
     for (AbstractProject<?, ?> project : upstreamProjects) {
       if (project.getName().equals(projectName))
-        return project.getLastSuccessfulBuild().getNumber();
+        return String.valueOf(project.getLastSuccessfulBuild().getNumber());
     }
     listener.error(MessageFormat.format(Messages.getString("SCTMExecutor.err.notAUpstreamJob"), projectName)); //$NON-NLS-1$
-    return -1;
+    return null;
   }
 
   private FilePath createResultDir(int currentBuildNo, AbstractBuild<?, ?> build, BuildListener listener)

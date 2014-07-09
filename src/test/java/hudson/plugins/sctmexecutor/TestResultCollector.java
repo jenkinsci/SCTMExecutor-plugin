@@ -20,7 +20,7 @@ import com.borland.sctm.ws.execution.TestDefinitionResult;
 
 public class TestResultCollector {
   
-  private static final int DEFAULT_BUILDNUMBER = -1;
+  private static final String DEFAULT_BUILDNUMBER = null;
 
   @Test
   public void collectingResults() throws SCTMException, FileNotFoundException {
@@ -57,7 +57,7 @@ public class TestResultCollector {
     ITestResultWriter resultWriterMock = EasyMock.createStrictMock(ITestResultWriter.class);
     resultWriterMock.write(result);
     
-    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, new HashMap<String, String>(), 1234, resultWriterMock, new PrintStream("test.log"));
+    ExecutionRunnable aut = new ExecutionRunnable(serviceMock, 1, new HashMap<String, String>(), "1234", resultWriterMock, new PrintStream("test.log"));
     aut.setResultCollectingDelay(1);
     
     EasyMock.replay(serviceMock);

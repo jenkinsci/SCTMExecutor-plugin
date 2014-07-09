@@ -207,9 +207,9 @@ public class SCTMService implements ISCTMService {
   }
 
   @Override
-  public boolean addBuildNumber(String productName, String version, int buildNumber) throws SCTMException {
+  public boolean addBuildNumber(String productName, String version, String buildNumber) throws SCTMException {
     try {
-      return adminService.addBuild(sessionId, productName, version, String.valueOf(buildNumber), Messages.getString("SCTMService.msg.sctm.buildnumberComment"), true); //$NON-NLS-1$
+      return adminService.addBuild(sessionId, productName, version, buildNumber, Messages.getString("SCTMService.msg.sctm.buildnumberComment"), true); //$NON-NLS-1$
     } catch (RemoteException e) {
       if (handleLostSessionException(e))
         addBuildNumber(productName, version, buildNumber);
@@ -219,13 +219,12 @@ public class SCTMService implements ISCTMService {
   }
 
   @Override
-  public boolean buildNumberExists(String productName, String version, int buildNumber) throws SCTMException {
+  public boolean buildNumberExists(String productName, String version, String buildNumber) throws SCTMException {
     try {
       String[] builds = adminService.getBuilds(sessionId, productName, version);
-      if (builds != null) {
-        String value = String.valueOf(buildNumber);
+      if (builds != null) {        
         for (String build : builds) {
-          if (value.equals(build))
+          if (buildNumber.equals(build))
             return true;
         }
       }
@@ -239,15 +238,13 @@ public class SCTMService implements ISCTMService {
   }
 
   @Override
-  public int getLatestSCTMBuildnumber(String productName, String version) throws SCTMException {
+  public String getLatestSCTMBuildnumber(String productName, String version) throws SCTMException {
     try {
       String[] builds = adminService.getBuilds(sessionId, productName, version);
-      int latestBuildnumber = -1;
-      for (String bn : builds) {
-        int buildnumber = 0;
-        try {
-          buildnumber = Integer.parseInt(bn);
-          if (buildnumber > latestBuildnumber)
+      String latestBuildnumber = "";
+      for (String buildnumber : builds) {        
+        try {          
+          if (buildnumber.compareTo(latestBuildnumber) > 0)
             latestBuildnumber = buildnumber;          
         } catch (NumberFormatException e) {
           LOGGER.warning(MessageFormat.format(Messages.getString("SCTMService.err.buildnumberConvertion"), buildnumber)); //$NON-NLS-1$

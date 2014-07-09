@@ -102,11 +102,11 @@ public class SCTMReRunProxy implements ISCTMService {
   }
 
   @Override
-  public boolean addBuildNumber(String productName, String version, int buildNumber) throws SCTMException {
+  public boolean addBuildNumber(String productName, String version, String buildNumber) throws SCTMException {
     return doAddBuildNumber(productName, version, buildNumber, MAXRERUN);
   }
 
-  private boolean doAddBuildNumber(String product, String version, int buildNumber, int tryCount) throws SCTMException {
+  private boolean doAddBuildNumber(String product, String version, String buildNumber, int tryCount) throws SCTMException {
     try {
       return this.target.addBuildNumber(product, version, buildNumber);
     } catch (SCTMException e) {
@@ -122,11 +122,11 @@ public class SCTMReRunProxy implements ISCTMService {
   }
 
   @Override
-  public boolean buildNumberExists(String productName, String version, int buildNumber) throws SCTMException {
+  public boolean buildNumberExists(String productName, String version, String buildNumber) throws SCTMException {
     return doBuildNumberExists(productName, version, buildNumber, MAXRERUN);
   }
 
-  private boolean doBuildNumberExists(String product, String version, int buildNumber, int tryCount) throws SCTMException {
+  private boolean doBuildNumberExists(String product, String version, String buildNumber, int tryCount) throws SCTMException {
     try {
       return this.target.buildNumberExists(product, version, buildNumber);
     } catch (SCTMException e) {
@@ -142,11 +142,11 @@ public class SCTMReRunProxy implements ISCTMService {
   }
 
   @Override
-  public int getLatestSCTMBuildnumber(String productName, String version) throws SCTMException {
+  public String getLatestSCTMBuildnumber(String productName, String version) throws SCTMException {
     return doGetLatestSCTMBuildnumber(productName, version, MAXRERUN);
   }
   
-  private int doGetLatestSCTMBuildnumber(String productName, String version, int tryCount) throws SCTMException {
+  private String doGetLatestSCTMBuildnumber(String productName, String version, int tryCount) throws SCTMException {
     try {
       return this.target.getLatestSCTMBuildnumber(productName, version);
     } catch (SCTMException e) {

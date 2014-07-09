@@ -17,7 +17,7 @@ final class ExecutionRunnable implements Runnable {
   private static final int MAX_SLEEP = 60;
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
 
-  private final int buildNumber;
+  private final String buildNumber;
   private final int execDefId;
   private final Map<String, String> params;
   private final ISCTMService service;
@@ -26,7 +26,7 @@ final class ExecutionRunnable implements Runnable {
   private long resultCollectingDelay;
   private String execDefName;
 
-  ExecutionRunnable(final ISCTMService service, final int execDefId, final Map<String, String> params, final int buildNumber, final ITestResultWriter writer, final PrintStream logger) {
+  ExecutionRunnable(final ISCTMService service, final int execDefId, final Map<String, String> params, final String buildNumber, final ITestResultWriter writer, final PrintStream logger) {
     this.resultCollectingDelay = 5; // in seconds
     this.consolenLogger = logger;
     this.execDefId = execDefId;
@@ -59,11 +59,11 @@ final class ExecutionRunnable implements Runnable {
       }
       
       this.consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.msg.startExecDef"), execDefName, execDefId)); //$NON-NLS-1$
-      if (this.buildNumber <= 0) { // don't care about a build number
+      if (this.buildNumber == null || this.buildNumber.isEmpty()) { // don't care about a build number
         handles = service.start(this.execDefId);
       }
       else {
-        handles = service.start(this.execDefId, String.valueOf(this.buildNumber));
+        handles = service.start(this.execDefId, this.buildNumber);
       }
 
       if (writer != null) { // continue without collecting results

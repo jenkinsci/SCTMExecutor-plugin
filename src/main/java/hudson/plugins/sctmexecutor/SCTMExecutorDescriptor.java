@@ -60,19 +60,20 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     boolean contOnErr = formData.getBoolean("continueOnError"); //$NON-NLS-1$
     boolean collectResults = formData.getBoolean("collectResults"); //$NON-NLS-1$
     boolean ignoreSetupCleanup = formData.getBoolean("ignoreSetupCleanup"); //$NON-NLS-1$
-    String jobName = ""; //$NON-NLS-1$
+    String jobName = null; //$NON-NLS-1$
+    String customBuildNumber = null;
     JSONObject buildNumberUsageOption = formData.optJSONObject("buildNumberUsageOption"); //$NON-NLS-1$
-    int optValue;
-    if (buildNumberUsageOption == null)
-      optValue = SCTMExecutor.OPT_NO_BUILD_NUMBER;
-    else
-      optValue = buildNumberUsageOption.getInt("value");//$NON-NLS-1$
-
+    
+    //uses "stapler-class" parameter as a workaround to get value property of the dropdownList. See issue "JENKINS-7517"
+    int optValue = (buildNumberUsageOption != null) ? buildNumberUsageOption.getInt("stapler-class") : SCTMExecutor.OPT_NO_BUILD_NUMBER;        
     if (optValue == SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER) {
       jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$    
     }
+    else if (optValue == SCTMExecutor.OPT_USE_CUSTOM_BUILDNUMBER) {
+      customBuildNumber = buildNumberUsageOption.getString("customBuildNumber"); //$NON-NLS-1$      
+    }
 
-    return new SCTMExecutor(projectId, execDefIds, delay, params, optValue, jobName, contOnErr, collectResults, ignoreSetupCleanup);
+    return new SCTMExecutor(projectId, execDefIds, params, delay, optValue, jobName, customBuildNumber, contOnErr, collectResults, ignoreSetupCleanup);
   }  
 
   @Override
