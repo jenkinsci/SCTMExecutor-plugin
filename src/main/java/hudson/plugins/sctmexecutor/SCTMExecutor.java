@@ -18,7 +18,6 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.Cause;
-import hudson.model.Hudson;
 import hudson.model.Cause.UpstreamCause;
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 import hudson.plugins.sctmexecutor.service.ISCTMService;
@@ -26,6 +25,7 @@ import hudson.plugins.sctmexecutor.service.SCTMReRunProxy;
 import hudson.plugins.sctmexecutor.service.SCTMService;
 import hudson.tasks.Builder;
 import hudson.util.Secret;
+import jenkins.model.Jenkins;
 
 /**
  * Executes a specified execution plan on Micro Focus Silk Central.
@@ -84,7 +84,7 @@ public final class SCTMExecutor extends Builder {
 
   @Override
   public SCTMExecutorDescriptor getDescriptor() {
-    return (SCTMExecutorDescriptor) Hudson.getInstance().getDescriptor(getClass());
+    return (SCTMExecutorDescriptor) Jenkins.getInstance().getDescriptor(getClass());
   }
 
   public String getExecDefIds() {
