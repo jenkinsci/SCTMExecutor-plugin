@@ -5,7 +5,6 @@ import hudson.Launcher;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.Hudson;
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 import hudson.plugins.sctmexecutor.service.ISCTMService;
 import hudson.plugins.sctmexecutor.service.SCTMReRunProxy;
@@ -21,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import jenkins.model.Jenkins;
 
 import org.jenkinsci.plugins.tokenmacro.MacroEvaluationException;
 import org.jenkinsci.plugins.tokenmacro.TokenMacro;
@@ -85,7 +86,7 @@ public final class SCTMExecutor extends Builder {
 
   @Override
   public SCTMExecutorDescriptor getDescriptor() {
-    return (SCTMExecutorDescriptor) Hudson.getInstance().getDescriptor(getClass());
+    return (SCTMExecutorDescriptor) Jenkins.getInstance().getDescriptor(getClass());
   }
 
   public String getExecDefIds() {
@@ -193,7 +194,7 @@ public final class SCTMExecutor extends Builder {
       } else if (this.buildNumberUsageOption == OPT_USE_SPECIFICJOB_BUILDNUMBER) {
         buildnumber = getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
       } else if (this.buildNumberUsageOption == OPT_USE_CUSTOM_BUILDNUMBER) {
-        buildnumber = expandMacros(build, listener, customBuildNumber); //TODO implement this functionality
+        buildnumber = expandMacros(build, listener, customBuildNumber);
       }
       
       try {

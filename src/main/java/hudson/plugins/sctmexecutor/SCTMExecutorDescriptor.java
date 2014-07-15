@@ -3,13 +3,13 @@ package hudson.plugins.sctmexecutor;
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
-import hudson.model.Hudson;
 import hudson.plugins.sctmexecutor.validators.NumberListSingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.ParameterListSingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.TestConnectionValidator;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import hudson.util.Secret;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 
+import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.QueryParameter;
@@ -37,7 +38,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
   private String serviceURL;
   private String user;
-  private String password;
+  private Secret password;
 
   // private transients ISCTMService service;
 
@@ -80,15 +81,11 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   public boolean configure(StaplerRequest req, JSONObject formData) throws hudson.model.Descriptor.FormException {
     serviceURL = formData.getString("serviceURL"); //$NON-NLS-1$
     user = formData.getString("user"); //$NON-NLS-1$
-    password = PwdCrypt.encode(formData.getString("password"), Hudson.getInstance().getSecretKey()); //$NON-NLS-1$
+    password = Secret.fromString(formData.getString("password")); //$NON-NLS-1$
 
     save();
     return super.configure(req, formData);
-  }
-
-  public void setServiceURL(String serviceURL) {
-    this.serviceURL = serviceURL;
-  }
+  }  
 
   public String getServiceURL() {
     return serviceURL;
@@ -98,20 +95,9 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     return user;
   }
 
-  public String getPassword() {
-    if (password != null && !password.equals("")) //$NON-NLS-1$
-      return PwdCrypt.decode(password, Hudson.getInstance().getSecretKey());
-    else
-      return ""; //$NON-NLS-1$
-  }
-
-  public void setUser(String user) {
-    this.user = user;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
+  public String getPassword() {   
+    return Secret.toString(password);   
+  }    
 
   public FormValidation doCheckServiceURL(StaplerRequest req, StaplerResponse rsp,
       @QueryParameter("value") final String value) throws IOException, ServletException {
@@ -141,7 +127,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   }
 
   public Collection<String> getAllJobs() {
-    return Hudson.getInstance().getJobNames();
+    return Jenkins.getInstance().getJobNames();
   }
 
   public Collection<String> getAllVersions(String execdefIds) {
