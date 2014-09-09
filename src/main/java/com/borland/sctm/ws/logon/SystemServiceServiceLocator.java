@@ -22,7 +22,7 @@ public class SystemServiceServiceLocator extends org.apache.axis.client.Service 
     }
 
     // Use to get a proxy class for sccsystem
-    private java.lang.String sccsystem_address = "http://10.5.2.6/Services1.0/services/sccsystem";
+    private java.lang.String sccsystem_address = "http://www-silkcentral/Services1.0/services/sccsystem";
 
     public java.lang.String getsccsystemAddress() {
         return sccsystem_address;
@@ -105,7 +105,7 @@ public class SystemServiceServiceLocator extends org.apache.axis.client.Service 
     }
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("http://10.5.2.6/Services1.0/services/sccsystem", "SystemServiceService");
+        return new javax.xml.namespace.QName("http://www-silkcentral/Services1.0/services/sccsystem", "SystemServiceService");
     }
 
     private java.util.HashSet ports = null;
@@ -113,7 +113,7 @@ public class SystemServiceServiceLocator extends org.apache.axis.client.Service 
     public java.util.Iterator getPorts() {
         if (ports == null) {
             ports = new java.util.HashSet();
-            ports.add(new javax.xml.namespace.QName("http://10.5.2.6/Services1.0/services/sccsystem", "sccsystem"));
+            ports.add(new javax.xml.namespace.QName("http://www-silkcentral/Services1.0/services/sccsystem", "sccsystem"));
         }
         return ports.iterator();
     }

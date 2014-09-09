@@ -22,7 +22,7 @@ public class ExecutionWebServiceServiceLocator extends org.apache.axis.client.Se
     }
 
     // Use to get a proxy class for tmexecution
-    private java.lang.String tmexecution_address = "http://10.5.2.6/Services1.0/services/tmexecution";
+    private java.lang.String tmexecution_address = "http://www-silkcentral/Services1.0/services/tmexecution";
 
     public java.lang.String gettmexecutionAddress() {
         return tmexecution_address;
@@ -105,7 +105,7 @@ public class ExecutionWebServiceServiceLocator extends org.apache.axis.client.Se
     }
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("http://tm.segue.com/webservices/tmexecution   ", "ExecutionWebServiceService");
+        return new javax.xml.namespace.QName("http://tm.segue.com/webservices/tmexecution", "ExecutionWebServiceService");
     }
 
     private java.util.HashSet ports = null;
@@ -113,7 +113,7 @@ public class ExecutionWebServiceServiceLocator extends org.apache.axis.client.Se
     public java.util.Iterator getPorts() {
         if (ports == null) {
             ports = new java.util.HashSet();
-            ports.add(new javax.xml.namespace.QName("http://tm.segue.com/webservices/tmexecution   ", "tmexecution"));
+            ports.add(new javax.xml.namespace.QName("http://tm.segue.com/webservices/tmexecution", "tmexecution"));
         }
         return ports.iterator();
     }

@@ -23,12 +23,12 @@ import org.apache.commons.httpclient.methods.GetMethod;
 
 import com.borland.sctm.ws.administration.MainEntities;
 import com.borland.sctm.ws.administration.MainEntitiesServiceLocator;
+import com.borland.sctm.ws.execution.ExecutionHandle;
+import com.borland.sctm.ws.execution.ExecutionNode;
+import com.borland.sctm.ws.execution.ExecutionResult;
 import com.borland.sctm.ws.execution.ExecutionWebService;
 import com.borland.sctm.ws.execution.ExecutionWebServiceServiceLocator;
-import com.borland.sctm.ws.execution.entities.ExecutionHandle;
-import com.borland.sctm.ws.execution.entities.ExecutionNode;
-import com.borland.sctm.ws.execution.entities.ExecutionResult;
-import com.borland.sctm.ws.execution.entities.PropertyValue;
+import com.borland.sctm.ws.execution.PropertyValue;
 import com.borland.sctm.ws.logon.SystemService;
 import com.borland.sctm.ws.logon.SystemServiceServiceLocator;
 import com.borland.sctm.ws.performer.PerformerService;
@@ -139,7 +139,7 @@ public class SCTMService implements ISCTMService {
     String productId = planningService.getProperty(sessionId, testContainerId, "_node_properties_ProductID_pk_fk").getValue(); //$NON-NLS-1$
     String productName = adminService.getProductNameById(sessionId, Integer.valueOf(productId));
     return productName;
-  }
+  }  
 
   /* (non-Javadoc)
    * @see hudson.plugins.sctmexecutor.service.ISCTMService#start(int)
@@ -207,9 +207,9 @@ public class SCTMService implements ISCTMService {
   }
 
   @Override
-  public boolean addBuildNumber(String productName, String version, int buildNumber) throws SCTMException {
+  public boolean addBuildNumber(String productName, String version, String buildNumber) throws SCTMException {
     try {
-      return adminService.addBuild(sessionId, productName, version, String.valueOf(buildNumber), Messages.getString("SCTMService.msg.sctm.buildnumberComment"), true); //$NON-NLS-1$
+      return adminService.addBuild(sessionId, productName, version, buildNumber, Messages.getString("SCTMService.msg.sctm.buildnumberComment"), true); //$NON-NLS-1$
     } catch (RemoteException e) {
       if (handleLostSessionException(e))
         addBuildNumber(productName, version, buildNumber);
@@ -219,13 +219,12 @@ public class SCTMService implements ISCTMService {
   }
 
   @Override
-  public boolean buildNumberExists(String productName, String version, int buildNumber) throws SCTMException {
+  public boolean buildNumberExists(String productName, String version, String buildNumber) throws SCTMException {
     try {
       String[] builds = adminService.getBuilds(sessionId, productName, version);
-      if (builds != null) {
-        String value = String.valueOf(buildNumber);
+      if (builds != null) {        
         for (String build : builds) {
-          if (value.equals(build))
+          if (buildNumber.equals(build))
             return true;
         }
       }
@@ -239,15 +238,13 @@ public class SCTMService implements ISCTMService {
   }
 
   @Override
-  public int getLatestSCTMBuildnumber(String productName, String version) throws SCTMException {
+  public String getLatestSCTMBuildnumber(String productName, String version) throws SCTMException {
     try {
       String[] builds = adminService.getBuilds(sessionId, productName, version);
-      int latestBuildnumber = -1;
-      for (String bn : builds) {
-        int buildnumber = 0;
-        try {
-          buildnumber = Integer.parseInt(bn);
-          if (buildnumber > latestBuildnumber)
+      String latestBuildnumber = "";
+      for (String buildnumber : builds) {        
+        try {          
+          if (buildnumber.compareTo(latestBuildnumber) > 0)
             latestBuildnumber = buildnumber;          
         } catch (NumberFormatException e) {
           LOGGER.warning(MessageFormat.format(Messages.getString("SCTMService.err.buildnumberConvertion"), buildnumber)); //$NON-NLS-1$
@@ -322,14 +319,42 @@ public class SCTMService implements ISCTMService {
   }
 
   @Override
-  public String getProductName(int nodeId) throws SCTMException {
+  public String getProductName(int execDefId) throws SCTMException {
     try {
-      return getProductName(getExecDefNode(nodeId));
+      return getProductName(getExecDefNode(execDefId));
     } catch (RemoteException e) {
       if (handleLostSessionException(e))
-        return getProductName(nodeId);
+        return getProductName(execDefId);
       LOGGER.log(Level.SEVERE, e.getMessage(), e);
       throw new SCTMException(MessageFormat.format(Messages.getString("SCTMService.err.commonFatalError"), e.getMessage())); //$NON-NLS-1$
     }
+  }
+  
+  @Override
+  public String getProductVersion(int execDefId) throws SCTMException {
+    try {
+      return getExecutionNodePropertyValue(getExecDefNode(execDefId), "PROP_VERSIONNAME"); //$NON-NLS-1$  
+	} catch (RemoteException e) {
+	  if (handleLostSessionException(e)) {
+        return getProductVersion(execDefId);
+	  }
+      LOGGER.log(Level.SEVERE, e.getMessage(), e);
+      throw new SCTMException(MessageFormat.format(Messages.getString("SCTMService.err.commonFatalError"), e.getMessage())); //$NON-NLS-1$
+	}	  
+  }
+    
+  @Override
+  public void setExecutionParameter(int execDefId, String parameterName, String parameterValue) throws SCTMException {
+    try {
+      execService.setParameter(this.sessionId, execDefId, parameterName, parameterValue); //$NON-NLS-1$ TODO
+    } catch (RemoteException e) {
+      if (handleLostSessionException(e)) {
+        setExecutionParameter(execDefId, parameterName, parameterValue);        
+      }
+      else {
+        LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        throw new SCTMException(MessageFormat.format(Messages.getString("SCTMService.err.commonFatalError"), e.getMessage())); //$NON-NLS-1$
+      }
+    }    
   }
 }

@@ -1,12 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+  
 	<parent>
 		<groupId>org.jenkins-ci.plugins</groupId>
 		<artifactId>plugin</artifactId>
-		<version>1.396</version>
+		<version>1.532.3</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
+  
 	<groupId>hudson.plugins.sctmexecutor</groupId>
 	<artifactId>SCTMExecutor</artifactId>
 	<packaging>hpi</packaging>
@@ -14,21 +16,27 @@
 	<version>1.6</version>
 	<url>http://wiki.jenkins-ci.org/display/JENKINS/SCTMExecutor</url>
 	<description>This plug-in allows executions on a Borland SilkCentral Test Manager 2008 R2 or later.</description>
+  
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- The Server URL used to generate the SilkCentral client stubs -->
+    <silkcentral.server>http://www-silkcentral</silkcentral.server>
 	</properties>
+  
 	<licenses>
 		<license>
 			<name>MIT license</name>
 			<comments>All source code is under the MIT license.</comments>
 		</license>
 	</licenses>
+  
 	<distributionManagement>
 		<repository>
 			<id>maven.jenkins-ci.org</id>
 			<url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
 		</repository>
 	</distributionManagement>
+  
 	<repositories>
 		<repository>
 			<id>repo.jenkins-ci.org</id>
@@ -41,6 +49,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
+  
 	<reporting>
 		<excludeDefaults>true</excludeDefaults>
 		<plugins>
@@ -67,12 +76,21 @@
 			</plugin>
 		</plugins>
 	</reporting>
+  
 	<scm>
 		<connection>scm:svn:https://svn.jenkins-ci.org/trunk/hudson/plugins/SCTMExecutor</connection>
 		<developerConnection>scm:svn:https://svn.jenkins-ci.org/trunk/hudson/plugins/SCTMExecutor</developerConnection>
 		<url>http://fisheye.jenkins-ci.org/browse/jenkins/trunk/hudson/plugins/SCTMExecutor</url>
 	</scm>
+  
 	<dependencies>
+    <!-- Plugins -->
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>token-macro</artifactId>
+      <version>1.10</version>      
+    </dependency>
+  
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
@@ -127,6 +145,17 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
+  
+<!--   <dependencyManagement> -->
+<!--     <dependencies> -->
+<!--       <dependency> -->
+<!--         <groupId>com.google.guava</groupId> -->
+<!--         <artifactId>guava</artifactId> -->
+<!--         <version>14.0</version>         -->
+<!--       </dependency> -->
+<!--     </dependencies> -->
+<!--   </dependencyManagement> -->
+  
 	<developers>
 		<developer>
 			<id>tofuAtjava</id>
@@ -144,6 +173,7 @@
 			<url>http://repo.jenkins-ci.org/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
+  
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -160,7 +190,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.jenkins-ci.tools</groupId>
 										<artifactId>maven-hpi-plugin</artifactId>
-										<versionRange>[1.63,)</versionRange>
+										<versionRange>[1.95,)</versionRange>
 										<goals>
 											<goal>resolve-test-dependencies</goal>
 											<goal>apt-compile</goal>
@@ -176,7 +206,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.apache.maven.plugins</groupId>
 										<artifactId>maven-enforcer-plugin</artifactId>
-										<versionRange>[0.9,)</versionRange>
+										<versionRange>[1.0.1,)</versionRange>
 										<goals>
 											<goal>display-info</goal>
 										</goals>
@@ -189,7 +219,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.codehaus.groovy.maven</groupId>
 										<artifactId>gmaven-plugin</artifactId>
-										<versionRange>[0.9,)</versionRange>
+										<versionRange>[1.3,)</versionRange>
 										<goals>
 											<goal>generateTestStubs</goal>
 											<goal>testCompile</goal>
@@ -203,7 +233,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.jvnet.localizer</groupId>
 										<artifactId>maven-localizer-plugin</artifactId>
-										<versionRange>[1.8,)</versionRange>
+										<versionRange>[1.14,)</versionRange>
 										<goals>
 											<goal>generate</goal>
 										</goals>
@@ -216,7 +246,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.kohsuke</groupId>
 										<artifactId>access-modifier-checker</artifactId>
-										<versionRange>[1.0,)</versionRange>
+										<versionRange>[1.4,)</versionRange>
 										<goals>
 											<goal>enforce</goal>
 										</goals>
@@ -242,7 +272,7 @@
 									<pluginExecutionFilter>
 										<groupId>com.cloudbees</groupId>
 										<artifactId>maven-license-plugin</artifactId>
-										<versionRange>[1.0,)</versionRange>
+										<versionRange>[1.7,)</versionRange>
 										<goals>
 											<goal>process</goal>
 										</goals>
@@ -257,25 +287,74 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
-					<executions>
-						<execution>
-							<id>default-testCompile</id>
-							<phase>test-compile</phase>
-							<goals>
-								<goal>testCompile</goal>
-							</goals>
-							<configuration>
-								<source>1.6</source>
-								<target>1.6</target>
-							</configuration>
-						</execution>
-					</executions>
+					<version>2.5</version>					
 					<configuration>
 						<source>1.6</source>
 						<target>1.6</target>
 					</configuration>
 				</plugin>
+        
+        
+        <!-- Run the command "mvn org.codehaus.mojo:axistools-maven-plugin:wsdl2java" 
+        to generate the SilkCentral client stubs -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>axistools-maven-plugin</artifactId>
+          <version>1.4</version>
+          <configuration>
+            <!-- Don't load local files -->
+            <sourceDirectory>null</sourceDirectory>
+            <deployScope>Session</deployScope>
+            <useEmitter>true</useEmitter>
+            <urls>
+              <url>${silkcentral.server}/axislegacy/sccentities?wsdl</url> <!-- administration -->
+              <url>${silkcentral.server}/Services1.0/services/sccsystem?wsdl</url> <!-- logon -->
+              <url>${silkcentral.server}/Services1.0/services/tmexecution?wsdl</url> <!-- execution -->
+              <url>${silkcentral.server}/Services1.0/services/tmperformer?wsdl</url> <!-- performer -->
+              <url>${silkcentral.server}/Services1.0/services/tmplanning?wsdl</url> <!-- planning -->
+            </urls>                      
+            <mappings>              
+              <!-- administration -->
+              <mapping>
+                <namespace>${silkcentral.server}/axislegacy/sccentities</namespace>
+                <targetPackage>com.borland.sctm.ws.administration</targetPackage>
+              </mapping>
+              <!-- logon -->
+              <mapping>
+                <namespace>${silkcentral.server}/Services1.0/services/sccsystem</namespace>
+                <targetPackage>com.borland.sctm.ws.logon</targetPackage>
+              </mapping>              
+              <!-- execution -->
+              <mapping>
+                <namespace>http://tm.segue.com/webservices/tmexecution</namespace>
+                <targetPackage>com.borland.sctm.ws.execution</targetPackage>
+              </mapping>
+              <!-- performer -->
+              <mapping>
+                <namespace>http://tm.segue.com</namespace>
+                <targetPackage>com.borland.sctm.ws.performer</targetPackage>
+              </mapping>
+              <!-- planning -->
+              <mapping>
+                <namespace>${silkcentral.server}/Services1.0/services/tmplanning</namespace>
+                <targetPackage>com.borland.sctm.ws.planning</targetPackage>
+              </mapping>
+              <!-- Common -->
+              <mapping>
+                <namespace>http://exceptions.webservice.scc.segue.com</namespace>
+                <targetPackage>com.borland.sctm.ws.common.exceptions</targetPackage>
+              </mapping>
+              <mapping>
+                <namespace>http://scc.segue.com</namespace>
+                <targetPackage>com.borland.sctm.ws.common.entities</targetPackage>
+              </mapping>
+              <mapping>
+                <namespace>http://webservice.scc.segue.com</namespace>
+                <targetPackage>com.borland.sctm.ws.common.entities</targetPackage>
+              </mapping>
+            </mappings>
+          </configuration>          
+        </plugin>
 			</plugins>
 		</pluginManagement>
 	</build>

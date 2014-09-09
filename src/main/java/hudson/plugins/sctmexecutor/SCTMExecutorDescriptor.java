@@ -3,13 +3,13 @@ package hudson.plugins.sctmexecutor;
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
-import hudson.model.Hudson;
-import hudson.plugins.sctmexecutor.validators.EmptySingleFieldValidator;
-import hudson.plugins.sctmexecutor.validators.NumberCSVSingleFieldValidator;
+import hudson.plugins.sctmexecutor.validators.NumberListSingleFieldValidator;
+import hudson.plugins.sctmexecutor.validators.ParameterListSingleFieldValidator;
 import hudson.plugins.sctmexecutor.validators.TestConnectionValidator;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import hudson.util.Secret;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 
+import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.QueryParameter;
@@ -37,7 +38,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
   private String serviceURL;
   private String user;
-  private String password;
+  private Secret password;
 
   // private transients ISCTMService service;
 
@@ -52,55 +53,39 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   }
 
   @Override
-  public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+  public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {    
+    int projectId = formData.optInt("projectId"); //$NON-NLS-1$
     String execDefIds = formData.getString("execDefIds"); //$NON-NLS-1$
-    int projectId = formData.getInt("projectId"); //$NON-NLS-1$
-    int delay = getOptionalIntValue(formData.getString("delay"), 0); //$NON-NLS-1$
+    String params = formData.getString("params");    
+    int delay = formData.optInt("delay"); //$NON-NLS-1$        
     boolean contOnErr = formData.getBoolean("continueOnError"); //$NON-NLS-1$
     boolean collectResults = formData.getBoolean("collectResults"); //$NON-NLS-1$
     boolean ignoreSetupCleanup = formData.getBoolean("ignoreSetupCleanup"); //$NON-NLS-1$
-    String jobName = ""; //$NON-NLS-1$
-    JSONObject buildNumberUsageOption = (JSONObject) formData.get("buildNumberUsageOption"); //$NON-NLS-1$
-    int optValue;
-    if (buildNumberUsageOption == null)
-      optValue = SCTMExecutor.OPT_NO_BUILD_NUMBER;
-    else
-      optValue = buildNumberUsageOption.getInt("value");//$NON-NLS-1$
-
-    String version = null;
-    switch (optValue) {
-    case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
-      jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$
-    case SCTMExecutor.OPT_USE_LATEST_SCTM_BUILDNUMBER:
-    case SCTMExecutor.OPT_USE_THIS_BUILD_NUMBER:
-      version = buildNumberUsageOption.getString("productVersion"); //$NON-NLS-1$
+    String jobName = null; //$NON-NLS-1$
+    String customBuildNumber = null;
+    JSONObject buildNumberUsageOption = formData.optJSONObject("buildNumberUsageOption"); //$NON-NLS-1$
+    
+    //uses "stapler-class" parameter as a workaround to get value property of the dropdownList. See issue "JENKINS-7517"
+    int optValue = (buildNumberUsageOption != null) ? buildNumberUsageOption.getInt("stapler-class") : SCTMExecutor.OPT_NO_BUILD_NUMBER;        
+    if (optValue == SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER) {
+      jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$    
+    }
+    else if (optValue == SCTMExecutor.OPT_USE_CUSTOM_BUILDNUMBER) {
+      customBuildNumber = buildNumberUsageOption.getString("customBuildNumber"); //$NON-NLS-1$      
     }
 
-    return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults,
-        ignoreSetupCleanup, version);
-  }
-
-  private int getOptionalIntValue(String value, int defaultValue) {
-    try {
-      return Integer.parseInt(value);
-    } catch (NumberFormatException e) {
-      return defaultValue;
-    }
-  }
+    return new SCTMExecutor(projectId, execDefIds, params, delay, optValue, jobName, customBuildNumber, contOnErr, collectResults, ignoreSetupCleanup);
+  }  
 
   @Override
   public boolean configure(StaplerRequest req, JSONObject formData) throws hudson.model.Descriptor.FormException {
     serviceURL = formData.getString("serviceURL"); //$NON-NLS-1$
     user = formData.getString("user"); //$NON-NLS-1$
-    password = PwdCrypt.encode(formData.getString("password"), Hudson.getInstance().getSecretKey()); //$NON-NLS-1$
+    password = Secret.fromString(formData.getString("password")); //$NON-NLS-1$
 
     save();
     return super.configure(req, formData);
-  }
-
-  public void setServiceURL(String serviceURL) {
-    this.serviceURL = serviceURL;
-  }
+  }  
 
   public String getServiceURL() {
     return serviceURL;
@@ -110,20 +95,9 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     return user;
   }
 
-  public String getPassword() {
-    if (password != null && !password.equals("")) //$NON-NLS-1$
-      return PwdCrypt.decode(password, Hudson.getInstance().getSecretKey());
-    else
-      return ""; //$NON-NLS-1$
-  }
-
-  public void setUser(String user) {
-    this.user = user;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
+  public String getPassword() {   
+    return Secret.toString(password);   
+  }    
 
   public FormValidation doCheckServiceURL(StaplerRequest req, StaplerResponse rsp,
       @QueryParameter("value") final String value) throws IOException, ServletException {
@@ -153,7 +127,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   }
 
   public Collection<String> getAllJobs() {
-    return Hudson.getInstance().getJobNames();
+    return Jenkins.getInstance().getJobNames();
   }
 
   public Collection<String> getAllVersions(String execdefIds) {
@@ -166,27 +140,35 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     return Collections.emptyList();
   }
 
-  public FormValidation doCheckUser(StaplerRequest req, StaplerResponse rsp, @QueryParameter("value") final String value) {
-    return new EmptySingleFieldValidator().check(value);
+  public FormValidation doCheckUser(@QueryParameter final String value) {
+    return FormValidation.validateRequired(value);
   }
 
-  public FormValidation doCheckPassword(StaplerRequest req, StaplerResponse rsp,
-      @QueryParameter("value") final String value) {
-    return new EmptySingleFieldValidator().check(value);
+  public FormValidation doCheckPassword(@QueryParameter final String value) {
+    return FormValidation.validateRequired(value);
   }
 
-  public FormValidation doCheckExecDefIds(StaplerRequest req, StaplerResponse rsp,
-      @QueryParameter("value") final String value) {
-    return new NumberCSVSingleFieldValidator().check(value);
+  public FormValidation doCheckExecDefIds(@QueryParameter final String value) {
+    FormValidation requiredness = FormValidation.validateRequired(value);
+    if (requiredness.kind != FormValidation.Kind.OK) {
+      return requiredness;
+    }
+    return new NumberListSingleFieldValidator().check(value);
   }
 
-  public FormValidation doCheckProjectId(StaplerRequest req, StaplerResponse rsp,
-      @QueryParameter("value") final String value) {
+  public FormValidation doCheckProjectId(@QueryParameter final String value) {
+    FormValidation requiredness = FormValidation.validateRequired(value);
+    if (requiredness.kind != FormValidation.Kind.OK) {
+      return requiredness;
+    }
     return FormValidation.validateNonNegativeInteger(value);
   }
+  
+  public FormValidation doCheckParams(@QueryParameter final String value) {
+    return new ParameterListSingleFieldValidator().check(value);
+  }
 
-  public FormValidation doCheckDelay(StaplerRequest rep, StaplerResponse rsp,
-      @QueryParameter("value") final String value) {
+  public FormValidation doCheckDelay(@QueryParameter final String value) {
     return FormValidation.validateNonNegativeInteger(value);
   }
 
@@ -194,14 +176,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
       @QueryParameter("serviceURL") final String serviceURL, @QueryParameter("user") final String user,
       @QueryParameter("password") final String password) {
     return new TestConnectionValidator().check(serviceURL, user, password);
-  }
-
-  // public FormValidation doCheckVersion(StaplerRequest req, StaplerResponse rsp,
-  // @QueryParameter("version") final String version, @QueryParameter("execDefIds") final String execDefIds) {
-  // Collection<String> allVersions = getAllVersions(execDefIds);
-  // return allVersions.contains(version) ? FormValidation.ok() : FormValidation.warning(MessageFormat.format(
-  // "The given version ({0}) ist not available on SCTM. Choose one from the following: {1}", version, allVersions));
-  // }
+  }  
 
   @SuppressWarnings("rawtypes")
   @Override

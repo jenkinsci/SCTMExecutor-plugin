@@ -6,31 +6,34 @@ import hudson.plugins.sctmexecutor.service.ISCTMService;
 import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.borland.sctm.ws.execution.entities.ExecutionHandle;
-import com.borland.sctm.ws.execution.entities.ExecutionResult;
+import com.borland.sctm.ws.execution.ExecutionHandle;
+import com.borland.sctm.ws.execution.ExecutionResult;
 
 final class ExecutionRunnable implements Runnable {
   private static final int MAX_SLEEP = 60;
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor"); //$NON-NLS-1$
 
-  private final int buildNumber;
+  private final String buildNumber;
   private final int execDefId;
+  private final Map<String, String> params;
   private final ISCTMService service;
   private final ITestResultWriter writer;
   private final PrintStream consolenLogger;
   private long resultCollectingDelay;
   private String execDefName;
 
-  ExecutionRunnable(final ISCTMService service, final int execDefId, final int buildNumber, final ITestResultWriter writer, final PrintStream logger) {
+  ExecutionRunnable(final ISCTMService service, final int execDefId, final Map<String, String> params, final String buildNumber, final ITestResultWriter writer, final PrintStream logger) {
     this.resultCollectingDelay = 5; // in seconds
     this.consolenLogger = logger;
     this.execDefId = execDefId;
     this.writer = writer;
     this.service = service;
     this.buildNumber = buildNumber;
+    this.params = params;
   }
 
   /**
@@ -47,11 +50,20 @@ final class ExecutionRunnable implements Runnable {
     Collection<ExecutionHandle> handles;
     try {
       execDefName = service.getExecDefinitionName(execDefId);
-      this.consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.msg.startExecDef"), execDefName, this.execDefId)); //$NON-NLS-1$
-      if (this.buildNumber <= 0) // don't care about a build number
+      
+      if (params != null && !params.isEmpty()) {
+        this.consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.msg.setExecParams"), execDefName, execDefId, params.toString())); //$NON-NLS-1$
+        for(String param: params.keySet()) {
+          service.setExecutionParameter(execDefId, param, params.get(param));
+        }       
+      }
+      
+      this.consolenLogger.println(MessageFormat.format(Messages.getString("ExecutionRunnable.msg.startExecDef"), execDefName, execDefId)); //$NON-NLS-1$
+      if (this.buildNumber == null || this.buildNumber.isEmpty()) { // don't care about a build number
         handles = service.start(this.execDefId);
+      }
       else {
-        handles = service.start(this.execDefId, String.valueOf(this.buildNumber));
+        handles = service.start(this.execDefId, this.buildNumber);
       }
 
       if (writer != null) { // continue without collecting results
