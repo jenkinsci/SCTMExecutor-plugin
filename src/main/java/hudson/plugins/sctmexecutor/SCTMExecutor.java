@@ -169,12 +169,7 @@ public final class SCTMExecutor extends Builder {
         buildnumber = getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
       
       try {
-        if (!service.buildNumberExists(product, productVersion, buildnumber)) {
-          listener.getLogger().println(MessageFormat.format(Messages.getString("SCTMExecutor.msg.info.addBuildNumber"), buildnumber)); //$NON-NLS-1$
-          if (!service.addBuildNumber(product, productVersion, buildnumber))
-            buildnumber = -1;
-        } else
-          listener.getLogger().println(MessageFormat.format(Messages.getString("SCTMExecutor.msg.info.buildnumberExists"), buildnumber)); //$NON-NLS-1$
+        service.addBuildNumber(product, productVersion, buildnumber);
       } catch (IllegalArgumentException e) {
         listener.error(e.getMessage());
         buildnumber = -1;
