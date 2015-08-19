@@ -80,7 +80,7 @@ public class SCTMService implements ISCTMService {
   }
 
   private void logon() throws RemoteException {
-    this.sessionId = this.systemService.logonUser(this.user, this.pwd);;
+    this.sessionId = this.systemService.logonUser(this.user, this.pwd);
     execService.setCurrentProject(sessionId, projectId);
     planningService.setCurrentProject(sessionId, String.valueOf(projectId));
   }
