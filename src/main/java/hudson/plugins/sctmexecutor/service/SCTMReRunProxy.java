@@ -116,8 +116,8 @@ public class SCTMReRunProxy implements ISCTMService {
           tryMore = "Try once more."; //$NON-NLS-1$
         LOGGER.log(Level.WARNING, MessageFormat.format(Messages.getString("SCTMReRunProxy.warn.addBuildnoFailed"), buildNumber, tryMore)); //$NON-NLS-1$
         return doAddBuildNumber(product, version, buildNumber, --tryCount);
-      } else
-        throw e;
+      }
+      return false;
     }
   }
 
