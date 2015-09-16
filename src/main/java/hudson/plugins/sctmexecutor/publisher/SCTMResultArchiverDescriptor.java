@@ -22,7 +22,7 @@ public final class SCTMResultArchiverDescriptor extends BuildStepDescriptor<Publ
 
   @Override
   public String getDisplayName() {
-    return "Collect SilkCentral Testmanager Test Results";
+    return "Collect Silk Central Test Results";
   }
   
   @Override

@@ -1,9 +1,9 @@
 package hudson.plugins.sctmexecutor.publisher.xunit;
 
-import com.thalesgroup.dtkit.junit.model.JUnitModel;
-import com.thalesgroup.dtkit.metrics.model.InputMetricXSL;
-import com.thalesgroup.dtkit.metrics.model.InputType;
-import com.thalesgroup.dtkit.metrics.model.OutputMetric;
+import org.jenkinsci.lib.dtkit.model.InputMetricXSL;
+import org.jenkinsci.lib.dtkit.model.InputType;
+import org.jenkinsci.lib.dtkit.model.OutputMetric;
+import org.jenkinsci.plugins.xunit.types.model.JUnitModel;
 
 public final class SCTMInputMetric extends InputMetricXSL {
   private static final long serialVersionUID = -38720636581583520L;
@@ -15,7 +15,7 @@ public final class SCTMInputMetric extends InputMetricXSL {
 
   @Override
   public String getToolName() {
-    return "SilkCentral TestManager";
+    return "Silk Central";
   }
 
   @Override
@@ -30,6 +30,6 @@ public final class SCTMInputMetric extends InputMetricXSL {
 
   @Override
   public OutputMetric getOutputFormatType() {
-    return JUnitModel.OUTPUT_JUNIT_1_0;
+    return JUnitModel.LATEST;
   }
 }
