@@ -1,17 +1,5 @@
 package hudson.plugins.sctmexecutor;
 
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.model.BuildListener;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.Hudson;
-import hudson.plugins.sctmexecutor.exceptions.SCTMException;
-import hudson.plugins.sctmexecutor.service.ISCTMService;
-import hudson.plugins.sctmexecutor.service.SCTMReRunProxy;
-import hudson.plugins.sctmexecutor.service.SCTMService;
-import hudson.tasks.Builder;
-
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -23,8 +11,20 @@ import java.util.logging.Logger;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.BuildListener;
+import hudson.model.Hudson;
+import hudson.plugins.sctmexecutor.exceptions.SCTMException;
+import hudson.plugins.sctmexecutor.service.ISCTMService;
+import hudson.plugins.sctmexecutor.service.SCTMReRunProxy;
+import hudson.plugins.sctmexecutor.service.SCTMService;
+import hudson.tasks.Builder;
+
 /**
- * Executes a specified execution definition on Borland's SilkCentral Test Manager.
+ * Executes a specified execution definition on Borland's Silk Central.
  * 
  * @author Thomas Fuerer
  * 
@@ -44,32 +44,27 @@ public final class SCTMExecutor extends Builder {
   private final boolean continueOnError;
   private final boolean collectResults;
   private final boolean ignoreSetupCleanup;
-  private String productVersion;
 
   private boolean succeed;
-  private String product;
 
   @DataBoundConstructor
   public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption,
-      final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup, String productVersion) {
+      final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
     this.delay = delay;
     this.buildNumberUsageOption = buildNumberUsageOption;
     this.jobName = jobName;
-    this.continueOnError = contOnErr;
+    continueOnError = contOnErr;
     this.collectResults = collectResults;
     this.ignoreSetupCleanup = ignoreSetupCleanup;
-    this.productVersion = productVersion;
   }
 
   private ISCTMService createSctmService(final int projectId, List<Integer> execDefIdList) throws SCTMException {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
     ISCTMService service = null;
-    service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor
-        .getPassword(), projectId));
-    this.product = service.getProductName(execDefIdList.get(0));
+    service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor.getPassword(), projectId));
     return service;
   }
 
@@ -91,27 +86,23 @@ public final class SCTMExecutor extends Builder {
   }
 
   public int getBuildNumberUsageOption() {
-    return this.buildNumberUsageOption;
+    return buildNumberUsageOption;
   }
 
   public String getJobName() {
-    return this.jobName;
+    return jobName;
   }
 
   public boolean isContinueOnError() {
-    return this.continueOnError;
+    return continueOnError;
   }
 
   public boolean isignoreSetupCleanup() {
-    return this.ignoreSetupCleanup;
+    return ignoreSetupCleanup;
   }
 
   public boolean isCollectResults() {
-    return this.collectResults;
-  }
-  
-  public String getProductVersion() {
-    return productVersion;
+    return collectResults;
   }
   
   @Override
@@ -119,7 +110,7 @@ public final class SCTMExecutor extends Builder {
       throws InterruptedException, IOException {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
-    List<Integer> execDefIdList = Utils.csvToIntList(this.execDefIds);
+    List<Integer> execDefIdList = Utils.csvToIntList(execDefIds);
     try {
       ISCTMService service = createSctmService(projectId, execDefIdList);
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
@@ -130,18 +121,20 @@ public final class SCTMExecutor extends Builder {
       buildNumber = getOrAddBuildNumber(build, listener, execDefIdList.get(0), service);
       for (Integer execDefId : execDefIdList) {
         ITestResultWriter resultWriter = null;
-        if (collectResults)
-//          resultWriter = new StdXMLResultWriter(rootDir, serviceURL, String.valueOf(build.number),
+        if (collectResults) {
+          //          resultWriter = new StdXMLResultWriter(rootDir, serviceURL, String.valueOf(build.number),
 //              this.ignoreSetupCleanup);
           resultWriter = new SCTMResultWriter(rootDir, service, ignoreSetupCleanup);
+        }
         Runnable resultCollector = new ExecutionRunnable(service, execDefId, buildNumber, resultWriter, listener
             .getLogger());
 
         Thread t = new Thread(resultCollector);
         executions.add(t);
         t.start();
-        if (delay > 0 && execDefIdList.size() > 1)
+        if (delay > 0 && execDefIdList.size() > 1) {
           Thread.sleep(delay * 1000);
+        }
       }
 
       for (Thread t : executions) {
@@ -159,24 +152,27 @@ public final class SCTMExecutor extends Builder {
   }
 
   private int getOrAddBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, int nodeId, ISCTMService service) throws SCTMException {
-    switch (this.buildNumberUsageOption) {
+    switch (buildNumberUsageOption) {
     case OPT_USE_THIS_BUILD_NUMBER:
     case OPT_USE_SPECIFICJOB_BUILDNUMBER:
       int buildnumber = -1;
-      if (this.buildNumberUsageOption == OPT_USE_THIS_BUILD_NUMBER)
+      if (buildNumberUsageOption == OPT_USE_THIS_BUILD_NUMBER) {
         buildnumber = build.number;
-      else if (this.buildNumberUsageOption == OPT_USE_SPECIFICJOB_BUILDNUMBER)
+      } else if (buildNumberUsageOption == OPT_USE_SPECIFICJOB_BUILDNUMBER) {
         buildnumber = getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
+      }
       
       try {
-        service.addBuildNumber(product, productVersion, buildnumber);
+
+        service.addBuildNumberIfNotExists(nodeId, buildnumber);
+       
       } catch (IllegalArgumentException e) {
         listener.error(e.getMessage());
         buildnumber = -1;
       }
       return buildnumber;
     case OPT_USE_LATEST_SCTM_BUILDNUMBER:
-      return service.getLatestSCTMBuildnumber(product, productVersion);      
+      return service.getLatestSCTMBuildnumber(nodeId);
     default:
       return -1;
     }
@@ -186,8 +182,9 @@ public final class SCTMExecutor extends Builder {
   private int getBuildNumberFromUpStreamProject(String projectName, Set<AbstractProject> upstreamProjects,
       BuildListener listener) {
     for (AbstractProject<?, ?> project : upstreamProjects) {
-      if (project.getName().equals(projectName))
+      if (project.getName().equals(projectName)) {
         return project.getLastSuccessfulBuild().getNumber();
+      }
     }
     listener.error(MessageFormat.format(Messages.getString("SCTMExecutor.err.notAUpstreamJob"), projectName)); //$NON-NLS-1$
     return -1;
@@ -204,19 +201,22 @@ public final class SCTMExecutor extends Builder {
 
     final String buildNo = String.valueOf(currentBuildNo);
     rootDir = new FilePath(rootDir, "SCTMResults"); //$NON-NLS-1$
-    FilePath buildResults = new FilePath(rootDir, buildNo); //$NON-NLS-1$
+    FilePath buildResults = new FilePath(rootDir, buildNo);
     if (rootDir.exists()) {
       boolean found = false;
       for (FilePath file : rootDir.list()) {
-        if (!file.getName().equals(buildNo)) // delete results of old builds
+        if (!file.getName().equals(buildNo)) {
           file.deleteRecursive();
-        else
+        } else {
           found = true;
+        }
       }
-      if (!found)
+      if (!found) {
         buildResults.mkdirs();
-    } else
+      }
+    } else {
       buildResults.mkdirs();
+    }
     return buildResults;
   }
 }

@@ -1,13 +1,5 @@
 package hudson.plugins.sctmexecutor.publisher;
 
-import hudson.XmlFile;
-import hudson.model.BuildListener;
-import hudson.model.AbstractBuild;
-import hudson.tasks.test.AbstractTestResultAction;
-import hudson.tasks.test.TestResult;
-import hudson.util.HeapSpaceStringConverter;
-import hudson.util.XStream2;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,6 +11,14 @@ import java.util.logging.Logger;
 import org.kohsuke.stapler.StaplerProxy;
 
 import com.thoughtworks.xstream.XStream;
+
+import hudson.XmlFile;
+import hudson.model.AbstractBuild;
+import hudson.model.BuildListener;
+import hudson.tasks.test.AbstractTestResultAction;
+import hudson.tasks.test.TestResult;
+import hudson.util.HeapSpaceStringConverter;
+import hudson.util.XStream2;
 
 public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction> implements StaplerProxy {
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor.publisher");
@@ -73,8 +73,9 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
       if (resultFile.exists()) {
         r = (TestResult) resultFile.read();
         maintainTestResult(r);
-      } else
+      } else {
         throw new FileNotFoundException("Cannot find a valid result file at: " + resultFile.getFile().getPath());
+      }
     } catch (IOException e) {
       LOGGER.log(Level.WARNING, "Failed to load " + resultFile, e);
       r = new SCTMTestCaseResult("Empty result"); // return a dummy
@@ -84,8 +85,9 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
   }
 
   private void maintainTestResult(TestResult r) {
-    if (r instanceof ISCTMMultipleConfigurationTest)
+    if (r instanceof ISCTMMultipleConfigurationTest) {
       maintainTestResult((ISCTMMultipleConfigurationTest) r);
+    }
     if (r instanceof SCTMTestSuiteResult) {
       for (TestResult suite : ((SCTMTestSuiteResult) r).getChildren()) {
         maintainTestResult(suite);
@@ -110,7 +112,7 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
 
   @Override
   public String getIconFileName() {
-    return "/plugin/SCTMExecutor/images/sctmResult.jpg";
+    return "/plugin/SCTMExecutor/images/sctmresult.jpg";
   }
 
   @Override
@@ -156,11 +158,12 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
   }
 
   public Collection<String> getConfigurations() {
-    TestResult result = this.testResult.get();
-    if (result instanceof ISCTMMultipleConfigurationTest)
+    TestResult result = testResult.get();
+    if (result instanceof ISCTMMultipleConfigurationTest) {
       return ((ISCTMMultipleConfigurationTest) result).getConfigurations();
-    else
+    } else {
       throw new IllegalStateException("Result type has not configurations as child.");
+    }
   }
 
 }
