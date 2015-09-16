@@ -1,9 +1,9 @@
 package hudson.plugins.sctmexecutor;
 
 import static org.junit.Assert.assertEquals;
-import hudson.FilePath;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -12,15 +12,16 @@ import org.junit.Test;
 import com.borland.sctm.ws.execution.entities.ExecutionResult;
 import com.borland.sctm.ws.execution.entities.TestDefinitionResult;
 
+import hudson.FilePath;
+
 public class TestStdResultWriter {
   
   private static final String TMP_PATH = System.getenv("tmp")+"/hudsontest";
   private static File root;
-  private volatile int i = 0;
 
   @BeforeClass
   public static void init() {
-    root = new File(TMP_PATH);  
+    root = new File(TMP_PATH);
   }
   
   @After
@@ -62,12 +63,13 @@ public class TestStdResultWriter {
   @Test
   public void testParallelWrite() throws Exception {
     final StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(root), "http://localhost:19120/Service1.0/services", null, true);
-    
+    final AtomicInteger i = new AtomicInteger();
     Runnable run = new Runnable() {
       @Override
       public void run() {
         ExecutionResult result = new ExecutionResult();
-        result.setExecDefName("thread"+(i++));    
+        result.setExecDefName("thread"+i.getAndIncrement());
+        System.out.println(result.getExecDefName());
         result.setExecServerName("MyVirtualExecSrv");
         TestDefinitionResult goodTestDefResult = new TestDefinitionResult(5, 0, 42, "GoodTestDef", "http://www.borland.com", 0, 17, 1234, 1, 0);
         TestDefinitionResult badTestDefResult = new TestDefinitionResult(5, 1, 43, "BadTestDef", "http://www.borland.com", 1, 4, 1235, 1, 0);
