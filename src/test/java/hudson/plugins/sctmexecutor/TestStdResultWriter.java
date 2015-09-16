@@ -62,6 +62,7 @@ public class TestStdResultWriter {
   
   @Test
   public void testParallelWrite() throws Exception {
+    int nrOfFiles = root.list() == null ? 0 : root.list().length;
     final StdXMLResultWriter w = new StdXMLResultWriter(new FilePath(root), "http://localhost:19120/Service1.0/services", null, true);
     final AtomicInteger i = new AtomicInteger();
     Runnable run = new Runnable() {
@@ -86,6 +87,6 @@ public class TestStdResultWriter {
     thread1.join();
     thread2.join();
     
-    assertEquals(2, root.list().length);
+    assertEquals(nrOfFiles + 2, root.list().length);
   }
 }
