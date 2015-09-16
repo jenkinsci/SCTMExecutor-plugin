@@ -1,5 +1,18 @@
 package hudson.plugins.sctmexecutor;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
@@ -10,21 +23,7 @@ import hudson.plugins.sctmexecutor.validators.TestConnectionValidator;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletException;
-
 import net.sf.json.JSONObject;
-
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * 
@@ -62,22 +61,19 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     String jobName = ""; //$NON-NLS-1$
     JSONObject buildNumberUsageOption = (JSONObject) formData.get("buildNumberUsageOption"); //$NON-NLS-1$
     int optValue;
-    if (buildNumberUsageOption == null)
+    if (buildNumberUsageOption == null) {
       optValue = SCTMExecutor.OPT_NO_BUILD_NUMBER;
-    else
+    }
+    else {
       optValue = buildNumberUsageOption.getInt("value");//$NON-NLS-1$
-
-    String version = null;
-    switch (optValue) {
-    case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
-      jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$
-    case SCTMExecutor.OPT_USE_LATEST_SCTM_BUILDNUMBER:
-    case SCTMExecutor.OPT_USE_THIS_BUILD_NUMBER:
-      version = buildNumberUsageOption.getString("productVersion"); //$NON-NLS-1$
     }
 
-    return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults,
-        ignoreSetupCleanup, version);
+    switch (optValue) {
+      case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
+        jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$
+    }
+
+    return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults, ignoreSetupCleanup);
   }
 
   private int getOptionalIntValue(String value, int defaultValue) {
@@ -111,10 +107,12 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   }
 
   public String getPassword() {
-    if (password != null && !password.equals("")) //$NON-NLS-1$
+    if (password != null && !password.equals("")) {
       return PwdCrypt.decode(password, Hudson.getInstance().getSecretKey());
-    else
+    }
+    else {
       return ""; //$NON-NLS-1$
+    }
   }
 
   public void setUser(String user) {
@@ -132,17 +130,19 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
       @Override
       protected FormValidation check() throws IOException, ServletException {
         if (value == null
-            || (value != null && !value
-                .matches("http(s)?://(((\\d{1,3}.){3}\\d{1,3})?|([\\p{Alnum}-_.])*)(:\\d{0,5})?(/([\\p{Alnum}-_.])*)?/services"))) { //$NON-NLS-1$
+            || value != null && !value
+                .matches("http(s)?://(((\\d{1,3}.){3}\\d{1,3})?|([\\p{Alnum}-_.])*)(:\\d{0,5})?(/([\\p{Alnum}-_.])*)?/services")) { //$NON-NLS-1$
           return FormValidation.error(Messages.getString("SCTMExecutorDescriptor.validate.msg.noValidURL")); //$NON-NLS-1$
         }
         try {
           URL url = new URL(value);
           BufferedReader reader = open(url);
-          if (findText(reader, "tmexecution")) //$NON-NLS-1$
+          if (findText(reader, "tmexecution")) {
             return FormValidation.ok();
-          else
+          }
+          else {
             return FormValidation.warning(Messages.getString("SCTMExecutorDescriptor.validate.msg.noServiceFound")); //$NON-NLS-1$
+          }
         } catch (IOException e) {
           return handleIOException(value, e);
         } catch (IllegalArgumentException e) {
@@ -206,6 +206,6 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   @SuppressWarnings("rawtypes")
   @Override
   public boolean isApplicable(Class<? extends AbstractProject> jobType) {
-    return (FreeStyleProject.class.equals(jobType));
+    return FreeStyleProject.class.equals(jobType);
   }
 }

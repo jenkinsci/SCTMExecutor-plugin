@@ -1,11 +1,10 @@
 package hudson.plugins.sctmexecutor.publisher.xunit;
 
-import hudson.Extension;
-
+import org.jenkinsci.lib.dtkit.descriptor.TestTypeDescriptor;
+import org.jenkinsci.lib.dtkit.type.TestType;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import com.thalesgroup.dtkit.metrics.hudson.api.descriptor.TestTypeDescriptor;
-import com.thalesgroup.dtkit.metrics.hudson.api.type.TestType;
+import hudson.Extension;
 
 public class SCTMTestType extends TestType {
   private static final long serialVersionUID = 1L;

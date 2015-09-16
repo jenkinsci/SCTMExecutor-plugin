@@ -5,6 +5,7 @@
 		<groupId>org.jenkins-ci.plugins</groupId>
 		<artifactId>plugin</artifactId>
 		<version>1.580.1</version>
+        <relativePath>../pom.xml</relativePath>
 	</parent>
 	<groupId>hudson.plugins.sctmexecutor</groupId>
 	<artifactId>SCTMExecutor</artifactId>
@@ -99,9 +100,9 @@
       <version>1.1</version>
     </dependency>
     <dependency>
-      <groupId>com.thalesgroup.jenkins-ci.plugins</groupId>
+      <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>xunit</artifactId>
-      <version>[1.14,)</version>
+      <version>[1.90,)</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
