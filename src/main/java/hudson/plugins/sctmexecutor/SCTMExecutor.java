@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,7 +18,9 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Cause;
 import hudson.model.Hudson;
+import hudson.model.Cause.UpstreamCause;
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 import hudson.plugins.sctmexecutor.service.ISCTMService;
 import hudson.plugins.sctmexecutor.service.SCTMReRunProxy;
@@ -122,8 +126,6 @@ public final class SCTMExecutor extends Builder {
       for (Integer execDefId : execDefIdList) {
         ITestResultWriter resultWriter = null;
         if (collectResults) {
-          //          resultWriter = new StdXMLResultWriter(rootDir, serviceURL, String.valueOf(build.number),
-//              this.ignoreSetupCleanup);
           resultWriter = new SCTMResultWriter(rootDir, service, ignoreSetupCleanup);
         }
         Runnable resultCollector = new ExecutionRunnable(service, execDefId, buildNumber, resultWriter, listener
@@ -159,7 +161,13 @@ public final class SCTMExecutor extends Builder {
       if (buildNumberUsageOption == OPT_USE_THIS_BUILD_NUMBER) {
         buildnumber = build.number;
       } else if (buildNumberUsageOption == OPT_USE_SPECIFICJOB_BUILDNUMBER) {
-        buildnumber = getBuildNumberFromUpStreamProject(jobName, build.getProject().getTransitiveUpstreamProjects(), listener);
+        Map<AbstractProject, Integer> upstreamBuilds = build.getUpstreamBuilds();
+        if(!upstreamBuilds.isEmpty()){
+        	buildnumber = getBuildNumberFromUpStreamProject(jobName, upstreamBuilds , listener);
+        }
+        else {
+        	buildnumber = findTriggerInCauses(build.getCauses(), jobName);
+        }
       }
       
       try {
@@ -178,12 +186,27 @@ public final class SCTMExecutor extends Builder {
     }
   }
 
+	private int findTriggerInCauses(List<Cause> causes, String project) {
+		for (Cause cause : causes) {
+			if(cause instanceof UpstreamCause) {
+				UpstreamCause usCause = (UpstreamCause) cause;
+				if(usCause.getUpstreamProject().equals(project)) {
+					return usCause.getUpstreamBuild(); 
+				}
+				else {
+					return findTriggerInCauses(usCause.getUpstreamCauses(), project);
+				}
+			}
+		}
+		return -1;
+	}
+
   @SuppressWarnings("rawtypes")
-  private int getBuildNumberFromUpStreamProject(String projectName, Set<AbstractProject> upstreamProjects,
+  private int getBuildNumberFromUpStreamProject(String projectName, Map<AbstractProject, Integer> map,
       BuildListener listener) {
-    for (AbstractProject<?, ?> project : upstreamProjects) {
-      if (project.getName().equals(projectName)) {
-        return project.getLastSuccessfulBuild().getNumber();
+    for (Entry<AbstractProject, Integer> project : map.entrySet()) {
+      if (project.getKey().equals(projectName)) {
+        return project.getValue();
       }
     }
     listener.error(MessageFormat.format(Messages.getString("SCTMExecutor.err.notAUpstreamJob"), projectName)); //$NON-NLS-1$
@@ -220,3 +243,4 @@ public final class SCTMExecutor extends Builder {
     return buildResults;
   }
 }
+
