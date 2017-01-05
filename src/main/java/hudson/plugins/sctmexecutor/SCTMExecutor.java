@@ -120,8 +120,7 @@ public final class SCTMExecutor extends Builder {
       FilePath rootDir = createResultDir(build.number, build, listener);
 
       Collection<Thread> executions = new ArrayList<Thread>(execDefIdList.size());
-      int buildNumber = -1;
-      buildNumber = getOrAddBuildNumber(build, listener, execDefIdList.get(0), service);
+      int buildNumber = getOrAddBuildNumber(build, listener, execDefIdList.get(0), service);
       for (Integer execDefId : execDefIdList) {
         ITestResultWriter resultWriter = null;
         if (collectResults) {
