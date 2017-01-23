@@ -28,7 +28,7 @@ import hudson.tasks.Builder;
 import hudson.util.Secret;
 
 /**
- * Executes a specified execution definition on Borland's Silk Central.
+ * Executes a specified execution plan on Micro Focus Silk Central.
  * 
  * @author Thomas Fuerer
  * 

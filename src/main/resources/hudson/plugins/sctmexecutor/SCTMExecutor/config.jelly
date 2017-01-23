@@ -1,6 +1,6 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
   <st:documentation>
-    Configures an execution from Execution definitions of the same project on Borland's Silk Central.
+    Configures an execution of Execution plans of the same project on Micro Focus Silk Central.
     <st:attribute name="execDefIds" use="required"/>
     <st:attribute name="projectId" use="required"/>
   </st:documentation>
