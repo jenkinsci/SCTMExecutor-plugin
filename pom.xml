@@ -6,7 +6,7 @@
 		<artifactId>plugin</artifactId>
 		<version>2.11</version>
 		<relativePath>../pom.xml</relativePath>
-	</parent
+	</parent>
 	<groupId>hudson.plugins.sctmexecutor</groupId>
 	<artifactId>SCTMExecutor</artifactId>
 	<packaging>hpi</packaging>
