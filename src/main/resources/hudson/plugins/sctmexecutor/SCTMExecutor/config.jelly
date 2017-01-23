@@ -1,6 +1,6 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
   <st:documentation>
-    Configures a execution from Execution definitions of the same project on Borland's SilkCentral Testmanager.
+    Configures an execution from Execution definitions of the same project on Borland's Silk Central.
     <st:attribute name="execDefIds" use="required"/>
     <st:attribute name="projectId" use="required"/>
   </st:documentation>
@@ -40,5 +40,18 @@
         </select>
       </f:entry>
     </f:radioBlock>
+
+    <f:optionalBlock name="useSpecificInstance" checked="${instance.useSpecificInstance}" title="${%SCTMExecutor.projectConf.property.label.specificInstanec.title}" help="/plugin/SCTMExecutor/help-usespecificinstance.html">
+	    <f:entry title="${%SCTMExecutor.projectConf.property.label.serviceId}" description="http://host:port/services" help="/plugin/SCTMExecutor/help-host.html">
+	      <f:textbox field="specificServiceURL" value="${instance.specificServiceURL}"/>
+	    </f:entry>
+	    <f:entry title="${%SCTMExecutor.projectConf.property.label.userId}" help="/plugin/SCTMExecutor/help-user.html">
+	      <f:textbox field="specificUser" value="${instance.specificUser}"/>
+	    </f:entry>
+	    <f:entry title="${%SCTMExecutor.projectConf.property.label.pwd}" help="/plugin/SCTMExecutor/help-password.html">
+	      <f:password field="specificPassword" value="${instance.specificPassword}"/>
+	    </f:entry>
+	    <f:validateButton title="Test Connection" progress="${%SCTMExecutor.projectConf.tryConnect}" method="testSpecificConnection" with="specificServiceURL,specificUser,specificPassword" />
+   </f:optionalBlock>
   </f:advanced>
 </j:jelly>

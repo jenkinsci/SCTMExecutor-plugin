@@ -25,6 +25,7 @@ import hudson.plugins.sctmexecutor.service.ISCTMService;
 import hudson.plugins.sctmexecutor.service.SCTMReRunProxy;
 import hudson.plugins.sctmexecutor.service.SCTMService;
 import hudson.tasks.Builder;
+import hudson.util.Secret;
 
 /**
  * Executes a specified execution definition on Borland's Silk Central.
@@ -47,28 +48,38 @@ public final class SCTMExecutor extends Builder {
   private final boolean continueOnError;
   private final boolean collectResults;
   private final boolean ignoreSetupCleanup;
+  private boolean useSpecificInstance;
+  private String specificServiceURL;
+  private String specificUser;
+  private Secret specificPassword;
 
   private boolean succeed;
 
   @DataBoundConstructor
   public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption,
-      final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup) {
+      final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup,
+      boolean useSpecificInstance, String specificServiceURL, String specificUser, String specificPassword) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
     this.delay = delay;
     this.buildNumberUsageOption = buildNumberUsageOption;
     this.jobName = jobName;
-    continueOnError = contOnErr;
+    this.continueOnError = contOnErr;
     this.collectResults = collectResults;
     this.ignoreSetupCleanup = ignoreSetupCleanup;
+    
+    this.useSpecificInstance = useSpecificInstance;
+    this.specificServiceURL = specificServiceURL;
+    this.specificUser = specificUser;
+    this.specificPassword = Secret.fromString(specificPassword);
   }
 
   private ISCTMService createSctmService(final int projectId, List<Integer> execDefIdList) throws SCTMException {
     SCTMExecutorDescriptor descriptor = getDescriptor();
-    String serviceURL = descriptor.getServiceURL();
-    ISCTMService service = null;
-    service = new SCTMReRunProxy(new SCTMService(serviceURL, descriptor.getUser(), descriptor.getPassword(), projectId));
-    return service;
+    String serviceURL = useSpecificInstance ? specificServiceURL : descriptor.getServiceURL();
+    String user = useSpecificInstance ? specificUser : descriptor.getUser();
+    String password = useSpecificInstance ? getSpecificPassword() : descriptor.getPassword();
+    return new SCTMReRunProxy(new SCTMService(serviceURL, user, password, projectId));
   }
 
   @Override
@@ -106,6 +117,22 @@ public final class SCTMExecutor extends Builder {
 
   public boolean isCollectResults() {
     return collectResults;
+  }
+  
+  public boolean isUseSpecificInstance() {
+    return useSpecificInstance;
+  }
+  
+  public String getSpecificServiceURL() {
+    return specificServiceURL;
+  }
+  
+  public String getSpecificUser() {
+    return specificUser;
+  }
+  
+  public String getSpecificPassword() {
+    return Secret.toString(specificPassword);
   }
   
   @Override
