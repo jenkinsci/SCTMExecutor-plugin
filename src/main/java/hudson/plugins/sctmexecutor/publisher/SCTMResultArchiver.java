@@ -51,11 +51,16 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
     try {
       resultFiles = findAllResultFiles(resultRootPath);
     } catch (SCTMArchiverException e) {
-      listener.fatalError(MessageFormat.format("FATAL ERROR: Cannot find any result files, because: {0}",
-          e.getMessage()));
+      listener.fatalError(MessageFormat.format("FATAL ERROR: Cannot find any result files, because: {0}", e.getMessage()));
       LOGGER.log(Level.SEVERE, "output.xml files not found", e);
-      build.setResult(Result.FAILURE);
-      return false;
+      build.setResult(Result.UNSTABLE);
+      return true;
+    }
+    if (resultFiles.isEmpty()) {
+      listener.fatalError("FATAL ERROR: Cannot find any result files.");
+      LOGGER.log(Level.SEVERE, "output.xml files not found");
+      build.setResult(Result.UNSTABLE);
+      return true;
     }
 
     ExecutorService executor = Executors.newFixedThreadPool(4);
