@@ -143,8 +143,7 @@ public class SCTMService implements ISCTMService {
   private String getProductName(ExecutionNode node) throws RemoteException {
     String testContainerId = getExecutionNodePropertyValue(node, "PROP_TESTCONTAINER"); //$NON-NLS-1$
     String productId = planningService.getProperty(sessionId, testContainerId, "_node_properties_ProductID_pk_fk").getValue(); //$NON-NLS-1$
-    String productName = adminService.getProductNameById(sessionId, Integer.valueOf(productId));
-    return productName;
+    return adminService.getProductNameById(sessionId, Integer.parseInt(productId));
   }
 
   /* (non-Javadoc)
