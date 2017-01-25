@@ -11,14 +11,15 @@
 	<artifactId>SCTMExecutor</artifactId>
 	<packaging>hpi</packaging>
 	<name>SCTMExecutor</name>
-	<version>1.8</version>
+	<version>2.0</version>
 	<url>http://wiki.jenkins-ci.org/display/JENKINS/SCTMExecutor</url>
-	<description>This plug-in allows executions on a Borland SilkCentral Test Manager 2008 R2 or later.</description>
+	<description>This plug-in allows triggering executions on Micro Focus Silk Central 17.0 or later.</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jenkins.version>1.625.3</jenkins.version>
 		<java.level>7</java.level>
-		<jenkins-test-harness.version>2.13</jenkins-test-harness.version>
+		<findbugs.failOnError>false</findbugs.failOnError>
+		<findbugs.excludeFilterFile>findbugs-exclude.xml</findbugs.excludeFilterFile>
 	</properties>
 	<licenses>
 		<license>
@@ -60,15 +61,19 @@
 					<findbugsXmlOutput>true</findbugsXmlOutput>
 					<!-- Optional directory to put findbugs xml report -->
 					<findbugsXmlOutputDirectory>target/site</findbugsXmlOutputDirectory>
+					<failOnError>false</failOnError>
+					<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
 				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>
-	<scm>
-		<connection>scm:svn:https://svn.jenkins-ci.org/trunk/hudson/plugins/SCTMExecutor</connection>
-		<developerConnection>scm:svn:https://svn.jenkins-ci.org/trunk/hudson/plugins/SCTMExecutor</developerConnection>
-		<url>http://fisheye.jenkins-ci.org/browse/jenkins/trunk/hudson/plugins/SCTMExecutor</url>
-	</scm>
+
+  <scm>
+    <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
+    <url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <dependencies>
     <dependency>
@@ -118,6 +123,12 @@
       <version>4.8.1</version>
       <scope>test</scope>
     </dependency>
+	<dependency>
+	  <groupId>org.apache.commons</groupId>
+	  <artifactId>commons-lang3</artifactId>
+	  <version>3.5</version>
+      <scope>test</scope>
+	</dependency>    
     <dependency>
       <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
@@ -293,5 +304,31 @@
 			</plugin>
   			</plugins>
   		</pluginManagement>
+<!--   	<plugins> -->
+<!--   	<plugin> -->
+<!--         <groupId>org.codehaus.mojo</groupId> -->
+<!--         <artifactId>findbugs-maven-plugin</artifactId> -->
+<!--         <configuration> -->
+<!--           <failOnError>${findbugs.failOnError}</failOnError> -->
+<!--         </configuration> -->
+<!--         <executions> -->
+<!--           <execution> -->
+<!--             <id>findbugs</id> -->
+<!--             <goals> -->
+<!--               <goal>check</goal> -->
+<!--             </goals> -->
+<!--             <phase>verify</phase> -->
+<!--             <configuration> -->
+<!--                Do not define excludeFilterFile here as it will force a plugin to provide a file -->
+<!--                Instead we configure this in a profile -->
+<!--               <xmlOutput>true</xmlOutput> -->
+<!--               <findbugsXmlOutput>false</findbugsXmlOutput> -->
+<!--               <excludeFilterFile>findbugs-exclude.xml</excludeFilterFile> -->
+<!--             </configuration> -->
+<!--           </execution> -->
+<!--         </executions> -->
+<!--       </plugin> -->
+<!--       </plugins> -->
   	</build>
+
 </project>  

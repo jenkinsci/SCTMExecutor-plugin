@@ -58,6 +58,17 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     boolean contOnErr = formData.getBoolean("continueOnError"); //$NON-NLS-1$
     boolean collectResults = formData.getBoolean("collectResults"); //$NON-NLS-1$
     boolean ignoreSetupCleanup = formData.getBoolean("ignoreSetupCleanup"); //$NON-NLS-1$
+
+    JSONObject useSpecificInstanceForm = (JSONObject) formData.get("useSpecificInstance"); //$NON-NLS-1$
+    String specificServiceURL = null;
+    String specificUser = null;
+    String specificPassword = null;
+    if (useSpecificInstanceForm != null) {
+      specificServiceURL = useSpecificInstanceForm.getString("specificServiceURL");
+      specificUser = useSpecificInstanceForm.getString("specificUser");
+      specificPassword = useSpecificInstanceForm.getString("specificPassword");
+    }
+    
     String jobName = ""; //$NON-NLS-1$
     JSONObject buildNumberUsageOption = (JSONObject) formData.get("buildNumberUsageOption"); //$NON-NLS-1$
     int optValue;
@@ -73,7 +84,8 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
         jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$
     }
 
-    return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults, ignoreSetupCleanup);
+    return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults, ignoreSetupCleanup,
+        useSpecificInstanceForm != null, specificServiceURL, specificUser, specificPassword);
   }
 
   private int getOptionalIntValue(String value, int defaultValue) {
@@ -89,7 +101,6 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     serviceURL = formData.getString("serviceURL"); //$NON-NLS-1$
     user = formData.getString("user"); //$NON-NLS-1$
     password = PwdCrypt.encode(formData.getString("password"), Hudson.getInstance().getSecretKey()); //$NON-NLS-1$
-
     save();
     return super.configure(req, formData);
   }
@@ -123,19 +134,25 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     this.password = password;
   }
 
-  public FormValidation doCheckServiceURL(StaplerRequest req, StaplerResponse rsp,
-      @QueryParameter("value") final String value) throws IOException, ServletException {
+  public FormValidation doCheckServiceURL(StaplerRequest req, StaplerResponse rsp, @QueryParameter("value") final String value) throws IOException, ServletException {
+    return checkUrl(value);
+  }
 
+  public FormValidation doCheckSpecificServiceURL(StaplerRequest req, StaplerResponse rsp, @QueryParameter("value") final String value) throws IOException, ServletException {
+    return checkUrl(value);
+  }
+
+  private FormValidation checkUrl(final String urlString) throws IOException, ServletException {
     return new FormValidation.URLCheck() {
       @Override
       protected FormValidation check() throws IOException, ServletException {
-        if (value == null
-            || value != null && !value
+        if (urlString == null
+            || urlString != null && !urlString
                 .matches("http(s)?://(((\\d{1,3}.){3}\\d{1,3})?|([\\p{Alnum}-_.])*)(:\\d{0,5})?(/([\\p{Alnum}-_.])*)?/services")) { //$NON-NLS-1$
           return FormValidation.error(Messages.getString("SCTMExecutorDescriptor.validate.msg.noValidURL")); //$NON-NLS-1$
         }
         try {
-          URL url = new URL(value);
+          URL url = new URL(urlString);
           BufferedReader reader = open(url);
           if (findText(reader, "tmexecution")) {
             return FormValidation.ok();
@@ -144,7 +161,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
             return FormValidation.warning(Messages.getString("SCTMExecutorDescriptor.validate.msg.noServiceFound")); //$NON-NLS-1$
           }
         } catch (IOException e) {
-          return handleIOException(value, e);
+          return handleIOException(urlString, e);
         } catch (IllegalArgumentException e) {
           return FormValidation.error(Messages.getString("SCTMExecutorDescriptor.validate.msg.noValidURL")); //$NON-NLS-1$
         }
@@ -174,6 +191,15 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
       @QueryParameter("value") final String value) {
     return new EmptySingleFieldValidator().check(value);
   }
+  
+  public FormValidation doCheckSpecificUser(StaplerRequest req, StaplerResponse rsp, @QueryParameter("value") final String value) {
+    return new EmptySingleFieldValidator().check(value);
+  }
+  
+  public FormValidation doCheckSpecificPassword(StaplerRequest req, StaplerResponse rsp,
+      @QueryParameter("value") final String value) {
+    return new EmptySingleFieldValidator().check(value);
+  }
 
   public FormValidation doCheckExecDefIds(StaplerRequest req, StaplerResponse rsp,
       @QueryParameter("value") final String value) {
@@ -195,13 +221,12 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
       @QueryParameter("password") final String password) {
     return new TestConnectionValidator().check(serviceURL, user, password);
   }
-
-  // public FormValidation doCheckVersion(StaplerRequest req, StaplerResponse rsp,
-  // @QueryParameter("version") final String version, @QueryParameter("execDefIds") final String execDefIds) {
-  // Collection<String> allVersions = getAllVersions(execDefIds);
-  // return allVersions.contains(version) ? FormValidation.ok() : FormValidation.warning(MessageFormat.format(
-  // "The given version ({0}) ist not available on SCTM. Choose one from the following: {1}", version, allVersions));
-  // }
+  
+  public FormValidation doTestSpecificConnection(StaplerRequest req, StaplerResponse rsp,
+      @QueryParameter("specificServiceURL") final String serviceURL, @QueryParameter("specificUser") final String user,
+      @QueryParameter("specificPassword") final String password) {
+    return new TestConnectionValidator().check(serviceURL, user, password);
+  }
 
   @SuppressWarnings("rawtypes")
   @Override

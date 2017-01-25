@@ -85,12 +85,13 @@ public class SCTMService implements ISCTMService {
     planningService.setCurrentProject(sessionId, String.valueOf(projectId));
   }
 
-  private boolean handleLostSessionException(RemoteException e) throws SCTMException {
+  private synchronized boolean handleLostSessionException(RemoteException e) throws SCTMException {
     if (lostSessionExceptionThrown(e) && logonRetryCount < MAX_LOGONRETRYCOUNT) {
       logonRetryCount++;
       LOGGER.warning(Messages.getString("SCTMService.warn.SessionLostReconnect")); //$NON-NLS-1$
       try {
         logon();
+        logonRetryCount = 0;
         return true;
       } catch (RemoteException e1) {
         LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -142,8 +143,7 @@ public class SCTMService implements ISCTMService {
   private String getProductName(ExecutionNode node) throws RemoteException {
     String testContainerId = getExecutionNodePropertyValue(node, "PROP_TESTCONTAINER"); //$NON-NLS-1$
     String productId = planningService.getProperty(sessionId, testContainerId, "_node_properties_ProductID_pk_fk").getValue(); //$NON-NLS-1$
-    String productName = adminService.getProductNameById(sessionId, Integer.valueOf(productId));
-    return productName;
+    return adminService.getProductNameById(sessionId, Integer.parseInt(productId));
   }
 
   /* (non-Javadoc)
@@ -153,7 +153,6 @@ public class SCTMService implements ISCTMService {
   public Collection<ExecutionHandle> start(int executionId) throws SCTMException {
     try {
       ExecutionHandle[] handles = execService.startExecution(sessionId, executionId);
-      logonRetryCount = 0;
       return convertToList(handles);
     } catch (RemoteException e) {
       if (handleLostSessionException(e)) {
