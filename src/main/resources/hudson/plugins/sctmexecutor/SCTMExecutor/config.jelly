@@ -52,7 +52,7 @@
 	    <f:entry title="${%SCTMExecutor.projectConf.property.label.pwd}" help="/plugin/SCTMExecutor/help-password.html">
 	      <f:password field="specificPassword" value="${instance.specificPassword}"/>
 	    </f:entry>
-	    <f:validateButton title="Test Connection" progress="${%SCTMExecutor.projectConf.tryConnect}" method="testSpecificConnection" with="specificServiceURL,specificUser,specificPassword" />
+	    <f:validateButton title="${%SCTMExecutor.projectConf.property.label.testConnection}" progress="${%SCTMExecutor.projectConf.tryConnect}" method="testSpecificConnection" with="specificServiceURL,specificUser,specificPassword" />
    </f:optionalBlock>
   </f:advanced>
 </j:jelly>

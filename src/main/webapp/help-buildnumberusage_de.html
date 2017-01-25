@@ -1,10 +1,10 @@
 <div>
-<p>Es stehen folgende drei optionen wie Buildnummern dem SCTM System zur Verf�gung gestellt werden zur Auswahl:
+<p>Wählen Sie aus, wie die Buildnummer an Silk Central übergeben werden soll:
 <ul>
- <li><b>Buildnummer wird nicht ber�cksichtigt:</b> Es wird keine Buildnummer zum Ausf�hren der Tests verwendet. Es ist von der SCTm Konfiguration abh�ngig, normalerweise ist aber eine Testsuite mit einer Buildnummer versehen, die zur Ausf�hrung verwendet wird. F�r detailiertere Informationen lesen sie die SCTM Dokumentation. Wenn die Buildnummer der Ausf�hrung am SCTM mittels 'Build Info Datei' konfiguriert ist, sollte abenfalls diese Option gew�hlt werden.</li>
- <li><b>Verwende die letzte Buildnummer die am SCTM konfiguriert ist:</b> Zur Ausf�hrung wird die letzte, am SCTM, zu diesem Produkt und Version, konfigurierte Buildnummer verwendet. Wie sie Produkte und Version am SCTM anlegen k�nnen entnehmen sie der SCTM Dokumentation.</li>
- <li><b>Verwende Buildnummer von diesem Job/Run:</b> Die gegenwertige Buildnummer wird zur Ausf�hrung am SCTM verwendet.</li>
- <li><b>Verwende Buildnumber von einem Vorl�ufer Projekt:</b> F�r eigene Testprojekte kann hiermit die Buildnummer eines Vorl�uferprojektes zur Ausf�hrung am SCTM verwendet werden.</li>
+ <li><b>Buildnummer wird nicht berücksichtigt:</b> Abhängig von der Konfiguration der Testsuite, wird die in Silk Central angegebene Buildnummer verwendet. Verwenden Sie diese Option auch dann, wenn Ihre Testsuiten mit der Option 'Aus Build-Informationsdatei lesen' konfiguriert sind. Weitere Informationen hierzu finden Sie in der Silk Central Hilfe.</li>
+ <li><b>Zuletzt in Silk Central konfigurierte Buildnummer verwenden:</b> Verwendet die zuletzt in Silk Central konfigurierte Buildnummer für dieses Produkt/Version. Weitere Informationen über das Konfigurieren von Produkten und Versionen finden Sie in der Silk Central Hilfe.</li>
+ <li><b>Buildnummer von diesem Job/Run verwenden:</b> Verwendet die Buildnummer des aktuellen Jenkins-Jobs und erstellt diese in Silk Central, falls sie noch nicht vorhanden ist.</li>
+ <li><b>Buildnummer von einem Upstream-Projekt verwenden:</b> Verwendet die Buildnummer des ausgewählten Jenkins Upstream-Projekts und erstellt diese in Silk Central, falls sie noch nicht vorhanden ist.</li>
 </ul>
 </p>
 </div> 
