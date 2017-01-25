@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <div>
   This plug-in allows your to trigger executions on Micro Focus Silk Central 17.0 or later.
 </div>

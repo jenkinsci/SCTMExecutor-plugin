@@ -230,7 +230,7 @@ public final class SCTMExecutor extends Builder {
   private int getBuildNumberFromUpStreamProject(String projectName, Map<AbstractProject, Integer> map,
       BuildListener listener) {
     for (Entry<AbstractProject, Integer> project : map.entrySet()) {
-      if (project.getKey().equals(projectName)) {
+      if (project.getKey().getName().equals(projectName)) {
         return project.getValue();
       }
     }
