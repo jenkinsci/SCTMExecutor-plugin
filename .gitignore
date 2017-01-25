@@ -1,5 +1,6 @@
 /target/
+/work
+/.settings
 /.classpath
 /.project
-
-/.settings
+/test.log
