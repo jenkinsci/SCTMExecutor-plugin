@@ -60,6 +60,7 @@
 					<findbugsXmlOutput>true</findbugsXmlOutput>
 					<!-- Optional directory to put findbugs xml report -->
 					<findbugsXmlOutputDirectory>target/site</findbugsXmlOutputDirectory>
+					<failOnError>false</failOnError>
 				</configuration>
 			</plugin>
 		</plugins>
