@@ -5,7 +5,6 @@ import hudson.Launcher;
 import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
-import hudson.model.Hudson;
 import hudson.plugins.sctmexecutor.exceptions.SCTMArchiverException;
 import hudson.plugins.sctmexecutor.publisher.handler.OutputXMLParserHandler;
 import hudson.tasks.BuildStepMonitor;
@@ -24,6 +23,8 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import jenkins.model.Jenkins;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -113,7 +114,7 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
 
   @Override
   public SCTMResultArchiverDescriptor getDescriptor() {
-    return (SCTMResultArchiverDescriptor) Hudson.getInstance().getDescriptor(this.getClass());
+    return (SCTMResultArchiverDescriptor) Jenkins.getInstance().getDescriptor(this.getClass());
   }
 
 }
