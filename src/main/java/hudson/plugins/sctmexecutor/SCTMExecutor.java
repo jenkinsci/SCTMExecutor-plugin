@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import hudson.FilePath;
 import hudson.Launcher;
@@ -18,7 +19,8 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.Cause;
-import hudson.model.Cause.UpstreamCause;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.model.Cause.UpstreamCause;
 import hudson.plugins.sctmexecutor.exceptions.SCTMException;
 import hudson.plugins.sctmexecutor.service.ISCTMService;
@@ -27,6 +29,7 @@ import hudson.plugins.sctmexecutor.service.SCTMService;
 import hudson.tasks.Builder;
 import hudson.util.Secret;
 import jenkins.model.Jenkins;
+import jenkins.tasks.SimpleBuildStep;
 
 /**
  * Executes a specified execution plan on Micro Focus Silk Central.
@@ -34,7 +37,7 @@ import jenkins.model.Jenkins;
  * @author Thomas Fuerer
  * 
  */
-public final class SCTMExecutor extends Builder {
+public final class SCTMExecutor extends Builder implements SimpleBuildStep {
   static final int OPT_NO_BUILD_NUMBER = 1;
   static final int OPT_USE_THIS_BUILD_NUMBER = 2;
   static final int OPT_USE_SPECIFICJOB_BUILDNUMBER = 3;
@@ -43,39 +46,76 @@ public final class SCTMExecutor extends Builder {
 
   private final int projectId;
   private final String execDefIds;
-  private final int delay;
-  private final int buildNumberUsageOption;
-  private final String jobName;
-  private final boolean continueOnError;
-  private final boolean collectResults;
-  private final boolean ignoreSetupCleanup;
+  private String jobName;
+  private int delay;
+  private int buildNumberUsageOption;
+  private boolean contOnErr;
+  private boolean collectResults;
+  private boolean ignoreSetupCleanup;
   private boolean useSpecificInstance;
   private String specificServiceURL;
   private String specificUser;
   private Secret specificPassword;
 
-  private boolean succeed;
-
   @DataBoundConstructor
-  public SCTMExecutor(final int projectId, final String execDefIds, final int delay, final int buildNumberUsageOption,
-      final String jobName, final boolean contOnErr, final boolean collectResults, final boolean ignoreSetupCleanup,
-      boolean useSpecificInstance, String specificServiceURL, String specificUser, String specificPassword) {
+  public SCTMExecutor(int projectId, String execDefIds) {
     this.projectId = projectId;
     this.execDefIds = execDefIds;
-    this.delay = delay;
-    this.buildNumberUsageOption = buildNumberUsageOption;
-    this.jobName = jobName;
-    this.continueOnError = contOnErr;
-    this.collectResults = collectResults;
-    this.ignoreSetupCleanup = ignoreSetupCleanup;
+    delay = 0;
+    buildNumberUsageOption = OPT_NO_BUILD_NUMBER;
+    jobName = null;
+    contOnErr = false;
+    collectResults = false;
+    ignoreSetupCleanup = false;
     
+    useSpecificInstance = false;
+    specificServiceURL = null;
+    specificUser = null;
+    specificPassword = null;
+  }
+
+  @DataBoundSetter
+  public void setBuildNumberUsageOption(int buildNumberUsageOption) {
+    this.buildNumberUsageOption = buildNumberUsageOption;
+  }
+  @DataBoundSetter
+  public void setJobName(String jobName) {
+    this.jobName = jobName;
+  }
+  @DataBoundSetter
+  public void setDelay(int delay) {
+    this.delay = delay;
+  }
+  @DataBoundSetter
+  public void setContOnErr(boolean contOnErr) {
+    this.contOnErr = contOnErr;
+  }
+  @DataBoundSetter
+  public void setCollectResults(boolean collectResults) {
+    this.collectResults = collectResults;
+  }
+  @DataBoundSetter
+  public void setIgnoreSetupCleanup(boolean ignoreSetupCleanup) {
+    this.ignoreSetupCleanup = ignoreSetupCleanup;
+  }
+  @DataBoundSetter
+  public void setUseSpecificInstance(boolean useSpecificInstance) {
     this.useSpecificInstance = useSpecificInstance;
+  }
+  @DataBoundSetter
+  public void setSpecificServiceURL(String specificServiceURL) {
     this.specificServiceURL = specificServiceURL;
+  }
+  @DataBoundSetter
+  public void setSpecificUser(String specificUser) {
     this.specificUser = specificUser;
+  }
+  @DataBoundSetter
+  public void setSpecificPassword(String specificPassword) {
     this.specificPassword = Secret.fromString(specificPassword);
   }
 
-  private ISCTMService createSctmService(final int projectId, List<Integer> execDefIdList) throws SCTMException {
+  private ISCTMService createSctmService(int projectId) throws SCTMException {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = useSpecificInstance ? specificServiceURL : descriptor.getServiceURL();
     String user = useSpecificInstance ? specificUser : descriptor.getUser();
@@ -108,11 +148,11 @@ public final class SCTMExecutor extends Builder {
     return jobName;
   }
 
-  public boolean isContinueOnError() {
-    return continueOnError;
+  public boolean isContOnErr() {
+    return contOnErr;
   }
 
-  public boolean isignoreSetupCleanup() {
+  public boolean isIgnoreSetupCleanup() {
     return ignoreSetupCleanup;
   }
 
@@ -137,22 +177,32 @@ public final class SCTMExecutor extends Builder {
   }
   
   @Override
+  public void perform(Run<?, ?> run, FilePath filePath, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
+    perform(run, filePath, listener);
+  }
+  
+  @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
       throws InterruptedException, IOException {
+    return perform(build, build.getWorkspace(), listener);
+  }
+
+  private boolean perform(Run<?, ?> build, FilePath rootDir, TaskListener listener) throws IOException, InterruptedException {
     SCTMExecutorDescriptor descriptor = getDescriptor();
     String serviceURL = descriptor.getServiceURL();
     List<Integer> execDefIdList = Utils.csvToIntList(execDefIds);
+    boolean succeed;
     try {
-      ISCTMService service = createSctmService(projectId, execDefIdList);
+      ISCTMService service = createSctmService(projectId);
       listener.getLogger().println(Messages.getString("SCTMExecutor.log.successfulLogin")); //$NON-NLS-1$
-      FilePath rootDir = createResultDir(build.number, build, listener);
+      FilePath resultDir = createResultDir(build.number, rootDir, listener);
 
-      Collection<Thread> executions = new ArrayList<Thread>(execDefIdList.size());
+      Collection<Thread> executions = new ArrayList<>(execDefIdList.size());
       int buildNumber = getOrAddBuildNumber(build, listener, execDefIdList.get(0), service);
       for (Integer execDefId : execDefIdList) {
         ITestResultWriter resultWriter = null;
         if (collectResults) {
-          resultWriter = new SCTMResultWriter(rootDir, service, ignoreSetupCleanup);
+          resultWriter = new SCTMResultWriter(resultDir, service, ignoreSetupCleanup);
         }
         Runnable resultCollector = new ExecutionRunnable(service, execDefId, buildNumber, resultWriter, listener
             .getLogger());
@@ -161,7 +211,7 @@ public final class SCTMExecutor extends Builder {
         executions.add(t);
         t.start();
         if (delay > 0 && execDefIdList.size() > 1) {
-          Thread.sleep(delay * 1000);
+          Thread.sleep(delay * 1000L);
         }
       }
 
@@ -176,10 +226,10 @@ public final class SCTMExecutor extends Builder {
       listener.fatalError(e.getMessage());
       succeed = false;
     }
-    return continueOnError || succeed;
+    return contOnErr || succeed;
   }
 
-  private int getOrAddBuildNumber(AbstractBuild<?, ?> build, BuildListener listener, int nodeId, ISCTMService service) throws SCTMException {
+  private int getOrAddBuildNumber(Run<?, ?> build, TaskListener listener, int nodeId, ISCTMService service) throws SCTMException {
     switch (buildNumberUsageOption) {
     case OPT_USE_THIS_BUILD_NUMBER:
     case OPT_USE_SPECIFICJOB_BUILDNUMBER:
@@ -187,19 +237,19 @@ public final class SCTMExecutor extends Builder {
       if (buildNumberUsageOption == OPT_USE_THIS_BUILD_NUMBER) {
         buildnumber = build.number;
       } else if (buildNumberUsageOption == OPT_USE_SPECIFICJOB_BUILDNUMBER) {
-        Map<AbstractProject, Integer> upstreamBuilds = build.getUpstreamBuilds();
-        if(!upstreamBuilds.isEmpty()){
+        Map<AbstractProject, Integer> upstreamBuilds = null;
+        if (build instanceof AbstractBuild) {
+          upstreamBuilds = ((AbstractBuild)build).getUpstreamBuilds();
+        }
+        if(upstreamBuilds != null && !upstreamBuilds.isEmpty()){
         	buildnumber = getBuildNumberFromUpStreamProject(jobName, upstreamBuilds , listener);
         }
         else {
         	buildnumber = findTriggerInCauses(build.getCauses(), jobName);
         }
       }
-      
       try {
-
         service.addBuildNumberIfNotExists(nodeId, buildnumber);
-       
       } catch (IllegalArgumentException e) {
         listener.error(e.getMessage());
         buildnumber = -1;
@@ -217,7 +267,7 @@ public final class SCTMExecutor extends Builder {
 			if(cause instanceof UpstreamCause) {
 				UpstreamCause usCause = (UpstreamCause) cause;
 				if(usCause.getUpstreamProject().equals(project)) {
-					return usCause.getUpstreamBuild(); 
+					return usCause.getUpstreamBuild();
 				}
 				else {
 					return findTriggerInCauses(usCause.getUpstreamCauses(), project);
@@ -229,7 +279,7 @@ public final class SCTMExecutor extends Builder {
 
   @SuppressWarnings("rawtypes")
   private int getBuildNumberFromUpStreamProject(String projectName, Map<AbstractProject, Integer> map,
-      BuildListener listener) {
+      TaskListener listener) {
     for (Entry<AbstractProject, Integer> project : map.entrySet()) {
       if (project.getKey().getName().equals(projectName)) {
         return project.getValue();
@@ -239,9 +289,8 @@ public final class SCTMExecutor extends Builder {
     return -1;
   }
 
-  private FilePath createResultDir(int currentBuildNo, AbstractBuild<?, ?> build, BuildListener listener)
+  private FilePath createResultDir(int currentBuildNo, FilePath rootDir, TaskListener listener)
       throws IOException, InterruptedException {
-    FilePath rootDir = build.getWorkspace();
     if (rootDir == null) {
       LOGGER.severe("Cannot write the result file because slave is not connected."); //$NON-NLS-1$
       listener.error(Messages.getString("SCTMExecutor.log.slaveNotConnected")); //$NON-NLS-1$
@@ -268,5 +317,6 @@ public final class SCTMExecutor extends Builder {
     }
     return buildResults;
   }
+
 }
 
