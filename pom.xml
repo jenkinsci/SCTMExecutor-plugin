@@ -10,7 +10,7 @@
 	<artifactId>SCTMExecutor</artifactId>
 	<packaging>hpi</packaging>
 	<name>SCTMExecutor</name>
-	<version>2.2-SNAPSHOT</version>
+	<version>2.2</version>
 	<url>http://wiki.jenkins-ci.org/display/JENKINS/SCTMExecutor</url>
 	<description>This plug-in allows triggering executions on Micro Focus Silk Central 17.0 or later.</description>
 	<properties>
