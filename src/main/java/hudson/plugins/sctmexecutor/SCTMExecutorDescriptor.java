@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -31,6 +32,7 @@ import net.sf.json.JSONObject;
  * @author Thomas Fuerer
  * 
  */
+@Symbol("silkcentral")
 @Extension
 public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   @SuppressWarnings("unused")
@@ -38,8 +40,6 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   private String serviceURL;
   private String user;
   private Secret password;
-
-  // private transients ISCTMService service;
 
   public SCTMExecutorDescriptor() {
     super(SCTMExecutor.class);
@@ -53,40 +53,36 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
 
   @Override
   public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-    String execDefIds = formData.getString("execDefIds"); //$NON-NLS-1$
-    int projectId = formData.getInt("projectId"); //$NON-NLS-1$
-    int delay = getOptionalIntValue(formData.getString("delay"), 0); //$NON-NLS-1$
-    boolean contOnErr = formData.getBoolean("continueOnError"); //$NON-NLS-1$
-    boolean collectResults = formData.getBoolean("collectResults"); //$NON-NLS-1$
-    boolean ignoreSetupCleanup = formData.getBoolean("ignoreSetupCleanup"); //$NON-NLS-1$
 
+    SCTMExecutor sctmExecutor = new SCTMExecutor(formData.getInt("projectId"), formData.getString("execDefIds"));
+    sctmExecutor.setDelay(getOptionalIntValue(formData.getString("delay"), 0));
+    sctmExecutor.setContOnErr(formData.getBoolean("continueOnError"));
+    sctmExecutor.setCollectResults(formData.getBoolean("collectResults"));
+    sctmExecutor.setIgnoreSetupCleanup(formData.getBoolean("ignoreSetupCleanup"));
+    
+    // optValue, jobName
     JSONObject useSpecificInstanceForm = (JSONObject) formData.get("useSpecificInstance"); //$NON-NLS-1$
-    String specificServiceURL = null;
-    String specificUser = null;
-    String specificPassword = null;
     if (useSpecificInstanceForm != null) {
-      specificServiceURL = useSpecificInstanceForm.getString("specificServiceURL");
-      specificUser = useSpecificInstanceForm.getString("specificUser");
-      specificPassword = useSpecificInstanceForm.getString("specificPassword");
+      sctmExecutor.setUseSpecificInstance(true);
+      sctmExecutor.setSpecificServiceURL(useSpecificInstanceForm.getString("specificServiceURL"));
+      sctmExecutor.setSpecificUser(useSpecificInstanceForm.getString("specificUser"));
+      sctmExecutor.setSpecificPassword(useSpecificInstanceForm.getString("specificPassword"));
     }
     
-    String jobName = ""; //$NON-NLS-1$
-    JSONObject buildNumberUsageOption = (JSONObject) formData.get("buildNumberUsageOption"); //$NON-NLS-1$
-    int optValue;
-    if (buildNumberUsageOption == null) {
-      optValue = SCTMExecutor.OPT_NO_BUILD_NUMBER;
+    JSONObject buildNumberUsageJson = (JSONObject) formData.get("buildNumberUsageOption"); //$NON-NLS-1$
+    int buildNumberUsageOption;
+    if (buildNumberUsageJson == null) {
+      buildNumberUsageOption = SCTMExecutor.OPT_NO_BUILD_NUMBER;
     }
     else {
-      optValue = buildNumberUsageOption.getInt("value");//$NON-NLS-1$
+      buildNumberUsageOption = buildNumberUsageJson.getInt("value");//$NON-NLS-1$
+      if (buildNumberUsageOption == SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER) {
+        sctmExecutor.setJobName(buildNumberUsageJson.getString("jobName"));
+      }
     }
+    sctmExecutor.setBuildNumberUsageOption(buildNumberUsageOption);
 
-    switch (optValue) {
-      case SCTMExecutor.OPT_USE_SPECIFICJOB_BUILDNUMBER:
-        jobName = buildNumberUsageOption.getString("jobName"); //$NON-NLS-1$
-    }
-
-    return new SCTMExecutor(projectId, execDefIds, delay, optValue, jobName, contOnErr, collectResults, ignoreSetupCleanup,
-        useSpecificInstanceForm != null, specificServiceURL, specificUser, specificPassword);
+    return sctmExecutor;
   }
 
   private int getOptionalIntValue(String value, int defaultValue) {
@@ -104,7 +100,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     password = Secret.fromString(formData.getString("password")); //$NON-NLS-1$
     save();
     return super.configure(req, formData);
-  }  
+  }
 
   public String getServiceURL() {
     return serviceURL;
@@ -114,9 +110,9 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
     return user;
   }
 
-  public String getPassword() {   
-    return Secret.toString(password);   
-  }    
+  public String getPassword() {
+    return Secret.toString(password);
+  }
 
   public FormValidation doCheckServiceURL(StaplerRequest req, StaplerResponse rsp, @QueryParameter("value") final String value) throws IOException, ServletException {
     return checkUrl(value);
@@ -131,8 +127,7 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
       @Override
       protected FormValidation check() throws IOException, ServletException {
         if (urlString == null
-            || urlString != null && !urlString
-                .matches("http(s)?://(((\\d{1,3}.){3}\\d{1,3})?|([\\p{Alnum}-_.])*)(:\\d{0,5})?(/([\\p{Alnum}-_.])*)?/services")) { //$NON-NLS-1$
+            ||  !urlString.matches("http(s)?://(((\\d{1,3}.){3}\\d{1,3})?|([\\p{Alnum}-_.])*)(:\\d{0,5})?(/([\\p{Alnum}-_.])*)?/services")) { //$NON-NLS-1$
           return FormValidation.error(Messages.getString("SCTMExecutorDescriptor.validate.msg.noValidURL")); //$NON-NLS-1$
         }
         try {
@@ -158,12 +153,6 @@ public final class SCTMExecutorDescriptor extends BuildStepDescriptor<Builder> {
   }
 
   public Collection<String> getAllVersions(String execdefIds) {
-    // try {
-    // int execDefId = Utils.csvToIntList(execdefIds).get(0);
-    // return this.service.getAllVersions(execDefId);
-    // } catch (SCTMException e) {
-    // LOGGER.warning("No versions available for product.");
-    // }
     return Collections.emptyList();
   }
 

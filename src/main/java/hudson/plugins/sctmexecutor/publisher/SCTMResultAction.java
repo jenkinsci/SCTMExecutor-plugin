@@ -13,8 +13,8 @@ import org.kohsuke.stapler.StaplerProxy;
 import com.thoughtworks.xstream.XStream;
 
 import hudson.XmlFile;
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.tasks.test.TestResult;
 import hudson.util.HeapSpaceStringConverter;
@@ -36,13 +36,15 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
   private int failCount;
   private int skipCount;
   private Integer totalCount;
+  private final File rootDir;
 
-  protected SCTMResultAction(AbstractBuild<?, ?> owner, TestResult testResult, BuildListener listener) {
+  protected SCTMResultAction(Run<?, ?> owner, TestResult testResult, TaskListener listener) {
     super(owner);
+    rootDir = owner.getRootDir();
     setResult(testResult, listener);
   }
 
-  private synchronized void setResult(TestResult testResult, BuildListener listener) {
+  private synchronized void setResult(TestResult testResult, TaskListener listener) {
     SCTMTestSuiteResult sctmTestSuiteResult = (SCTMTestSuiteResult) testResult;
     failCount = sctmTestSuiteResult.getFailCount();
     skipCount = sctmTestSuiteResult.getSkipCount();
@@ -50,11 +52,11 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
 
     try {
       getDataFile().write(testResult);
-      this.testResult = new WeakReference<TestResult>(testResult);
+      this.testResult = new WeakReference<>(testResult);
     } catch (FileNotFoundException e) {
-      this.testResult = new WeakReference<TestResult>(new SCTMTestSuiteResult("Empty Result"));
+      this.testResult = new WeakReference<>(new SCTMTestSuiteResult("Empty Result"));
     } catch (IOException e) {
-      this.testResult = new WeakReference<TestResult>(new SCTMTestSuiteResult("Empty Result"));
+      this.testResult = new WeakReference<>(new SCTMTestSuiteResult("Empty Result"));
       String msg = "Failed to save the SCTM test result.";
       LOGGER.log(Level.SEVERE, msg, e);
       listener.fatalError(msg);
@@ -62,7 +64,7 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
   }
 
   private XmlFile getDataFile() {
-    File resultFile = new File(owner.getRootDir(), "sctmResult.xml");
+    File resultFile = new File(rootDir, "sctmResult.xml");
     return new XmlFile(XSTREAM, resultFile);
   }
 
@@ -135,12 +137,12 @@ public class SCTMResultAction extends AbstractTestResultAction<SCTMResultAction>
     TestResult r;
     if (testResult == null) {
       r = load();
-      testResult = new WeakReference<TestResult>(r);
+      testResult = new WeakReference<>(r);
     } else {
       r = testResult.get();
       if (r == null) {
         r = load();
-        testResult = new WeakReference<TestResult>(r);
+        testResult = new WeakReference<>(r);
       }
     }
 

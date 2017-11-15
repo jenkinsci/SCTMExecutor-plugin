@@ -1,15 +1,5 @@
 package hudson.plugins.sctmexecutor.publisher;
 
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.model.BuildListener;
-import hudson.model.Result;
-import hudson.model.AbstractBuild;
-import hudson.plugins.sctmexecutor.exceptions.SCTMArchiverException;
-import hudson.plugins.sctmexecutor.publisher.handler.OutputXMLParserHandler;
-import hudson.tasks.BuildStepMonitor;
-import hudson.tasks.Recorder;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -24,12 +14,24 @@ import java.util.logging.Logger;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import jenkins.model.Jenkins;
-
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class SCTMResultArchiver extends Recorder implements Serializable {
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.model.AbstractBuild;
+import hudson.model.BuildListener;
+import hudson.model.Result;
+import hudson.model.Run;
+import hudson.model.TaskListener;
+import hudson.plugins.sctmexecutor.exceptions.SCTMArchiverException;
+import hudson.plugins.sctmexecutor.publisher.handler.OutputXMLParserHandler;
+import hudson.tasks.BuildStepMonitor;
+import hudson.tasks.Recorder;
+import jenkins.model.Jenkins;
+import jenkins.tasks.SimpleBuildStep;
+
+public class SCTMResultArchiver extends Recorder implements Serializable, SimpleBuildStep {
   private static final Logger LOGGER = Logger.getLogger("hudson.plugins.sctmexecutor");
 
   @DataBoundConstructor
@@ -40,13 +42,19 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
   public BuildStepMonitor getRequiredMonitorService() {
     return BuildStepMonitor.NONE;
   }
+  
+  @Override
+  public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
+    perform(run, listener, workspace);
+  }
 
   @Override
-  public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, final BuildListener listener)
-      throws InterruptedException, IOException {
-    final SCTMTestSuiteResult rootSuite = new SCTMTestSuiteResult("root");
+  public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
+    return perform(build, listener, build.getWorkspace());
+  }
 
-    FilePath workspace = build.getWorkspace();
+  private boolean perform(Run<?, ?> build, final TaskListener listener, FilePath workspace) throws InterruptedException {
+    final SCTMTestSuiteResult rootSuite = new SCTMTestSuiteResult("root");
     FilePath resultRootPath = workspace.child(String.format("SCTMResults/%d", build.getNumber()));
     List<FilePath> resultFiles;
     try {
@@ -94,7 +102,7 @@ public class SCTMResultArchiver extends Recorder implements Serializable {
   }
 
   private List<FilePath> findAllResultFiles(FilePath rootPath) throws SCTMArchiverException, InterruptedException {
-    List<FilePath> resultFilePath = new ArrayList<FilePath>();
+    List<FilePath> resultFilePath = new ArrayList<>();
     try {
       if (rootPath.isDirectory()) { // just to be sure we are in a directory
         List<FilePath> list = rootPath.list(new RegexFileFilter("output.xml"));
